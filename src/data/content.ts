@@ -265,8 +265,10 @@ export const FASILITAS = [
 /* ---------- Meta bawaan ---------- */
 
 export const META_BAWAAN = {
+  // Kata kunci di depan, merek di belakang: yang dicari orang adalah
+  // "hotel air panas garut", bukan nama propertinya.
   title:
-    "Kampung Sumber Alam — Resort Air Panas Alami di Cipanas, Garut",
+    "Resort Air Panas Alami di Cipanas Garut | Kampung Sumber Alam",
   description:
     "Resort bergaya kampung Sunda di Cipanas, Garut. Bungalow beratap ijuk berdiri di atas kolam, berendam air panas alami dari Gunung Guntur. Booking langsung.",
 } as const;

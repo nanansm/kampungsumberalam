@@ -1,13 +1,96 @@
 ---
 import Base from "../layouts/Base.astro";
-import { NAMA } from "../data/content";
+import Header from "../components/Header.astro";
+import T from "../components/T.astro";
+import { BOOKING_URL } from "../data/content";
+
+const HERO_PONSEL = "/images/bungalow-teratai-tegak.webp";
+const HERO_LEBAR = "/images/kampung-kolam-teratai.webp";
 ---
 
-<Base path="/">
-  <main class="mx-auto max-w-2xl px-6 py-24">
-    <h1 class="text-4xl">{NAMA}</h1>
-    <p class="mt-6 text-tinta-lembut">
-      Fondasi terpasang. Hero sedang dirancang.
-    </p>
+<Base path="/" heroImg={HERO_PONSEL} heroImgWide={HERO_LEBAR}>
+  <Header />
+
+  <main>
+    <section class="pb-14 sm:pb-20">
+      <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
+        <h1
+          class="max-w-[13ch] text-[clamp(2.5rem,10vw,5.25rem)] text-balance sm:max-w-[16ch]"
+        >
+          <T
+            id="Air panas alami, di kamar sendiri."
+            en="Natural hot water, in your own room."
+          />
+        </h1>
+
+        <p class="mt-5 max-w-[46ch] text-tinta-lembut sm:mt-6">
+          <T
+            id="Bungalow kayu beratap ijuk berdiri di atas kolam di Cipanas, Garut. Air panasnya mengalir dari Gunung Guntur."
+            en="Timber bungalows with thatched roofs stand over ponds in Cipanas, Garut. The hot water runs down from Mount Guntur."
+          />
+        </p>
+      </div>
+
+      {/* Foto tampil UTUH pada rasio aslinya. Tanpa object-cover,
+          tanpa aspect ratio paksaan. Dua sumber, dua rasio, keduanya
+          punya width dan height sendiri supaya tidak ada geseran tata letak.
+          Foto ini satu satunya bidang bergambar di layar pertama, dan
+          tombol hijau satu satunya bidang berwarna. Selain itu putih dan huruf. */}
+      <picture>
+        <source
+          media="(min-width: 768px)"
+          srcset={HERO_LEBAR}
+          width="1600"
+          height="768"
+        />
+        <img
+          src={HERO_PONSEL}
+          width="1000"
+          height="750"
+          alt="Bungalow kayu beratap ijuk berdiri di atas kolam teratai Kampung Sumber Alam, Cipanas, Garut"
+          fetchpriority="high"
+          decoding="async"
+          class="mt-7 h-auto w-full sm:mt-10"
+        />
+      </picture>
+
+      <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
+        {/* Tiga kolom sejajar, bukan flex-wrap. Flex-wrap sempat
+            menjatuhkan kolom ketiga ke baris sendiri dan meninggalkan
+            lubang di kanan. */}
+        <dl class="mt-7 grid max-w-[36rem] grid-cols-3 gap-x-3 text-sm sm:mt-9 sm:gap-x-10 sm:text-[0.9375rem]">
+          <div>
+            <dt class="penanda">
+              <T id="Akomodasi" en="Accommodation" />
+            </dt>
+            <dd class="mt-1.5">
+              <T id="12 tipe" en="12 types" />
+            </dd>
+          </div>
+          <div>
+            <dt class="penanda">
+              <T id="Kapasitas" en="Sleeps" />
+            </dt>
+            <dd class="mt-1.5">
+              <T id="2-18 orang" en="2-18 guests" />
+            </dd>
+          </div>
+          <div>
+            <dt class="penanda">
+              <T id="Lokasi" en="Location" />
+            </dt>
+            <dd class="mt-1.5">Cipanas, Garut</dd>
+          </div>
+        </dl>
+
+        <a
+          href={BOOKING_URL}
+          rel="noopener"
+          class="mt-8 inline-block bg-hutan px-7 py-4 text-[0.9375rem] text-white transition-colors duration-200 hover:bg-hutan-dalam sm:mt-10"
+        >
+          <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
+        </a>
+      </div>
+    </section>
   </main>
 </Base>
