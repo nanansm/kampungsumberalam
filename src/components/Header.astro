@@ -1,11 +1,23 @@
 ---
 import { NAMA_PANJANG } from "../data/content";
+
+interface Props {
+  /** dipakai saat header duduk di atas foto: logo putih, teks putih */
+  terang?: boolean;
+}
+const { terang = false } = Astro.props;
+
+const logo = terang ? "/logo/logotype-putih.svg" : "/logo/logotype-color.svg";
+const warnaTombol = terang ? "text-white/75" : "text-tinta-lembut";
+const warnaGaris = terang ? "text-white/35" : "text-garis";
 ---
 
-<header class="mx-auto flex max-w-[1200px] items-center justify-between px-5 py-5 sm:px-8">
+<header
+  class="mx-auto flex w-full max-w-[1200px] items-center justify-between px-5 py-5 sm:px-8"
+>
   <a href="/" aria-label={NAMA_PANJANG} class="shrink-0">
     <img
-      src="/logo/logotype-color.svg"
+      src={logo}
       alt={NAMA_PANJANG}
       width="140"
       height="30"
@@ -17,14 +29,14 @@ import { NAMA_PANJANG } from "../data/content";
     <button
       type="button"
       data-set-lang="id"
-      class="lang px-2 py-1 text-tinta-lembut"
+      class={`px-2 py-1 ${warnaTombol}`}
       aria-label="Bahasa Indonesia">ID</button
     >
-    <span aria-hidden="true" class="text-garis">/</span>
+    <span aria-hidden="true" class={warnaGaris}>/</span>
     <button
       type="button"
       data-set-lang="en"
-      class="lang px-2 py-1 text-tinta-lembut"
+      class={`px-2 py-1 ${warnaTombol}`}
       aria-label="English">EN</button
     >
   </div>

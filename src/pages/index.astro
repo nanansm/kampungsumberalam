@@ -4,93 +4,94 @@ import Header from "../components/Header.astro";
 import T from "../components/T.astro";
 import { BOOKING_URL } from "../data/content";
 
-const HERO_PONSEL = "/images/bungalow-teratai-tegak.webp";
-const HERO_LEBAR = "/images/kampung-kolam-teratai.webp";
+const HERO_PONSEL = "/images/hero-tegak.webp";
+const HERO_LEBAR = "/images/hero-lebar.webp";
 ---
 
 <Base path="/" heroImg={HERO_PONSEL} heroImgWide={HERO_LEBAR}>
-  <Header />
+  {/*
+    Hero setinggi layar penuh. Konsekuensinya foto harus dipotong.
+    Pemotongan dikerjakan di BERKAS (crop 3:4 untuk ponsel, 16:9 untuk
+    layar lebar, keduanya dari file asli) supaya yang terbuang pinggiran,
+    bukan subjeknya. object-cover di sini tinggal menyesuaikan sisa
+    selisih rasio, bukan memotong buta.
 
-  <main>
-    <section class="pb-14 sm:pb-20">
-      <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
-        <h1
-          class="max-w-[13ch] text-[clamp(2.5rem,10vw,5.25rem)] text-balance sm:max-w-[16ch]"
-        >
-          <T
-            id="Air panas alami, di kamar sendiri."
-            en="Natural hot water, in your own room."
-          />
-        </h1>
+    min-h-svh, bukan 100dvh: svh memakai tinggi viewport terkecil sehingga
+    isi hero tidak pernah terdorong keluar layar saat bilah alamat muncul.
+  */}
+  <section class="relative isolate flex min-h-svh flex-col">
+    <picture>
+      <source
+        media="(min-width: 768px)"
+        srcset={HERO_LEBAR}
+        width="1800"
+        height="1013"
+      />
+      <img
+        src={HERO_PONSEL}
+        width="1000"
+        height="1759"
+        alt="Deretan bungalow kayu beratap ijuk berdiri di atas kolam teratai Kampung Sumber Alam, Cipanas, Garut"
+        fetchpriority="high"
+        decoding="async"
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+    </picture>
 
-        <p class="mt-5 max-w-[46ch] text-tinta-lembut sm:mt-6">
-          <T
-            id="Bungalow kayu beratap ijuk berdiri di atas kolam di Cipanas, Garut. Air panasnya mengalir dari Gunung Guntur."
-            en="Timber bungalows with thatched roofs stand over ponds in Cipanas, Garut. The hot water runs down from Mount Guntur."
-          />
-        </p>
-      </div>
+    {/* Scrim RATA, bukan gradasi. Warna tinta merek, bukan hitam netral. */}
+    <div class="absolute inset-0 -z-10 bg-tinta/50"></div>
 
-      {/* Foto tampil UTUH pada rasio aslinya. Tanpa object-cover,
-          tanpa aspect ratio paksaan. Dua sumber, dua rasio, keduanya
-          punya width dan height sendiri supaya tidak ada geseran tata letak.
-          Foto ini satu satunya bidang bergambar di layar pertama, dan
-          tombol hijau satu satunya bidang berwarna. Selain itu putih dan huruf. */}
-      <picture>
-        <source
-          media="(min-width: 768px)"
-          srcset={HERO_LEBAR}
-          width="1600"
-          height="768"
+    <Header terang />
+
+    <div
+      class="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-end px-5 pb-12 sm:px-8 sm:pb-16"
+    >
+      <h1
+        class="max-w-[13ch] text-[clamp(2.5rem,10vw,5.25rem)] text-balance text-white sm:max-w-[16ch]"
+      >
+        <T
+          id="Air panas alami, di kamar sendiri."
+          en="Natural hot water, in your own room."
         />
-        <img
-          src={HERO_PONSEL}
-          width="1000"
-          height="750"
-          alt="Bungalow kayu beratap ijuk berdiri di atas kolam teratai Kampung Sumber Alam, Cipanas, Garut"
-          fetchpriority="high"
-          decoding="async"
-          class="mt-7 h-auto w-full sm:mt-10"
+      </h1>
+
+      <p class="mt-5 max-w-[46ch] text-white/85 sm:mt-6">
+        <T
+          id="Bungalow kayu beratap ijuk berdiri di atas kolam di Cipanas, Garut. Air panasnya mengalir dari Gunung Guntur."
+          en="Timber bungalows with thatched roofs stand over ponds in Cipanas, Garut. The hot water runs down from Mount Guntur."
         />
-      </picture>
+      </p>
 
-      <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
-        {/* Tiga kolom sejajar, bukan flex-wrap. Flex-wrap sempat
-            menjatuhkan kolom ketiga ke baris sendiri dan meninggalkan
-            lubang di kanan. */}
-        <dl class="mt-7 grid max-w-[36rem] grid-cols-3 gap-x-3 text-sm sm:mt-9 sm:gap-x-10 sm:text-[0.9375rem]">
-          <div>
-            <dt class="penanda">
-              <T id="Akomodasi" en="Accommodation" />
-            </dt>
-            <dd class="mt-1.5">
-              <T id="12 tipe" en="12 types" />
-            </dd>
-          </div>
-          <div>
-            <dt class="penanda">
-              <T id="Kapasitas" en="Sleeps" />
-            </dt>
-            <dd class="mt-1.5">
-              <T id="2-18 orang" en="2-18 guests" />
-            </dd>
-          </div>
-          <div>
-            <dt class="penanda">
-              <T id="Lokasi" en="Location" />
-            </dt>
-            <dd class="mt-1.5">Cipanas, Garut</dd>
-          </div>
-        </dl>
+      <dl
+        class="mt-7 grid max-w-[36rem] grid-cols-3 gap-x-3 text-sm text-white sm:mt-9 sm:gap-x-10 sm:text-[0.9375rem]"
+      >
+        <div>
+          <dt class="penanda text-white/65">
+            <T id="Akomodasi" en="Accommodation" />
+          </dt>
+          <dd class="mt-1.5"><T id="12 tipe" en="12 types" /></dd>
+        </div>
+        <div>
+          <dt class="penanda text-white/65">
+            <T id="Kapasitas" en="Sleeps" />
+          </dt>
+          <dd class="mt-1.5"><T id="2-18 orang" en="2-18 guests" /></dd>
+        </div>
+        <div>
+          <dt class="penanda text-white/65">
+            <T id="Lokasi" en="Location" />
+          </dt>
+          <dd class="mt-1.5">Cipanas, Garut</dd>
+        </div>
+      </dl>
 
-        <a
-          href={BOOKING_URL}
-          rel="noopener"
-          class="mt-8 inline-block bg-hutan px-7 py-4 text-[0.9375rem] text-white transition-colors duration-200 hover:bg-hutan-dalam sm:mt-10"
-        >
-          <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
-        </a>
-      </div>
-    </section>
-  </main>
+      <a
+        href={BOOKING_URL}
+        rel="noopener"
+        class="mt-8 inline-block self-start bg-hutan px-7 py-4 text-[0.9375rem] text-white transition-colors duration-200 hover:bg-hutan-dalam sm:mt-10"
+      >
+        <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
+      </a>
+    </div>
+  </section>
 </Base>
