@@ -1,0 +1,196 @@
+---
+import "../styles/global.css";
+import {
+  SITE,
+  NAMA,
+  NAMA_PANJANG,
+  META_BAWAAN,
+  BOOKING_URL,
+  TELEPON,
+  EMAIL,
+  ALAMAT,
+  GEO,
+  MAPS_URL,
+  IG_URL,
+  FASILITAS,
+} from "../data/content";
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  /** foto hero versi ponsel — di-preload untuk (max-width: 767px) */
+  heroImg?: string;
+  /** foto hero versi lebar — di-preload untuk (min-width: 768px) */
+  heroImgWide?: string;
+}
+
+const {
+  title = META_BAWAAN.title,
+  description = META_BAWAAN.description,
+  path = "/",
+  heroImg,
+  heroImgWide,
+} = Astro.props;
+
+const canonical = SITE + path;
+const ogImage = SITE + "/images/kampung-kolam-teratai.webp";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["Hotel", "Resort", "LocalBusiness"],
+  name: NAMA_PANJANG,
+  alternateName: NAMA,
+  description,
+  url: SITE,
+  telephone: TELEPON,
+  email: EMAIL,
+  image: [
+    SITE + "/images/kampung-kolam-teratai.webp",
+    SITE + "/images/air-panas-grotto.webp",
+    SITE + "/images/kolam-utama.webp",
+  ],
+  priceRange: "$$",
+  currenciesAccepted: "IDR",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: ALAMAT.jalan,
+    addressLocality: ALAMAT.kota,
+    addressRegion: ALAMAT.provinsi,
+    postalCode: ALAMAT.kodePos,
+    addressCountry: ALAMAT.negara,
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: GEO.lat,
+    longitude: GEO.lng,
+  },
+  areaServed: "Garut, Jawa Barat",
+  // aggregateRating SENGAJA TIDAK DIPASANG.
+  // Rating 8,3 milik Traveloka dan 4/5 milik Tripadvisor — bukan ulasan
+  // yang dikumpulkan situs ini. Memarkupnya melanggar kebijakan Google.
+  amenityFeature: FASILITAS.map((f) => ({
+    "@type": "LocationFeatureSpecification",
+    name: f.en,
+    value: true,
+  })),
+  hasMap: MAPS_URL,
+  sameAs: [IG_URL],
+  potentialAction: {
+    "@type": "ReserveAction",
+    target: BOOKING_URL,
+  },
+};
+---
+
+<!doctype html>
+<html lang="id" data-lang="id" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    {/* Tanpa user-scalable=0 — situs lama memblokir pinch-zoom, itu jangan diulang. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content={NAMA_PANJANG} />
+    <meta name="geo.region" content="ID-JB" />
+    <meta name="geo.placename" content="Garut, Jawa Barat" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content={NAMA_PANJANG} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="768" />
+    <meta
+      property="og:image:alt"
+      content="Bungalow beratap ijuk berdiri di atas kolam teratai Kampung Sumber Alam, dengan pegunungan Garut di kejauhan"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#006855" />
+
+    <link
+      rel="preload"
+      href="/fonts/PlayfairDisplay.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/TenorSans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {/* Preload hero media-scoped. Ini pengungkit LCP terbesar —
+        tanpa ini browser baru menemukan foto hero setelah mem-parse <picture>. */}
+    {
+      heroImg && (
+        <link
+          rel="preload"
+          as="image"
+          href={heroImg}
+          media="(max-width: 767px)"
+          fetchpriority="high"
+        />
+      )
+    }
+    {
+      heroImgWide && (
+        <link
+          rel="preload"
+          as="image"
+          href={heroImgWide}
+          media="(min-width: 768px)"
+          fetchpriority="high"
+        />
+      )
+    }
+
+    <link rel="preconnect" href="https://be.dip.id" />
+    <link rel="icon" href="/logo/logogram-color.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <slot />
+
+    <script is:inline>
+      document.documentElement.classList.remove("no-js");
+      document.documentElement.classList.add("js");
+
+      // Ganti bahasa seketika, pilihannya diingat.
+      (function () {
+        var akar = document.documentElement;
+        try {
+          var simpan = localStorage.getItem("ksa-lang");
+          if (simpan === "en" || simpan === "id") {
+            akar.setAttribute("data-lang", simpan);
+            akar.setAttribute("lang", simpan);
+          }
+        } catch (e) {}
+
+        document.addEventListener("click", function (ev) {
+          var tombol = ev.target.closest("[data-set-lang]");
+          if (!tombol) return;
+          ev.preventDefault();
+          var bahasa = tombol.getAttribute("data-set-lang");
+          akar.setAttribute("data-lang", bahasa);
+          akar.setAttribute("lang", bahasa);
+          try {
+            localStorage.setItem("ksa-lang", bahasa);
+          } catch (e) {}
+        });
+      })();
+    </script>
+  </body>
+</html>

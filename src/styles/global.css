@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Font brand — self-host woff2, subset latin.
+   Playfair Display = judul. Tenor Sans = isi.
+   Pasangan ini dikunci Design System Deck KSA dan jadi pembeda
+   paling cepat terbaca dari rancabangohotel.com (sans seluruhnya).
+   Tenor Sans cuma punya satu berat (400) — tidak ada bold.
+   Penekanan pakai ukuran, warna, dan letterspacing, bukan tebal.
+   ============================================================ */
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tenor Sans";
+  src: url("/fonts/TenorSans.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   Token. Warna hijau dan lime diambil PERSIS dari SVG logo klien
+   (terverifikasi: cuma dua hex itu yang muncul di lockup-color).
+   Kanvas putih, bukan krem — krem hanya pita aksen.
+   ============================================================ */
+@theme {
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Tenor Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* hijau brand */
+  --color-hutan: #006855;
+  --color-hutan-dalam: #00503f;
+  --color-hutan-muda: #bfd9b4;
+
+  /* aksen — jatah ketat, maksimal dua titik per layar */
+  --color-lime: #8ec31f;
+
+  /* kanvas */
+  --color-kertas: #ffffff;
+  --color-krem: #f4f1e9;
+  --color-krem-tua: #ece7da;
+
+  /* teks */
+  --color-tinta: #142b24;
+  --color-tinta-lembut: #5c6b64;
+  --color-garis: #dfdcd3;
+
+  --ease-keluar: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-kertas);
+  color: var(--color-tinta);
+  /* Tenor Sans bertubuh ramping dan cuma punya satu berat.
+     Ukuran dan jarak baris dinaikkan supaya tetap enak dibaca di ponsel. */
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 1.125rem;
+  }
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--color-hutan);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-hutan);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   Dwibahasa. Kedua bahasa ada di HTML; yang tampil ditentukan
+   atribut data-lang di <html>. Nol reload, nol duplikasi rute.
+   ============================================================ */
+[data-lang="id"] .t-en,
+[data-lang="en"] .t-id {
+  display: none;
+}
+
+/* Penanda kategori. Kapital berjarak, dipakai hemat —
+   batas aman: ceil(jumlah section / 3) per halaman. */
+.penanda {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-tinta-lembut);
+}
+
+/* ============================================================
+   Gerak: nol JavaScript. Dijaga @supports dan prefers-reduced-motion.
+   Browser tanpa animation-timeline menampilkan isinya penuh.
+   ============================================================ */
+@keyframes muncul {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .muncul {
+      animation: muncul linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}

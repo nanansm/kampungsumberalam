@@ -1,0 +1,15 @@
+---
+/**
+ * Teks dwibahasa tanpa reload dan tanpa duplikasi rute.
+ * Kedua bahasa dirender ke HTML; CSS yang menyembunyikan salah satunya
+ * berdasarkan atribut data-lang di <html>. Toggle cuma mengganti atribut itu.
+ *
+ * Pemakaian: <T id="Kolam air panas alami" en="Natural hot spring pool" />
+ */
+interface Props {
+  id: string;
+  en: string;
+}
+const { id, en } = Astro.props;
+---
+<span class="t-id">{id}</span><span class="t-en">{en}</span>

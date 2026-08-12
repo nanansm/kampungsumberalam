@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Bot AI sengaja diizinkan — strategi AEO. Jangan nyalakan
+# "Block AI training bots" di Cloudflare, itu menimpa berkas ini.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://kampungsumberalam.com/sitemap-index.xml

@@ -1,0 +1,34 @@
+---
+/**
+ * Wajib ada. Tanpa berkas ini Cloudflare Pages melayani homepage
+ * dengan status 200 untuk path tak dikenal, dan Google membacanya
+ * sebagai homepage terduplikasi.
+ */
+import Base from "../layouts/Base.astro";
+import T from "../components/T.astro";
+---
+
+<Base
+  title="Halaman tidak ditemukan — Kampung Sumber Alam"
+  description="Halaman yang dicari tidak ada di kampungsumberalam.com."
+  path="/404"
+>
+  <main class="flex min-h-svh flex-col items-center justify-center px-6 text-center">
+    <p class="penanda">404</p>
+    <h1 class="mt-4 text-3xl sm:text-4xl">
+      <T id="Halaman ini tidak ada" en="This page does not exist" />
+    </h1>
+    <p class="mt-5 max-w-md text-tinta-lembut">
+      <T
+        id="Tautannya mungkin sudah berubah atau salah ketik."
+        en="The link may have changed, or been mistyped."
+      />
+    </p>
+    <a
+      href="/"
+      class="mt-10 border-b border-hutan pb-1 text-hutan"
+    >
+      <T id="Kembali ke beranda" en="Back to the homepage" />
+    </a>
+  </main>
+</Base>
