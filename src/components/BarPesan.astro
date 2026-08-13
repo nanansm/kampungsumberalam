@@ -1,0 +1,32 @@
+---
+import T from "./T.astro";
+import { BOOKING_URL, waLink } from "../data/content";
+
+/* Bar pemesanan lengket. Sembunyi selama tamu masih di hero, lalu naik
+   begitu dia mulai menggulir, seperti rancabangohotel.com. Hero sudah
+   punya tugasnya sendiri; ajakan memesan baru masuk setelah tamu
+   menunjukkan minat dengan menggulir. */
+---
+
+<div
+  id="bar-pesan"
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full bg-hutan text-white transition-transform duration-300 data-[tampil]:translate-y-0"
+>
+  <div class="mx-auto flex max-w-[1400px] items-stretch">
+    <a
+      href={BOOKING_URL}
+      rel="noopener"
+      class="penanda flex flex-1 items-center justify-center py-5 text-white transition-colors duration-200 hover:bg-hutan-dalam"
+    >
+      <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
+    </a>
+    <a
+      href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")}
+      rel="noopener"
+      target="_blank"
+      class="penanda flex items-center justify-center border-l border-white/25 px-6 py-5 text-white transition-colors duration-200 hover:bg-hutan-dalam sm:px-10"
+    >
+      WhatsApp
+    </a>
+  </div>
+</div>

@@ -262,6 +262,101 @@ export const FASILITAS = [
   { id: "Parkir gratis", en: "Free parking" },
 ] as const;
 
+/* ---------- Nama tempat di dalam resort (terverifikasi dari materi klien) ---------- */
+
+export const RESTORAN = "Tunjung Balebat";
+export const SPA = "Pitaloka Spa";
+export const MUSIK = "Kacapi Suling";
+
+/* ---------- Ulasan ----------
+ * Ditulis sebagai TEKS dengan menyebut platformnya. JANGAN dipakai sebagai
+ * markup aggregateRating: ulasan ini milik Tripadvisor dan Traveloka, bukan
+ * dikumpulkan situs ini, dan memarkupnya melanggar kebijakan Google.
+ */
+
+export const ULASAN = [
+  {
+    sumber: "Tripadvisor",
+    nilai: "4",
+    dari: "5",
+    jumlah: "1.211",
+    catatan: {
+      id: "Peringkat 2 dari 15 hotel di Garut",
+      en: "Ranked 2nd of 15 hotels in Garut",
+    },
+  },
+  {
+    sumber: "Traveloka",
+    nilai: "8,3",
+    dari: "10",
+    jumlah: "1.642",
+    catatan: { id: "Predikat Mengesankan", en: "Rated Impressive" },
+  },
+] as const;
+
+/* ---------- Ruang pertemuan ----------
+ * Sumber: flyer resmi Fullboard Meeting dari klien. Angka kapasitas, bukan
+ * janji komersial. null berarti tata letak itu tidak dilayani di ruang tsb.
+ */
+
+export const RUANG_MICE = [
+  { nama: "Purba Dewata Full", theater: 350, kelas: 250, uShape: 160, bundar: 100 },
+  { nama: "Purba Dewata 1", theater: 200, kelas: 150, uShape: 90, bundar: 60 },
+  { nama: "Purba Dewata 2", theater: 150, kelas: 100, uShape: 70, bundar: 50 },
+  { nama: "Intan Dewata Full", theater: 150, kelas: 100, uShape: 70, bundar: 54 },
+  { nama: "Intan Dewata 1", theater: 100, kelas: 60, uShape: 40, bundar: 30 },
+  { nama: "Intan Dewata 2", theater: 50, kelas: 40, uShape: 30, bundar: 24 },
+  { nama: "Gambir Wangi", theater: null, kelas: null, uShape: null, bundar: 15 },
+] as const;
+
+/* ---------- Tarif paket ----------
+ * Sumber: flyer resmi klien untuk Fullboard Meeting dan Outing serta Family
+ * Gathering. Kedua flyer memakai tabel tarif yang sama.
+ * ⚠️ FLYERNYA TIDAK BERTANGGAL. Halaman WAJIB menyebut bahwa tarif
+ * dikonfirmasi ulang saat pemesanan. Jangan hapus catatan itu.
+ */
+
+export const TARIF_PAKET = [
+  {
+    isi: { id: "Sendiri di kamar", en: "Single occupancy" },
+    weekday: "1.470.000",
+    weekend: "1.855.000",
+  },
+  {
+    isi: { id: "Berdua sekamar", en: "Twin share" },
+    weekday: "970.000",
+    weekend: "1.105.000",
+  },
+  {
+    isi: { id: "Bertiga sekamar", en: "Triple share" },
+    weekday: "865.000",
+    weekend: "970.000",
+  },
+  {
+    isi: { id: "Berempat sekamar", en: "Quad share" },
+    weekday: "820.000",
+    weekend: "900.000",
+  },
+] as const;
+
+export const TERMASUK_SEMUA = [
+  { id: "Menginap satu malam di kamar Bungalow", en: "One night in a Bungalow room" },
+  { id: "Sarapan, makan siang, dan makan malam prasmanan", en: "Buffet breakfast, lunch and dinner" },
+  { id: "Tiket kolam renang dan kamar rendam", en: "Swimming pool and soaking room access" },
+  { id: "Pajak dan pelayanan", en: "Tax and service" },
+] as const;
+
+export const TERMASUK_MEETING = [
+  { id: "Dua kali rehat kopi", en: "Two coffee breaks" },
+  { id: "Ruang pertemuan berikut proyektor, layar, AC, dan air mineral", en: "Meeting room with projector, screen, air conditioning and mineral water" },
+] as const;
+
+export const TERMASUK_OUTING = [
+  { id: "Satu kali rehat kopi", en: "One coffee break" },
+  { id: "Live musik electone, satu penyanyi dan satu pemain, sampai tiga jam", en: "Live electone music, one singer and one player, up to three hours" },
+  { id: "Fun games", en: "Fun games" },
+] as const;
+
 /* ---------- Meta bawaan ---------- */
 
 export const META_BAWAAN = {

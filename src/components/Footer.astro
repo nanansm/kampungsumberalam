@@ -1,0 +1,73 @@
+---
+import T from "./T.astro";
+import {
+  NAMA_PANJANG,
+  ALAMAT_SATU_BARIS,
+  TELEPON,
+  TELEPON_TAMPIL,
+  TELEPON_ALT_TAMPIL,
+  EMAIL,
+  IG_URL,
+  IG_HANDLE,
+  SIBENTANG_URL,
+  MAPS_URL,
+} from "../data/content";
+
+const tahun = 2026;
+---
+
+<footer class="border-t border-garis">
+  <div
+    class="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 sm:grid-cols-[1.2fr_1fr_1fr] sm:px-8 sm:py-20"
+  >
+    <div>
+      <img
+        src="/logo/logotype-hitam.svg"
+        alt={NAMA_PANJANG}
+        width="140"
+        height="30"
+        class="h-7 w-auto"
+      />
+      <p class="mt-5 max-w-[30ch] text-sm text-tinta-lembut">
+        {ALAMAT_SATU_BARIS}
+      </p>
+      <a
+        href={MAPS_URL}
+        rel="noopener"
+        target="_blank"
+        class="mt-3 inline-block border-b border-hutan pb-0.5 text-sm text-hutan"
+      >
+        <T id="Buka di Google Maps" en="Open in Google Maps" />
+      </a>
+    </div>
+
+    <div class="text-sm">
+      <p class="penanda"><T id="Reservasi" en="Reservations" /></p>
+      <ul class="mt-3 space-y-2">
+        <li><a href={`tel:${TELEPON}`}>{TELEPON_TAMPIL}</a></li>
+        <li>{TELEPON_ALT_TAMPIL}</li>
+        <li class="break-all">
+          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="text-sm">
+      <p class="penanda"><T id="Tautan" en="Links" /></p>
+      <ul class="mt-3 space-y-2">
+        <li>
+          <a href={IG_URL} rel="noopener" target="_blank">{IG_HANDLE}</a>
+        </li>
+        <li>
+          <a href={SIBENTANG_URL} rel="noopener">Private Villa Sibentang</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1200px] px-5 pb-10 sm:px-8">
+    <p class="text-xs text-tinta-lembut">
+      &copy; {tahun} {NAMA_PANJANG}
+    </p>
+  </div>
+</footer>

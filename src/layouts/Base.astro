@@ -84,7 +84,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="id" data-lang="id" class="no-js">
+<html lang="en" data-lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
     {/* Tanpa user-scalable=0 — situs lama memblokir pinch-zoom, itu jangan diulang. */}
@@ -118,14 +118,14 @@ const jsonLd = {
 
     <link
       rel="preload"
-      href="/fonts/PlayfairDisplay.woff2"
+      href="/fonts/Archivo.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="/fonts/TenorSans.woff2"
+      href="/fonts/InstrumentSans.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -172,7 +172,7 @@ const jsonLd = {
       (function () {
         var akar = document.documentElement;
         try {
-          var simpan = localStorage.getItem("ksa-lang");
+          var simpan = localStorage.getItem("ksa-lang-2");
           if (simpan === "en" || simpan === "id") {
             akar.setAttribute("data-lang", simpan);
             akar.setAttribute("lang", simpan);
@@ -187,9 +187,33 @@ const jsonLd = {
           akar.setAttribute("data-lang", bahasa);
           akar.setAttribute("lang", bahasa);
           try {
-            localStorage.setItem("ksa-lang", bahasa);
+            localStorage.setItem("ksa-lang-2", bahasa);
           } catch (e) {}
         });
+      })();
+
+      // Header memadat begitu penanda puncak keluar dari layar.
+      // Pengamat perpotongan, bukan pendengar peristiwa gulir.
+      (function () {
+        var kepala = document.getElementById("kepala");
+        var penanda = document.getElementById("penanda-puncak");
+        if (!kepala || !penanda || !("IntersectionObserver" in window)) {
+          if (kepala) kepala.setAttribute("data-padat", "");
+          var barCad = document.getElementById("bar-pesan");
+          if (barCad) barCad.setAttribute("data-tampil", "");
+          return;
+        }
+        var bar = document.getElementById("bar-pesan");
+        new IntersectionObserver(function (entri) {
+          var diPuncak = entri[0].isIntersecting;
+          if (diPuncak) {
+            kepala.removeAttribute("data-padat");
+            if (bar) bar.removeAttribute("data-tampil");
+          } else {
+            kepala.setAttribute("data-padat", "");
+            if (bar) bar.setAttribute("data-tampil", "");
+          }
+        }).observe(penanda);
       })();
     </script>
   </body>

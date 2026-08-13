@@ -1,56 +1,46 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Font brand — self-host woff2, subset latin.
-   Playfair Display = judul. Tenor Sans = isi.
-   Pasangan ini dikunci Design System Deck KSA dan jadi pembeda
-   paling cepat terbaca dari rancabangohotel.com (sans seluruhnya).
-   Tenor Sans cuma punya satu berat (400) — tidak ada bold.
-   Penekanan pakai ukuran, warna, dan letterspacing, bukan tebal.
+   Huruf. Playfair Display dibuang: serif paling banyak dipakai di web
+   sejak 2011 dan itu penyumbang terbesar rasa jadul setelah foto.
+   Penggantinya Archivo, punya sumbu LEBAR, jadi satu keluarga bisa
+   melayani dua volume yang jadi acuan: kapital condensed besar untuk
+   pernyataan (bawahreserve) dan kapital berjarak lebar yang lirih untuk
+   penanda (amanjiwo). Badan teks Instrument Sans.
    ============================================================ */
 @font-face {
-  font-family: "Playfair Display";
-  src: url("/fonts/PlayfairDisplay.woff2") format("woff2");
-  font-weight: 400 900;
+  font-family: "Archivo";
+  src: url("/fonts/Archivo.woff2") format("woff2");
+  font-weight: 400 700;
+  font-stretch: 62% 125%;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Tenor Sans";
-  src: url("/fonts/TenorSans.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Instrument Sans";
+  src: url("/fonts/InstrumentSans.woff2") format("woff2");
+  font-weight: 400 600;
   font-style: normal;
   font-display: swap;
 }
 
-/* ============================================================
-   Token. Warna hijau dan lime diambil PERSIS dari SVG logo klien
-   (terverifikasi: cuma dua hex itu yang muncul di lockup-color).
-   Kanvas putih, bukan krem — krem hanya pita aksen.
-   ============================================================ */
 @theme {
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Tenor Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
 
-  /* hijau brand */
+  /* hijau merek, diambil persis dari SVG logo klien */
   --color-hutan: #006855;
   --color-hutan-dalam: #00503f;
   --color-hutan-muda: #bfd9b4;
-
-  /* aksen — jatah ketat, maksimal dua titik per layar */
   --color-lime: #8ec31f;
 
-  /* kanvas */
+  /* kanvas PUTIH. Krem sudah dicoba dan ditolak. */
   --color-kertas: #ffffff;
-  --color-krem: #f4f1e9;
-  --color-krem-tua: #ece7da;
+  --color-kabut: #f4f5f4;
 
-  /* teks */
-  --color-tinta: #142b24;
+  --color-tinta: #14201c;
   --color-tinta-lembut: #5c6b64;
-  --color-garis: #dfdcd3;
-
-  --ease-keluar: cubic-bezier(0.16, 1, 0.3, 1);
+  --color-garis: #e2e6e3;
 }
 
 html {
@@ -62,17 +52,11 @@ body {
   font-family: var(--font-sans);
   background: var(--color-kertas);
   color: var(--color-tinta);
-  /* Tenor Sans bertubuh ramping dan cuma punya satu berat.
-     Ukuran dan jarak baris dinaikkan supaya tetap enak dibaca di ponsel. */
-  font-size: 1.0625rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-}
-
-@media (min-width: 768px) {
-  body {
-    font-size: 1.125rem;
-  }
+  /* ruang untuk bar pemesanan lengket */
+  padding-bottom: 4.25rem;
 }
 
 h1,
@@ -80,8 +64,8 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.015em;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
@@ -93,55 +77,146 @@ p {
   background: var(--color-hutan);
   color: #fff;
 }
-
 :focus-visible {
   outline: 2px solid var(--color-hutan);
   outline-offset: 3px;
 }
 
+@layer components {
+  /* Penanda. Perangkat yang sama dengan JAVA, INDONESIA di amanjiwo dan
+     FOR EARTH-CONSCIOUS TRAVELLERS di bawahreserve, cuma beda volume. */
+  .penanda {
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-tinta-lembut);
+  }
+
+  /* Pernyataan besar. Kapital, dipadatkan, baris rapat. */
+  .pernyataan {
+    font-family: var(--font-display);
+    font-stretch: 78%;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 0.94;
+    letter-spacing: -0.01em;
+  }
+}
+
 /* ============================================================
-   Dwibahasa. Kedua bahasa ada di HTML; yang tampil ditentukan
-   atribut data-lang di <html>. Nol reload, nol duplikasi rute.
+   Dwibahasa lewat atribut data-lang. Nol reload.
    ============================================================ */
 [data-lang="id"] .t-en,
 [data-lang="en"] .t-id {
   display: none;
 }
 
-/* Penanda kategori. Kapital berjarak, dipakai hemat.
-   WAJIB di dalam @layer components: kalau ditulis di luar layer, dia
-   mengalahkan utility Tailwind, dan `text-white/65` di atas foto gagal
-   diterapkan sehingga labelnya nyaris tidak terbaca. */
-@layer components {
-  .penanda {
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-tinta-lembut);
+/* ============================================================
+   Hero desktop bergantian. Empat bingkai, nol JavaScript.
+   ============================================================ */
+.bingkai {
+  opacity: 0;
+}
+.bingkai:first-child {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bingkai {
+    animation: silih 32s infinite;
   }
+  .bingkai:nth-child(1) { animation-delay: 0s; }
+  .bingkai:nth-child(2) { animation-delay: 8s; }
+  .bingkai:nth-child(3) { animation-delay: 16s; }
+  .bingkai:nth-child(4) { animation-delay: 24s; }
+
+  .titik span {
+    animation: nyala 32s infinite;
+  }
+  .titik span:nth-child(1) { animation-delay: 0s; }
+  .titik span:nth-child(2) { animation-delay: 8s; }
+  .titik span:nth-child(3) { animation-delay: 16s; }
+  .titik span:nth-child(4) { animation-delay: 24s; }
+}
+
+@keyframes silih {
+  0% { opacity: 0; }
+  3% { opacity: 1; }
+  25% { opacity: 1; }
+  28% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes nyala {
+  0%, 28%, 100% { background: rgb(255 255 255 / 0.35); }
+  3%, 25% { background: rgb(255 255 255 / 1); }
 }
 
 /* ============================================================
-   Gerak: nol JavaScript. Dijaga @supports dan prefers-reduced-motion.
-   Browser tanpa animation-timeline menampilkan isinya penuh.
+   Header menempel. Bening di atas hero, memadat setelah digulir lewat.
    ============================================================ */
-@keyframes muncul {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+#kepala[data-padat] {
+  background: var(--color-kertas);
+  color: var(--color-tinta);
+  box-shadow: 0 1px 0 var(--color-garis);
+}
+#kepala .logo-hitam { display: none; }
+#kepala[data-padat] .logo-putih { display: none; }
+#kepala[data-padat] .logo-hitam { display: block; }
+
+/* Bar pemesanan naik setelah tamu menggulir lewat hero. */
+#bar-pesan {
+  transform: translateY(100%);
+}
+#bar-pesan[data-tampil] {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  #bar-pesan { transition: none; }
 }
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .muncul {
-      animation: muncul linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
-  }
+/* ============================================================
+   Menu. <details> asli, nol JavaScript.
+   ============================================================ */
+.menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.menu > summary::-webkit-details-marker {
+  display: none;
+}
+.menu[open] .garis-atas {
+  transform: translateY(5px) rotate(45deg);
+}
+.menu[open] .garis-bawah {
+  transform: translateY(-5px) rotate(-45deg);
+}
+.garis-atas,
+.garis-bawah {
+  transition: transform 0.2s ease;
+}
+
+/* ============================================================
+   Accordion pertanyaan.
+   ============================================================ */
+.tanya > summary {
+  list-style: none;
+  position: relative;
+  cursor: pointer;
+}
+.tanya > summary::-webkit-details-marker {
+  display: none;
+}
+.tanya[open] > summary .tanda {
+  visibility: hidden;
+}
+.tanya[open] > summary::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 0.75rem;
+  height: 1px;
+  margin-top: 0.9rem;
+  background: var(--color-hutan);
 }

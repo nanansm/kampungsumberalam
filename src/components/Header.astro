@@ -1,43 +1,76 @@
 ---
+import T from "./T.astro";
 import { NAMA_PANJANG } from "../data/content";
 
-interface Props {
-  /** dipakai saat header duduk di atas foto: logo putih, teks putih */
-  terang?: boolean;
-}
-const { terang = false } = Astro.props;
+/* Header menempel saat digulir. Di atas hero dia bening dengan tulisan
+   putih; begitu tamu menggulir lewat hero, latarnya jadi putih pekat dan
+   tulisannya jadi hitam. Peralihan itu dipicu satu pengamat perpotongan
+   sederhana di Base.astro, bukan pendengar peristiwa gulir.
 
-const logo = terang ? "/logo/logotype-putih.svg" : "/logo/logotype-color.svg";
-const warnaTombol = terang ? "text-white/75" : "text-tinta-lembut";
-const warnaGaris = terang ? "text-white/35" : "text-garis";
+   Logo cuma dua rupa sesuai permintaan: teks hitam dan teks putih. */
+
+const tautan = [
+  { href: "#kampung", id: "Kampung", en: "The village" },
+  { href: "#air-panas", id: "Air panas", en: "Hot spring" },
+  { href: "#menginap", id: "Menginap", en: "Stay" },
+  { href: "#makan", id: "Makan", en: "Dining" },
+  { href: "#acara", id: "Rapat dan acara", en: "Meetings" },
+  { href: "#galeri", id: "Galeri", en: "Gallery" },
+];
 ---
 
 <header
-  class="mx-auto flex w-full max-w-[1200px] items-center justify-between px-5 py-5 sm:px-8"
+  id="kepala"
+  class="fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300"
 >
-  <a href="/" aria-label={NAMA_PANJANG} class="shrink-0">
-    <img
-      src={logo}
-      alt={NAMA_PANJANG}
-      width="140"
-      height="30"
-      class="h-6 w-auto sm:h-7"
-    />
-  </a>
+  <div class="mx-auto flex max-w-[1400px] items-center justify-between px-5 py-4 sm:px-8 sm:py-5">
+    <details class="menu">
+      <summary
+        class="flex h-9 w-9 flex-col items-center justify-center gap-[7px]"
+        aria-label="Buka menu"
+      >
+        <span class="garis-atas block h-px w-6 bg-current"></span>
+        <span class="garis-bawah block h-px w-6 bg-current"></span>
+      </summary>
 
-  <div class="flex items-center gap-1 text-[0.8125rem]">
-    <button
-      type="button"
-      data-set-lang="id"
-      class={`px-2 py-1 ${warnaTombol}`}
-      aria-label="Bahasa Indonesia">ID</button
-    >
-    <span aria-hidden="true" class={warnaGaris}>/</span>
-    <button
-      type="button"
-      data-set-lang="en"
-      class={`px-2 py-1 ${warnaTombol}`}
-      aria-label="English">EN</button
-    >
+      <nav class="absolute top-full left-0 z-30 w-full bg-hutan px-5 py-7 text-white sm:px-8">
+        <ul class="mx-auto flex max-w-[1400px] flex-col gap-4">
+          {
+            tautan.map((t) => (
+              <li>
+                <a href={t.href} class="pernyataan text-2xl sm:text-3xl">
+                  <T id={t.id} en={t.en} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+
+    <a href="/" aria-label={NAMA_PANJANG} class="shrink-0">
+      <img
+        src="/logo/logotype-putih.svg"
+        alt={NAMA_PANJANG}
+        width="150" height="32"
+        class="logo-putih h-6 w-auto sm:h-7"
+      />
+      <img
+        src="/logo/logotype-hitam.svg"
+        alt={NAMA_PANJANG}
+        width="150" height="32"
+        class="logo-hitam hidden h-6 w-auto sm:h-7"
+      />
+    </a>
+
+    <div class="flex items-center gap-1 text-[0.8125rem]">
+      <button type="button" data-set-lang="en" class="px-2 py-1 opacity-70" aria-label="English">EN</button>
+      <span aria-hidden="true" class="opacity-40">/</span>
+      <button type="button" data-set-lang="id" class="px-2 py-1 opacity-70" aria-label="Bahasa Indonesia">ID</button>
+    </div>
   </div>
 </header>
+
+{/* Penanda tak terlihat di puncak halaman. Selama dia masih tampak,
+    header dibiarkan bening di atas foto hero. */}
+<div id="penanda-puncak" class="pointer-events-none absolute top-0 h-24 w-px"></div>

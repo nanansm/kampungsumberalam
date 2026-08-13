@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://kampungsumberalam.com',
   i18n: {
     locales: ['id', 'en'],
-    defaultLocale: 'id',
+    defaultLocale: "en",
     routing: { prefixDefaultLocale: false },
   },
   integrations: [sitemap()],

@@ -41,8 +41,38 @@ await halaman.emulateMediaFeatures([
   { name: "prefers-reduced-motion", value: "reduce" },
 ]);
 
-await halaman.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
-await halaman.evaluate(() => document.fonts.ready);
+// networkidle0 menggantung di situs yang memutar video atau menembak analitik
+// terus menerus. Coba yang ketat dulu, lalu turun ke syarat yang longgar.
+try {
+  await halaman.goto(url, { waitUntil: "networkidle2", timeout: 25000 });
+} catch {
+  await halaman.goto(url, { waitUntil: "domcontentloaded", timeout: 25000 });
+  await new Promise((r) => setTimeout(r, 3500));
+}
+await halaman.evaluate(() => document.fonts.ready).catch(() => {});
+
+// Gambar loading=lazy tidak pernah dimuat kalau halaman tidak pernah digulir,
+// sehingga tangkapan fullPage memperlihatkan bidang kosong di tempat foto.
+// Gulir sampai bawah, tunggu semua gambar selesai, lalu balik ke atas.
+if (penuh) {
+  // Cabut loading=lazy lalu paksa muat ulang. Ini deterministik; menggulir
+  // halaman lalu menunggu event load ternyata bisa menggantung.
+  await halaman.evaluate(() => {
+    for (const g of document.images) {
+      g.loading = "eager";
+      g.setAttribute("decoding", "sync");
+      // menyentuh src memicu pemuatan untuk gambar yang tadinya ditunda
+      g.src = g.src;
+    }
+  });
+  await halaman
+    .waitForFunction(
+      () => Array.from(document.images).every((g) => g.complete),
+      { timeout: 15000 }
+    )
+    .catch(() => console.log("catatan: sebagian gambar belum selesai dimuat"));
+  await new Promise((r) => setTimeout(r, 400));
+}
 
 const ukur = await halaman.evaluate(() => ({
   lebarGulir: document.documentElement.scrollWidth,
