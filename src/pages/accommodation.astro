@@ -1,0 +1,286 @@
+---
+import Base from "../layouts/Base.astro";
+import Sampul from "../components/Sampul.astro";
+import Footer from "../components/Footer.astro";
+import BarPesan from "../components/BarPesan.astro";
+import T from "../components/T.astro";
+import { KAMAR, BOOKING_URL, SIBENTANG_URL, waLink } from "../data/content";
+
+/* Halaman menginap. Beranda cuma mengelompokkan kamar menurut jumlah orang
+   karena itu yang dipakai tamu untuk menyaring. Di sini urutannya menurut
+   jenis bangunan, sebab tamu yang sampai halaman ini sudah tahu dia berapa
+   orang dan sekarang mau tahu bentuk kamarnya.
+
+   Tarif tetap tidak ditayangkan. Daftar resmi belum turun dari klien, dan
+   angka OTA belum termasuk pajak serta berubah tiap tanggal. */
+
+const kelompok = [
+  {
+    kunci: "bungalow" as const,
+    penanda: { id: "Bungalow", en: "Bungalows" },
+    judul: {
+      id: "Rumah kayu satu sampai dua lantai, berdiri di atas kolam.",
+      en: "Timber houses of one or two storeys, standing over the ponds.",
+    },
+    teks: {
+      id: "Enam tipe, semuanya beratap ijuk dengan teras yang menggantung di atas air. Yang membedakan cuma jumlah lantai, jarak ke lobi, dan apakah sarapan ikut atau tidak.",
+      en: "Six types, all thatched in palm fibre with a terrace hanging over the water. What separates them is the number of storeys, the walk back to the lobby, and whether breakfast is included.",
+    },
+    foto: "/images/bungalow-interior.webp",
+    w: 900,
+    h: 675,
+    alt: "Interior bungalow kayu dengan tempat tidur dan jendela menghadap kolam",
+  },
+  {
+    kunci: "suite" as const,
+    penanda: { id: "Suite", en: "Suites" },
+    judul: {
+      id: "Empat tipe untuk yang mau kolam sendiri di halamannya.",
+      en: "Four types for guests who want a pool of their own outside the door.",
+    },
+    teks: {
+      id: "Junior Suite menghadap kolam ikan. Suite Arileu punya dua tempat tidur king dan kolam kecil pribadi. Deluxe Suite dua lantai dengan tiga kamar tidur, kolam pribadi, dan gazebo.",
+      en: "The Junior Suite looks onto the fish pond. Suite Arileu has two king beds and a small private pool. The Deluxe Suite runs to two storeys with three bedrooms, a private pool and a gazebo.",
+    },
+    foto: "/images/suite-ranjang.webp",
+    w: 900,
+    h: 600,
+    alt: "Kamar suite dengan tempat tidur besar dan dinding kayu",
+  },
+  {
+    kunci: "rombongan" as const,
+    penanda: { id: "Rombongan", en: "Groups" },
+    judul: {
+      id: "Babakan Siluhur, satu pemesanan untuk dua belas sampai delapan belas orang.",
+      en: "Babakan Siluhur, one booking for twelve to eighteen people.",
+    },
+    teks: {
+      id: "Dua penginapan yang berdiri terpisah dari blok kamar lain, masing-masing dengan kolam air panas sendiri. Dipakai rombongan keluarga besar dan kantor yang tidak mau berbagi kolam dengan tamu lain.",
+      en: "Two lodgings set apart from the other room blocks, each with its own hot spring pool. Extended families and office groups take them when they would rather not share a pool with other guests.",
+    },
+    foto: "/images/grotto-privat.webp",
+    w: 819,
+    h: 546,
+    alt: "Kolam air panas pribadi berdinding batu di Babakan Siluhur",
+  },
+];
+
+const pendukung = [
+  { foto: "/images/kamar-twin.webp", w: 1200, h: 675, alt: "Kamar dengan dua tempat tidur menghadap taman" },
+  { foto: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar, ditemani lilin" },
+  { foto: "/images/suite-gazebo.webp", w: 900, h: 600, alt: "Gazebo kayu di samping kolam pribadi suite" },
+  { foto: "/images/kolam-utama-tegak.webp", w: 675, h: 900, alt: "Kolam renang utama Kampung Sumber Alam dilihat dari tepi" },
+];
+
+const villa = KAMAR.filter((k) => k.kelompok === "villa");
+
+const judulSeksi = "font-display text-[clamp(1.6rem,4.6vw,2.5rem)] font-medium";
+const seksi = "mx-auto max-w-[1400px] px-5 sm:px-8";
+---
+
+<Base
+  title="Bungalow dan Suite Air Panas Alami di Garut | Kampung Sumber Alam"
+  description="Dua belas tipe kamar di Kampung Sumber Alam, dari bungalow untuk berdua sampai Babakan Siluhur untuk delapan belas orang. Semuanya dialiri air panas alami Gunung Guntur."
+  path="/accommodation"
+  heroImg="/images/halaman-kolam.webp"
+  heroImgWide="/images/halaman-kolam.webp"
+>
+  <Sampul
+    penanda={{ id: "Menginap", en: "Stay" }}
+    judul={{
+      id: "Dua belas tipe kamar, semuanya berair panas alami",
+      en: "Twelve room types, all on hot spring water",
+    }}
+    foto="/images/halaman-kolam.webp"
+    w={1200}
+    h={560}
+    alt="Halaman berumput di tepi kolam Kampung Sumber Alam dengan bungalow beratap ijuk"
+  />
+
+  <main>
+    {/* ============ PEMBUKA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="max-w-[56ch] space-y-4 text-tinta-lembut">
+          <p>
+            <T
+              id="Tidak ada kamar yang cuma dapat air panas lewat kolam umum. Tiap unit punya bak rendam dan shower yang mengalirkan air panas alami dari Gunung Guntur, jadi berendam tidak perlu menunggu pagi."
+              en="No room here gets its hot water only through a shared pool. Every unit has a soaking tub and a shower running natural hot spring water from Mount Guntur, so a soak never means waiting for morning."
+            />
+          </p>
+          <p>
+            <T
+              id="Kapasitasnya mulai dari dua orang sampai delapan belas orang dalam satu pemesanan. Villa Sibentang dikelola manajemen yang sama tapi dijual di situsnya sendiri."
+              en="Capacity runs from two people to eighteen under a single booking. Villa Sibentang is run by the same management but sold on its own site."
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ PER KELOMPOK ============
+        Foto dan daftar bergantian sisi. Foto ditampilkan utuh, tidak
+        dipotong, supaya bentuk bangunannya kebaca. */}
+    {
+      kelompok.map((g, i) => {
+        const isi = KAMAR.filter((k) => k.kelompok === g.kunci);
+        return (
+          <section class="pt-16 sm:pt-24">
+            <div class={`${seksi} grid items-start gap-9 md:grid-cols-2 md:gap-14`}>
+              <img
+                src={g.foto}
+                width={g.w}
+                height={g.h}
+                alt={g.alt}
+                loading="lazy"
+                decoding="async"
+                class={`h-auto w-full ${i % 2 === 1 ? "md:order-2" : ""}`}
+              />
+              <div>
+                <p class="penanda"><T id={g.penanda.id} en={g.penanda.en} /></p>
+                <h2 class={`${judulSeksi} mt-4`}>
+                  <T id={g.judul.id} en={g.judul.en} />
+                </h2>
+                <p class="mt-5 max-w-[52ch] text-tinta-lembut">
+                  <T id={g.teks.id} en={g.teks.en} />
+                </p>
+
+                <ul class="mt-9 border-t border-garis">
+                  {isi.map((k) => (
+                    <li class="border-b border-garis py-4">
+                      <div class="flex items-baseline justify-between gap-4">
+                        <h3 class="font-display text-lg font-medium">{k.nama}</h3>
+                        <span class="penanda shrink-0">
+                          <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
+                        </span>
+                      </div>
+                      {k.fakta.length > 0 && (
+                        <p class="mt-1.5 text-[0.9375rem] text-tinta-lembut">
+                          {k.fakta.map((f, j) => (
+                            <>
+                              {j > 0 && <span aria-hidden="true"> · </span>}
+                              <T id={f.id} en={f.en} />
+                            </>
+                          ))}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        );
+      })
+    }
+
+    {/* ============ FOTO PENDUKUNG ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid grid-cols-2 gap-3 lg:grid-cols-4`}>
+        {
+          pendukung.map((p) => (
+            <img
+              src={p.foto}
+              width={p.w}
+              height={p.h}
+              alt={p.alt}
+              loading="lazy"
+              decoding="async"
+              class="aspect-[3/4] w-full object-cover sm:aspect-[4/5]"
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    {/* ============ VILLA SIBENTANG ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-14`}>
+        <div>
+          <p class="penanda"><T id="Villa" en="Villa" /></p>
+          <h2 class={`${judulSeksi} mt-4`}>
+            <T
+              id="Private Villa Sibentang berdiri di lahannya sendiri."
+              en="Private Villa Sibentang sits on its own grounds."
+            />
+          </h2>
+          <p class="mt-5 max-w-[52ch] text-tinta-lembut">
+            <T
+              id="Dua tipe, satu kamar dan dua kamar, keduanya dengan kolam air panas pribadi. Manajemennya sama dengan Kampung Sumber Alam, tapi pemesanan dan halamannya terpisah."
+              en="Two types, one bedroom and two bedrooms, both with a private hot spring pool. Same management as Kampung Sumber Alam, but booking and its pages sit separately."
+            />
+          </p>
+          <ul class="mt-8 border-t border-garis">
+            {
+              villa.map((k) => (
+                <li class="flex items-baseline justify-between gap-4 border-b border-garis py-4">
+                  <h3 class="font-display text-lg font-medium">{k.nama}</h3>
+                  <span class="penanda shrink-0">
+                    <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+          <a
+            href={SIBENTANG_URL}
+            rel="noopener"
+            class="mt-7 inline-block border-b border-hutan pb-0.5 text-hutan"
+          >
+            <T id="Buka situs Villa Sibentang" en="Open the Villa Sibentang site" />
+          </a>
+        </div>
+        <img
+          src="/images/kolam-privat-putih.webp"
+          width="1200"
+          height="675"
+          alt="Kolam air panas pribadi berdinding putih di halaman Villa Sibentang"
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full md:order-first"
+        />
+      </div>
+    </section>
+
+    {/* ============ TARIF DAN PEMESANAN ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="border-t border-hutan pt-7">
+          <p class="penanda"><T id="Tarif" en="Rates" /></p>
+          <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
+            <T
+              id="Tarif kamar berubah menurut tanggal dan tipe."
+              en="Room rates move with the date and the type."
+            />
+          </h2>
+          <p class="mt-5 max-w-[54ch] text-tinta-lembut">
+            <T
+              id="Angka terkini muncul di halaman pemesanan setelah tanggal dipilih. Untuk rombongan dan acara, tarif paketnya ada di halaman rapat serta halaman acara."
+              en="The current figure appears on the booking page once you pick your dates. For groups and celebrations, package rates sit on the meetings page and the events page."
+            />
+          </p>
+          <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <a
+              href={BOOKING_URL}
+              rel="noopener"
+              class="penanda bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
+            >
+              <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
+            </a>
+            <a
+              href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")}
+              rel="noopener"
+              target="_blank"
+              class="border-b border-hutan pb-0.5 text-hutan"
+            >
+              <T id="Tanya lewat WhatsApp" en="Ask on WhatsApp" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <BarPesan />
+</Base>

@@ -1,0 +1,274 @@
+---
+import Base from "../layouts/Base.astro";
+import Sampul from "../components/Sampul.astro";
+import Footer from "../components/Footer.astro";
+import BarPesan from "../components/BarPesan.astro";
+import T from "../components/T.astro";
+import {
+  RUANG_MICE,
+  TARIF_PAKET,
+  TERMASUK_SEMUA,
+  TERMASUK_MEETING,
+  TERMASUK_OUTING,
+  KAMAR,
+  waLink,
+} from "../data/content";
+
+/* Halaman rapat, outing, dan family gathering.
+   Beranda sengaja cuma menyebut titik masuk termurah. Tabel tarif penuh
+   tempatnya di sini, sebab tamu yang membuka halaman ini sudah menyusun
+   anggaran dan justru butuh membandingkan baris per baris.
+
+   Sumber angka: flyer resmi Fullboard Meeting dan Outing dari klien.
+   ⚠️ Flyernya tidak bertanggal. Catatan konfirmasi ulang di bawah wajib ada. */
+
+const rombongan = KAMAR.filter((k) => k.kelompok === "rombongan");
+
+const judulSeksi = "font-display text-[clamp(1.6rem,4.6vw,2.5rem)] font-medium";
+const seksi = "mx-auto max-w-[1400px] px-5 sm:px-8";
+---
+
+<Base
+  title="Paket Fullboard Meeting dan Outing di Garut | Kampung Sumber Alam"
+  description="Tujuh ruang pertemuan di Kampung Sumber Alam Garut, dari 15 sampai 350 orang. Paket fullboard mulai Rp 820.000 per orang sudah termasuk menginap, tiga kali makan, pajak, dan pelayanan."
+  path="/meetings"
+  heroImg="/images/kampung-kolam-teratai.webp"
+  heroImgWide="/images/kampung-kolam-teratai.webp"
+>
+  <Sampul
+    penanda={{ id: "Rapat dan outing", en: "Meetings and outings" }}
+    judul={{
+      id: "Tujuh ruang, sampai 350 orang duduk teater",
+      en: "Seven rooms, up to 350 seated theatre style",
+    }}
+    foto="/images/kampung-kolam-teratai.webp"
+    w={1600}
+    h={768}
+    alt="Bungalow beratap ijuk berdiri di atas kolam teratai dengan pegunungan Garut di kejauhan"
+  />
+
+  <main>
+    {/* ============ PEMBUKA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid items-start gap-9 md:grid-cols-2 md:gap-14`}>
+        <div class="max-w-[54ch] space-y-4 text-tinta-lembut">
+          <p>
+            <T
+              id="Rapat selesai sore, lalu peserta berendam air panas di kamar masing-masing. Itu yang membedakannya dari hotel kota, dan bak rendamnya ada di tiap unit, bukan cuma di kolam umum."
+              en="The session ends in the afternoon, then each participant soaks in hot spring water in their own room. That is what separates it from a city hotel, and the tub sits in every unit, not only at the shared pool."
+            />
+          </p>
+          <p>
+            <T
+              id="Paket fullboard dan paket outing memakai tabel tarif yang sama. Bedanya cuma isi acara di siang hari: yang satu ruang rapat berikut peralatannya, yang satu lagi live musik dan fun games. Family gathering memakai tarif yang sama dengan outing."
+              en="The fullboard and outing packages share one rate table. The difference sits in the daytime programme: one gives you a meeting room with its equipment, the other live music and fun games. Family gatherings run on the same rates as outings."
+            />
+          </p>
+        </div>
+        <img
+          src="/images/purba-dewata.webp"
+          width="819"
+          height="544"
+          alt="Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain"
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full"
+        />
+      </div>
+    </section>
+
+    {/* ============ TARIF ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Tarif per orang" en="Rate per person" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[24ch]`}>
+          <T
+            id="Makin banyak yang sekamar, makin turun tarif per orangnya."
+            en="The more people share a room, the lower the rate per person."
+          />
+        </h2>
+
+        <table class="mt-9 w-full border-collapse text-left text-[0.9375rem]">
+          <thead>
+            <tr class="border-b border-tinta">
+              <th class="penanda py-3 pr-3 text-tinta"><T id="Isi kamar" en="Occupancy" /></th>
+              <th class="penanda py-3 pr-3 text-tinta"><T id="Hari kerja" en="Weekday" /></th>
+              <th class="penanda py-3 text-tinta"><T id="Akhir pekan" en="Weekend" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              TARIF_PAKET.map((t) => (
+                <tr class="border-b border-garis">
+                  <td class="py-3.5 pr-3">
+                    <T id={t.isi.id} en={t.isi.en} />
+                  </td>
+                  <td class="py-3.5 pr-3 tabular-nums">Rp {t.weekday}</td>
+                  <td class="py-3.5 text-tinta-lembut tabular-nums">Rp {t.weekend}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+
+        <div class="mt-11 grid gap-8 sm:grid-cols-3 sm:gap-10">
+          <div>
+            <p class="penanda"><T id="Termasuk di dua paket" en="Included in both" /></p>
+            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
+              {TERMASUK_SEMUA.map((x) => <li><T id={x.id} en={x.en} /></li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="penanda"><T id="Tambahan paket rapat" en="Meeting package adds" /></p>
+            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
+              {TERMASUK_MEETING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="penanda"><T id="Tambahan paket outing" en="Outing package adds" /></p>
+            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
+              {TERMASUK_OUTING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
+            </ul>
+          </div>
+        </div>
+
+        <p class="mt-9 max-w-[60ch] text-sm text-tinta-lembut">
+          <T
+            id="Tarif ini berasal dari materi resmi resort dan dikonfirmasi ulang saat pemesanan. Rincian per jumlah peserta, termasuk kebutuhan kamar dan susunan acara, dikirim lewat WhatsApp."
+            en="These rates come from the resort's own published material and are reconfirmed at booking. A breakdown by group size, covering room needs and the run of the day, is sent over WhatsApp."
+          />
+        </p>
+      </div>
+    </section>
+
+    {/* ============ RUANG ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Kapasitas ruang" en="Room capacity" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
+          <T
+            id="Purba Dewata bisa dipakai utuh atau dibagi dua."
+            en="Purba Dewata can be used whole or split in two."
+          />
+        </h2>
+        <p class="mt-5 max-w-[54ch] text-tinta-lembut">
+          <T
+            id="Purba Dewata dan Intan Dewata bersekat, jadi satu acara besar dan satu sesi kecil bisa jalan berbarengan. Gambir Wangi yang paling kecil cuma melayani satu tata letak, meja bundar untuk 15 orang."
+            en="Purba Dewata and Intan Dewata are partitioned, so a large session and a small one can run side by side. Gambir Wangi, the smallest, serves one layout only, a round table for 15."
+          />
+        </p>
+
+        <table class="mt-9 w-full border-collapse text-left text-[0.9375rem]">
+          <thead>
+            <tr class="border-b border-tinta">
+              <th class="penanda py-3 pr-3 text-tinta"><T id="Ruang" en="Room" /></th>
+              <th class="penanda py-3 pr-3 text-tinta">Theater</th>
+              <th class="penanda py-3 pr-3 text-tinta"><T id="Kelas" en="Classroom" /></th>
+              <th class="penanda hidden py-3 pr-3 text-tinta sm:table-cell">U-shape</th>
+              <th class="penanda py-3 text-tinta"><T id="Meja bundar" en="Round table" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              RUANG_MICE.map((r) => (
+                <tr class="border-b border-garis">
+                  <td class="py-3.5 pr-3">{r.nama}</td>
+                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.theater ?? "-"}</td>
+                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.kelas ?? "-"}</td>
+                  <td class="hidden py-3.5 pr-3 text-tinta-lembut tabular-nums sm:table-cell">
+                    {r.uShape ?? "-"}
+                  </td>
+                  <td class="py-3.5 text-tinta-lembut tabular-nums">{r.bundar}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="mt-3 text-sm text-tinta-lembut sm:hidden">
+          <T
+            id="Tata letak U-shape tampil di layar yang lebih lebar."
+            en="The U-shape layout appears on wider screens."
+          />
+        </p>
+      </div>
+    </section>
+
+    {/* ============ MENGINAP ROMBONGAN ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-14`}>
+        <img
+          src="/images/gerbang-batu.webp"
+          width="819"
+          height="462"
+          alt="Gerbang batu menuju area penginapan Babakan Siluhur"
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full"
+        />
+        <div>
+          <p class="penanda"><T id="Menginap rombongan" en="Group lodging" /></p>
+          <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
+            <T
+              id="Babakan Siluhur menampung satu rombongan di bawah satu atap."
+              en="Babakan Siluhur keeps one group under a single roof."
+            />
+          </h2>
+          <ul class="mt-8 border-t border-garis">
+            {
+              rombongan.map((k) => (
+                <li class="border-b border-garis py-4">
+                  <div class="flex items-baseline justify-between gap-4">
+                    <h3 class="font-display text-lg font-medium">{k.nama}</h3>
+                    <span class="penanda shrink-0">
+                      <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
+                    </span>
+                  </div>
+                  <p class="mt-1.5 text-[0.9375rem] text-tinta-lembut">
+                    {k.fakta.map((f, j) => (
+                      <>
+                        {j > 0 && <span aria-hidden="true"> · </span>}
+                        <T id={f.id} en={f.en} />
+                      </>
+                    ))}
+                  </p>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-6 max-w-[52ch] text-tinta-lembut">
+            <T
+              id="Sisa peserta ditempatkan di bungalow dan suite. Pembagian kamarnya disusun bersama tim reservasi setelah jumlah pasti keluar."
+              en="The rest of the group is placed across the bungalows and suites. The room split is worked out with the reservations team once the final head count is in."
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ AJAKAN ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="max-w-[64ch] border-t border-hutan pt-7">
+          <p class="penanda"><T id="Langkah berikutnya" en="Next step" /></p>
+          <p class="mt-4 text-tinta-lembut">
+            <T
+              id="Sebutkan tanggal, jumlah peserta, dan apakah acaranya rapat atau outing. Tim reservasi menyusun penawaran berikut pembagian kamarnya dari situ."
+              en="Send the dates, the head count, and whether the day is a meeting or an outing. The reservations team builds the quote and the room split from there."
+            />
+          </p>
+          <a
+            href={waLink("Halo, saya mau tanya paket rapat dan gathering di Kampung Sumber Alam.")}
+            rel="noopener"
+            target="_blank"
+            class="penanda mt-8 inline-block bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
+          >
+            <T id="Minta penawaran lewat WhatsApp" en="Request a quote on WhatsApp" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <BarPesan />
+</Base>

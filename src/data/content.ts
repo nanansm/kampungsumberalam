@@ -357,6 +357,293 @@ export const TERMASUK_OUTING = [
   { id: "Fun games", en: "Fun games" },
 ] as const;
 
+/* ---------- Paket acara ----------
+ * Sumber: halaman EVENTS resort-kampungsumberalam.com beserta sembilan
+ * halaman paketnya, dibaca lewat REST API situs lama pada 13 Agu 2026.
+ * Angka disalin persis. Ejaan sumbernya yang keliru (Kampug, menginp,
+ * Sibentan, Birtday) dirapikan, angkanya tidak disentuh.
+ *
+ * ⚠️ Situs lama tidak menanggalkan daftar ini. Halaman WAJIB menyebut bahwa
+ * tarif dikonfirmasi ulang saat pemesanan. Jangan hapus catatan itu.
+ *
+ * Pre Wedding di situs lama satu halaman berisi dua tarif. Di sini dipecah
+ * jadi dua kartu supaya tamu tidak perlu membaca paragraf untuk tahu
+ * bedanya cuma akses Villa Sibentang.
+ */
+
+export type Acara = {
+  slug: string;
+  nama: { id: string; en: string };
+  /** rupiah, tanpa "Rp", format Indonesia */
+  harga: string;
+  satuan: "orang" | "paket";
+  /** minimum pemesanan dalam orang; null kalau paketnya borongan */
+  minimal: number | null;
+  termasuk: { id: string; en: string }[];
+  tambahan: { id: string; en: string }[];
+  catatan?: { id: string; en: string };
+  foto: string;
+  w: number;
+  h: number;
+  alt: string;
+};
+
+export const ACARA: Acara[] = [
+  {
+    slug: "engagement",
+    nama: { id: "Tunangan", en: "Engagement" },
+    harga: "180.000",
+    satuan: "orang",
+    minimal: 50,
+    termasuk: [
+      { id: "Prasmanan", en: "Buffet" },
+      { id: "Dekorasi", en: "Decoration" },
+      { id: "Perias", en: "Make-up artist" },
+      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+    ],
+    tambahan: [
+      { id: "Pembawa acara", en: "MC" },
+      { id: "Foto", en: "Photography" },
+    ],
+    catatan: {
+      id: "Berlangsung di ruang pertemuan atau di restoran.",
+      en: "Held in a meeting room or in the restaurant.",
+    },
+    foto: "/images/restoran-tunjung.webp",
+    w: 819,
+    h: 544,
+    alt: "Ruang makan Tunjung Balebat berdinding kayu menghadap kolam",
+  },
+  {
+    slug: "akad",
+    nama: { id: "Akad", en: "Akad ceremony" },
+    harga: "205.000",
+    satuan: "orang",
+    minimal: 100,
+    termasuk: [
+      { id: "Prasmanan", en: "Buffet" },
+      { id: "Dekorasi", en: "Decoration" },
+      { id: "Perias", en: "Make-up artist" },
+      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+    ],
+    tambahan: [
+      { id: "Pembawa acara", en: "MC" },
+      { id: "Foto", en: "Photography" },
+    ],
+    catatan: {
+      id: "Berlangsung di ruang pertemuan atau di restoran.",
+      en: "Held in a meeting room or in the restaurant.",
+    },
+    foto: "/images/taman-kampung.webp",
+    w: 1200,
+    h: 501,
+    alt: "Taman terbuka Kampung Sumber Alam dengan deretan pohon dan bangunan beratap ijuk",
+  },
+  {
+    slug: "intimate-wedding",
+    nama: { id: "Pernikahan kecil", en: "Intimate wedding" },
+    harga: "260.000",
+    satuan: "orang",
+    minimal: 100,
+    termasuk: [
+      { id: "Prasmanan", en: "Buffet" },
+      { id: "Dekorasi", en: "Decoration" },
+      { id: "Perias", en: "Make-up artist" },
+      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+    ],
+    tambahan: [
+      { id: "Pembawa acara", en: "MC" },
+      { id: "Foto", en: "Photography" },
+    ],
+    catatan: {
+      id: "Berlangsung di ruang pertemuan atau di restoran.",
+      en: "Held in a meeting room or in the restaurant.",
+    },
+    foto: "/images/purba-dewata.webp",
+    w: 819,
+    h: 544,
+    alt: "Ruang Purba Dewata ditata dengan meja bundar berkain",
+  },
+  {
+    slug: "pre-wedding",
+    nama: { id: "Foto pra nikah", en: "Pre-wedding shoot" },
+    harga: "800.000",
+    satuan: "paket",
+    minimal: null,
+    termasuk: [
+      { id: "Ruang rias", en: "Make-up room" },
+      { id: "Kudapan dan minuman selamat datang untuk 4 orang", en: "Light meal and welcome drink for 4" },
+      { id: "Akses seluruh area resort", en: "Access to the whole resort" },
+    ],
+    tambahan: [],
+    catatan: {
+      id: "Villa Sibentang tidak termasuk di paket ini.",
+      en: "Villa Sibentang is not included in this package.",
+    },
+    foto: "/images/kampung-teratai.webp",
+    w: 999,
+    h: 756,
+    alt: "Kolam teratai berbunga dengan bungalow beratap ijuk di belakangnya",
+  },
+  {
+    slug: "pre-wedding-sibentang",
+    nama: {
+      id: "Foto pra nikah dengan Villa Sibentang",
+      en: "Pre-wedding shoot with Villa Sibentang",
+    },
+    harga: "1.500.000",
+    satuan: "paket",
+    minimal: null,
+    termasuk: [
+      { id: "Ruang rias", en: "Make-up room" },
+      { id: "Makan siang", en: "Lunch" },
+      { id: "Kudapan dan minuman selamat datang untuk 4 orang", en: "Light meal and welcome drink for 4" },
+      { id: "Akses seluruh area termasuk Private Villa Sibentang", en: "Access to the whole resort including Private Villa Sibentang" },
+    ],
+    tambahan: [],
+    foto: "/images/kolam-privat-putih.webp",
+    w: 1200,
+    h: 675,
+    alt: "Kolam pribadi berdinding putih di halaman villa",
+  },
+  {
+    slug: "honeymoon",
+    nama: { id: "Bulan madu", en: "Honeymoon" },
+    harga: "2.100.000",
+    satuan: "paket",
+    minimal: null,
+    termasuk: [
+      { id: "Menginap di bungalow", en: "One stay in a bungalow" },
+      { id: "Makan malam berteman lilin", en: "Candlelit dinner" },
+      { id: "Kue kecil", en: "Mini cake" },
+      { id: "Dekorasi kamar", en: "Room decoration" },
+    ],
+    tambahan: [],
+    foto: "/images/suite-kolam-senja.webp",
+    w: 960,
+    h: 640,
+    alt: "Suite dengan kolam pribadi pada sore hari",
+  },
+  {
+    slug: "ulang-tahun",
+    nama: { id: "Ulang tahun", en: "Birthday party" },
+    harga: "136.000",
+    satuan: "orang",
+    minimal: 50,
+    termasuk: [
+      { id: "Prasmanan", en: "Buffet" },
+      { id: "Kue", en: "Cake" },
+      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+    ],
+    tambahan: [
+      { id: "Dekorasi", en: "Decoration" },
+      { id: "Pembawa acara", en: "MC" },
+    ],
+    catatan: {
+      id: "Untuk remaja dan dewasa.",
+      en: "For teenagers and adults.",
+    },
+    foto: "/images/keluarga-taman.webp",
+    w: 819,
+    h: 546,
+    alt: "Keluarga duduk di bangku taman Kampung Sumber Alam",
+  },
+  {
+    slug: "ulang-tahun-anak",
+    nama: { id: "Ulang tahun anak", en: "Kids birthday" },
+    harga: "126.000",
+    satuan: "orang",
+    minimal: 50,
+    termasuk: [
+      { id: "Menu anak", en: "Kids menu" },
+      { id: "Bingkisan", en: "Goodie bag" },
+      { id: "Kue", en: "Cake" },
+      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+    ],
+    tambahan: [
+      { id: "Dekorasi", en: "Decoration" },
+      { id: "Pembawa acara dan pesulap", en: "MC and magician" },
+      { id: "Badut", en: "Clown" },
+    ],
+    foto: "/images/bermain-anak.webp",
+    w: 819,
+    h: 544,
+    alt: "Anak anak bermain di area bermain Kampung Sumber Alam",
+  },
+  {
+    slug: "arisan-sibentang",
+    nama: {
+      id: "Arisan dan reuni di Villa Sibentang",
+      en: "Social gathering at Villa Sibentang",
+    },
+    harga: "160.000",
+    satuan: "orang",
+    minimal: 6,
+    termasuk: [
+      { id: "Pemakaian Private Villa Sibentang", en: "Use of Private Villa Sibentang" },
+      { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
+    ],
+    tambahan: [],
+    catatan: {
+      id: "Tanpa menginap. Cocok untuk arisan, gathering, dan reuni.",
+      en: "Day use, no overnight stay. Suits arisan, gatherings and reunions.",
+    },
+    foto: "/images/suite-gazebo.webp",
+    w: 900,
+    h: 600,
+    alt: "Gazebo kayu di samping kolam pribadi",
+  },
+  {
+    slug: "berenang-sibentang",
+    nama: {
+      id: "Berenang di Villa Sibentang",
+      en: "Swimming at Villa Sibentang",
+    },
+    harga: "85.000",
+    satuan: "orang",
+    minimal: 6,
+    termasuk: [
+      { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
+      { id: "Camilan", en: "Snacks" },
+    ],
+    tambahan: [],
+    foto: "/images/grotto-privat.webp",
+    w: 819,
+    h: 546,
+    alt: "Kolam air panas pribadi berdinding batu",
+  },
+];
+
+/* ---------- Di sekitar resort ----------
+ * Sumber: halaman POINT OF INTEREST situs lama, dibaca 13 Agu 2026.
+ * Jarak dan waktu tempuh SENGAJA TIDAK ditulis: situs lama tidak menyebutnya
+ * dan menaksir sendiri berarti mengarang. Isi angkanya kalau sudah diukur.
+ */
+
+export const SEKITAR = [
+  {
+    nama: "Kebun Mawar Situhapa",
+    teks: {
+      id: "Taman mawar seluas lima hektar di ketinggian 1.150 mdpl. Hawanya jauh lebih dingin daripada di Cipanas.",
+      en: "A five-hectare rose garden at 1,150 metres above sea level. The air up there runs much colder than in Cipanas.",
+    },
+  },
+  {
+    nama: "Waterboom Sabda Alam",
+    teks: {
+      id: "Kolam seluncur yang airnya juga air panas alami dari Gunung Guntur, jadi anak-anak tidak kedinginan walau main air seharian.",
+      en: "A waterpark fed by the same natural hot springs from Mount Guntur, so children do not get cold after a full day in the water.",
+    },
+  },
+  {
+    nama: "Cilopang Adventure Camp",
+    teks: {
+      id: "Area kemah di Tarogong Kaler yang juga jadi titik awal pendakian Gunung Guntur.",
+      en: "A camping ground in Tarogong Kaler that also serves as a starting point for the Mount Guntur hike.",
+    },
+  },
+] as const;
+
 /* ---------- Meta bawaan ---------- */
 
 export const META_BAWAAN = {

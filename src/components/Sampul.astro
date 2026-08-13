@@ -1,0 +1,54 @@
+---
+import Header from "./Header.astro";
+import T from "./T.astro";
+
+/**
+ * Sampul halaman dalam.
+ *
+ * Sengaja LEBIH PENDEK dari hero beranda. Beranda memakai satu layar penuh
+ * karena tugasnya cuma satu, yaitu bikin orang berhenti. Halaman dalam
+ * tugasnya menjawab pertanyaan, jadi isinya harus sudah kelihatan sebelum
+ * tamu menggulir. Tingginya dibatasi 560 px supaya foto tidak pernah
+ * dibesarkan lebih dari sekitar 1,2 kali dari ukuran aslinya.
+ *
+ * Susunannya sama dengan hero beranda: penanda kapital berjarak, lalu
+ * pernyataan kapital besar, keduanya rata kiri bawah.
+ */
+
+interface Props {
+  penanda: { id: string; en: string };
+  judul: { id: string; en: string };
+  foto: string;
+  w: number;
+  h: number;
+  alt: string;
+}
+
+const { penanda, judul, foto, w, h, alt } = Astro.props;
+---
+
+<section class="relative isolate flex h-[58svh] max-h-[600px] min-h-[420px] flex-col">
+  <div class="absolute inset-0 -z-10">
+    <img
+      src={foto}
+      width={w}
+      height={h}
+      alt={alt}
+      fetchpriority="high"
+      decoding="async"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+    <div class="absolute inset-0 bg-tinta/45"></div>
+  </div>
+
+  <Header />
+
+  <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-end px-5 pb-10 sm:px-8 sm:pb-14">
+    <p class="penanda text-white/75"><T id={penanda.id} en={penanda.en} /></p>
+    <h1
+      class="pernyataan mt-4 max-w-[16ch] text-[clamp(1.6rem,6.6vw,2.4rem)] text-white md:mt-5 md:max-w-[19ch] md:text-[clamp(2.5rem,4.6vw,4rem)]"
+    >
+      <T id={judul.id} en={judul.en} />
+    </h1>
+  </div>
+</section>

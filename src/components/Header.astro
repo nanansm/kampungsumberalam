@@ -7,16 +7,24 @@ import { NAMA_PANJANG } from "../data/content";
    tulisannya jadi hitam. Peralihan itu dipicu satu pengamat perpotongan
    sederhana di Base.astro, bukan pendengar peristiwa gulir.
 
-   Logo cuma dua rupa sesuai permintaan: teks hitam dan teks putih. */
+   Logo cuma dua rupa sesuai permintaan: teks hitam dan teks putih.
+
+   Tautannya halaman utuh, bukan jangkar ke bagian beranda. Menu jangkar
+   cuma jalan selama tamu berdiri di beranda; begitu halaman dalam ada,
+   jangkar bikin tamu terlempar pulang setiap kali dia mengklik. */
 
 const tautan = [
-  { href: "#kampung", id: "Kampung", en: "The village" },
-  { href: "#air-panas", id: "Air panas", en: "Hot spring" },
-  { href: "#menginap", id: "Menginap", en: "Stay" },
-  { href: "#makan", id: "Makan", en: "Dining" },
-  { href: "#acara", id: "Rapat dan acara", en: "Meetings" },
-  { href: "#galeri", id: "Galeri", en: "Gallery" },
+  { href: "/accommodation/", id: "Menginap", en: "Stay" },
+  { href: "/meetings/", id: "Rapat dan outing", en: "Meetings" },
+  { href: "/events/", id: "Acara dan perayaan", en: "Events" },
+  { href: "/gallery/", id: "Galeri", en: "Gallery" },
+  { href: "/location/", id: "Lokasi", en: "Location" },
+  { href: "/about/", id: "Tentang", en: "About" },
 ];
+
+/* Halaman yang sedang dibuka ditandai, bukan dimatikan. Menu di sini
+   layar penuh, dan tanpa penanda tamu kehilangan jejak di mana dia berada. */
+const sekarang = Astro.url.pathname.replace(/\/+$/, "") || "/";
 ---
 
 <header
@@ -38,7 +46,11 @@ const tautan = [
           {
             tautan.map((t) => (
               <li>
-                <a href={t.href} class="pernyataan text-2xl sm:text-3xl">
+                <a
+                  href={t.href}
+                  aria-current={t.href.replace(/\/+$/, "") === sekarang ? "page" : undefined}
+                  class="pernyataan text-2xl aria-[current=page]:text-hutan-muda sm:text-3xl"
+                >
                   <T id={t.id} en={t.en} />
                 </a>
               </li>

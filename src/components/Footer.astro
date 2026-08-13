@@ -14,11 +14,23 @@ import {
 } from "../data/content";
 
 const tahun = 2026;
+
+/* Kaki halaman ikut jadi peta situs. Menu utama sembunyi di balik tombol
+   hamburger, jadi tanpa daftar ini satu-satunya jalan antar halaman
+   mengharuskan tamu membuka menu lebih dulu. */
+const halaman = [
+  { href: "/accommodation/", id: "Menginap", en: "Stay" },
+  { href: "/meetings/", id: "Rapat dan outing", en: "Meetings and outings" },
+  { href: "/events/", id: "Acara dan perayaan", en: "Events" },
+  { href: "/gallery/", id: "Galeri", en: "Gallery" },
+  { href: "/location/", id: "Lokasi", en: "Location" },
+  { href: "/about/", id: "Tentang", en: "About" },
+];
 ---
 
 <footer class="border-t border-garis">
   <div
-    class="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 sm:grid-cols-[1.2fr_1fr_1fr] sm:px-8 sm:py-20"
+    class="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 sm:py-20 lg:grid-cols-[1.3fr_1fr_1fr_1fr]"
   >
     <div>
       <img
@@ -39,6 +51,21 @@ const tahun = 2026;
       >
         <T id="Buka di Google Maps" en="Open in Google Maps" />
       </a>
+    </div>
+
+    <div class="text-sm">
+      <p class="penanda"><T id="Halaman" en="Pages" /></p>
+      <ul class="mt-3 space-y-2">
+        {
+          halaman.map((h) => (
+            <li>
+              <a href={h.href}>
+                <T id={h.id} en={h.en} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
 
     <div class="text-sm">

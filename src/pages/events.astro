@@ -1,0 +1,180 @@
+---
+import Base from "../layouts/Base.astro";
+import Sampul from "../components/Sampul.astro";
+import Footer from "../components/Footer.astro";
+import BarPesan from "../components/BarPesan.astro";
+import T from "../components/T.astro";
+import { ACARA, RUANG_MICE, waLink } from "../data/content";
+
+/* Halaman acara dan perayaan.
+   Angkanya ditayangkan penuh, beda dengan tarif kamar. Alasannya paket acara
+   itu keputusan yang direncanakan berminggu-minggu dan orang membandingkan
+   penawaran sebelum menghubungi siapa pun. Menyembunyikan angka di sini
+   berarti kalah sebelum ditanya.
+
+   Tarifnya dari situs resmi resort, dibaca 13 Agu 2026, dan tidak bertanggal
+   di sumbernya. Catatan konfirmasi ulang di bawah WAJIB tetap ada. */
+
+const terbesar = RUANG_MICE[0];
+
+const judulSeksi = "font-display text-[clamp(1.6rem,4.6vw,2.5rem)] font-medium";
+const seksi = "mx-auto max-w-[1400px] px-5 sm:px-8";
+---
+
+<Base
+  title="Paket Pernikahan, Ulang Tahun, dan Acara di Garut | Kampung Sumber Alam"
+  description="Sepuluh paket acara di Kampung Sumber Alam Garut: akad mulai Rp 205.000 per orang, tunangan Rp 180.000, ulang tahun Rp 136.000, bulan madu Rp 2.100.000. Berikut isi tiap paketnya."
+  path="/events"
+  heroImg="/images/taman-kampung.webp"
+  heroImgWide="/images/taman-kampung.webp"
+>
+  <Sampul
+    penanda={{ id: "Acara dan perayaan", en: "Events" }}
+    judul={{
+      id: "Akad, ulang tahun, dan bulan madu",
+      en: "Weddings, birthdays and honeymoons",
+    }}
+    foto="/images/taman-kampung.webp"
+    w={1200}
+    h={501}
+    alt="Taman terbuka Kampung Sumber Alam dengan deretan pohon dan bangunan beratap ijuk"
+  />
+
+  <main>
+    {/* ============ PEMBUKA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="max-w-[56ch] space-y-4 text-tinta-lembut">
+          <p>
+            <T
+              id={`Acara di sini bisa digelar di dalam ruang pertemuan atau di restoran yang menghadap kolam. Ruang terbesar, ${terbesar.nama}, memuat ${terbesar.theater} orang dengan tata letak teater.`}
+              en={`Events run either in a meeting room or in the restaurant facing the pond. The largest room, ${terbesar.nama}, takes ${terbesar.theater} people theatre style.`}
+            />
+          </p>
+          <p>
+            <T
+              id="Sebagian paket berlangsung di Private Villa Sibentang, yang punya kolam air panas sendiri dan terpisah dari tamu yang menginap."
+              en="Some packages run at Private Villa Sibentang, which has its own hot spring pool, set apart from overnight guests."
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ KARTU PAKET ============
+        Ukuran fotonya diseragamkan lewat object-cover supaya tepi bawah
+        kartu sejajar di satu baris. Foto utuh dipakai di bagian editorial,
+        bukan di kisi kartu. */}
+    <section class="pt-12 sm:pt-16">
+      <div class={`${seksi} grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3`}>
+        {
+          ACARA.map((a) => (
+            <article class="flex flex-col">
+              <img
+                src={a.foto}
+                width={a.w}
+                height={a.h}
+                alt={a.alt}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/3] w-full object-cover"
+              />
+
+              <h2 class="font-display mt-5 text-xl font-medium">
+                <T id={a.nama.id} en={a.nama.en} />
+              </h2>
+
+              <p class="mt-3">
+                <span class="penanda">
+                  {a.satuan === "orang" ? (
+                    <T id="Mulai" en="From" />
+                  ) : (
+                    <T id="Paket" en="Package" />
+                  )}
+                </span>
+                <br />
+                <span class="font-display text-3xl font-medium text-hutan">Rp {a.harga}</span>
+                {a.satuan === "orang" && (
+                  <span class="text-tinta-lembut">
+                    {" "}
+                    <T id="per orang" en="per person" />
+                  </span>
+                )}
+              </p>
+
+              {a.minimal !== null && (
+                <p class="penanda mt-2">
+                  <T id={`Minimal ${a.minimal} orang`} en={`Minimum ${a.minimal} guests`} />
+                </p>
+              )}
+
+              <ul class="mt-5 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
+                {a.termasuk.map((t) => (
+                  <li>
+                    <T id={t.id} en={t.en} />
+                  </li>
+                ))}
+              </ul>
+
+              {a.tambahan.length > 0 && (
+                <p class="mt-4 text-[0.9375rem] text-tinta-lembut">
+                  <span class="penanda">
+                    <T id="Bisa ditambah" en="Can be added" />
+                  </span>
+                  <br />
+                  {a.tambahan.map((t, j) => (
+                    <>
+                      {j > 0 && <span aria-hidden="true"> · </span>}
+                      <T id={t.id} en={t.en} />
+                    </>
+                  ))}
+                </p>
+              )}
+
+              {a.catatan && (
+                <p class="mt-4 text-sm text-tinta-lembut">
+                  <T id={a.catatan.id} en={a.catatan.en} />
+                </p>
+              )}
+
+              <a
+                href={waLink(`Halo, saya mau tanya paket ${a.nama.id} di Kampung Sumber Alam.`)}
+                rel="noopener"
+                target="_blank"
+                class="mt-auto inline-block self-start border-b border-hutan pt-6 pb-0.5 text-hutan"
+              >
+                <T id="Tanya paket ini" en="Ask about this package" />
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    {/* ============ CATATAN TARIF ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="max-w-[64ch] border-t border-hutan pt-7">
+          <p class="penanda"><T id="Sebelum menghitung anggaran" en="Before you budget" /></p>
+          <p class="mt-4 text-tinta-lembut">
+            <T
+              id="Semua angka di atas berasal dari daftar resmi resort dan dikonfirmasi ulang saat pemesanan. Tanggal acara, jumlah tamu, dan tambahan seperti dekorasi khusus mengubah totalnya. Susunan menu prasmanan dibicarakan terpisah dengan tim acara."
+              en="Every figure above comes from the resort's own published list and is reconfirmed at booking. The date, the head count, and extras such as custom decoration all move the total. Buffet menus are discussed separately with the events team."
+            />
+          </p>
+          <a
+            href={waLink("Halo, saya mau tanya paket acara di Kampung Sumber Alam.")}
+            rel="noopener"
+            target="_blank"
+            class="penanda mt-8 inline-block bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
+          >
+            <T id="Bicara dengan tim acara" en="Talk to the events team" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <BarPesan />
+</Base>
