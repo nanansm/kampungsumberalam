@@ -1,506 +1,274 @@
 ---
-import Base from "../layouts/Base.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import BarPesan from "../components/BarPesan.astro";
-import T from "../components/T.astro";
-import {
-  SIBENTANG_URL,
-  FASILITAS,
-  KAMAR,
-  ULASAN,
-  RUANG_MICE,
-  TARIF_PAKET,
-  TERMASUK_SEMUA,
-  TERMASUK_MEETING,
-  TERMASUK_OUTING,
-  RESTORAN,
-  SPA,
-  waLink,
-} from "../data/content";
+import { Picture, getImage } from "astro:assets";
+import Situs from "../layouts/Situs.astro";
+import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, waLink } from "../data/content";
 
-/* Hero desktop bergantian empat bingkai. Semuanya foto malam dan senja dari
-   Instagram resort; kelasnya jauh di atas foto siang ber-HDR di situs lama.
-   Ponsel tidak memakai foto di layar pertama sama sekali, mengikuti amanjiwo. */
-const HERO_PONSEL = "/images/hero-2-malam.webp";
-const bingkai = [
-  { src: "/images/hero-1-lentera.webp", w: 1440, h: 1348, alt: "Lentera menyala di antara bungalow beratap ijuk, terpantul di kolam teratai pada malam hari" },
-  { src: "/images/hero-2-malam.webp", w: 1279, h: 1599, alt: "Bangunan Kampung Sumber Alam menyala pada malam hari, terpantul di permukaan kolam" },
-  { src: "/images/hero-3-senja.webp", w: 1349, h: 1687, alt: "Pandangan dari gazebo kayu ke arah kolam teratai dan bungalow pada senja hari" },
+import heroHp from "../assets/foto/hero-hp.jpg";
+import heroDesk from "../assets/foto/hero-desk.jpg";
+import sambut1 from "../assets/foto/sambut-1.jpg";
+import sambut2 from "../assets/foto/sambut-3.jpg";
+import berendamHp from "../assets/foto/berendam-hp.jpg";
+import berendamDesk from "../assets/foto/berendam-desk.jpg";
+import menginapImg from "../assets/foto/menginap.jpg";
+import caraBerdua from "../assets/foto/cara-berdua.jpg";
+import caraKeluarga from "../assets/foto/cara-keluarga.jpg";
+import caraKantor from "../assets/foto/cara-kantor.jpg";
+import lokasiDesk from "../assets/foto/lokasi-desk.jpg";
+import lokasiHp from "../assets/foto/lokasi-hp.jpg";
+
+const kataImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kata-*.jpg", { eager: true })).map((m) => m.default);
+const turImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/tur-*.jpg", { eager: true })).map((m) => m.default);
+const kampungImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kampung-*.jpg", { eager: true })).map((m) => m.default);
+
+/* Hero: dua potongan (HP tegak, desktop lebar). AVIF + preload supaya LCP cepat. */
+const Q = 34;
+const heroHpW = [480, 640, 800];
+const heroDeskW = [1024, 1440, 1920, 2400];
+const hpAvif = await getImage({ src: heroHp, widths: heroHpW, format: "avif", quality: Q });
+const hpWebp = await getImage({ src: heroHp, widths: heroHpW, format: "webp", quality: 70 });
+const dkAvif = await getImage({ src: heroDesk, widths: heroDeskW, format: "avif", quality: Q });
+const dkWebp = await getImage({ src: heroDesk, widths: heroDeskW, format: "webp", quality: 70 });
+const MQ_HP = "(max-width: 767px)";
+const MQ_DK = "(min-width: 768px)";
+
+const pesanWa = "Halo Kampung Sumber Alam, saya dari website. Mau tanya kamar.";
+
+const berendam = [
+  { nama: "Bak air panas di kamar", isi: "Tiap bungalow punya bak di kamar mandinya, dengan keran khusus air panas Gunung Guntur." },
+  { nama: "Kamar Rendam", isi: "Kamu berendam 25 menit di bilik privat, Rp50.000 sudah dapat bandrek atau bajigur." },
+  { nama: "Kolam Renang Tasik Madu", isi: "Ini kolam renang umum berisi air panas, letaknya di tengah kawasan." },
+  { nama: "Kolam pribadi Villa Sibentang", isi: "Di Villa Sibentang, kamu berendam air panas alami di private pool villamu sendiri.", url: SIBENTANG_URL },
 ];
 
-const kamarKSA = KAMAR.filter((k) => k.kelompok !== "villa");
-
-const kelompok = [
-  {
-    id: "Berdua", en: "For two",
-    pax: { id: "2 orang", en: "2 guests" },
-    foto: "/images/bungalow-interior.webp", w: 900, h: 675,
-    alt: "Interior bungalow kayu Kampung Sumber Alam",
-    isi: kamarKSA.filter((k) => k.pax === 2),
-  },
-  {
-    id: "Berempat", en: "For four",
-    pax: { id: "4 orang", en: "4 guests" },
-    foto: "/images/kamar-twin.webp", w: 1200, h: 675,
-    alt: "Kamar dengan dua tempat tidur di Kampung Sumber Alam",
-    isi: kamarKSA.filter((k) => k.pax === 4),
-  },
-  {
-    id: "Satu rumah", en: "A whole house",
-    pax: { id: "6 orang", en: "6 guests" },
-    foto: "/images/suite-kolam-senja.webp", w: 960, h: 640,
-    alt: "Deluxe Suite dengan kolam pribadi pada sore hari",
-    isi: kamarKSA.filter((k) => k.pax === 6),
-  },
-  {
-    id: "Rombongan", en: "Groups",
-    pax: { id: "12 sampai 18 orang", en: "12 to 18 guests" },
-    foto: "/images/grotto-privat.webp", w: 819, h: 546,
-    alt: "Kolam air panas pribadi Babakan Siluhur berdinding batu",
-    isi: kamarKSA.filter((k) => k.pax >= 12),
-  },
+const kataAlt = [
+  "Sundanese Thermal Escape Village: empat kata tentang Kampung Sumber Alam",
+  "Sundanese: teras rumah kayu dengan kursi dan dinding bilik",
+  "Thermal: air panas Gunung Guntur mengalir di talang ke balong",
+  "Escape: kolam air panas dengan kanopi, Gunung Guntur di belakang",
+  "Village: rumah kayu beratap ijuk di atas balong, tersambung jalan setapak",
+];
+const turCap = [
+  "Pov: kamu baru check-in",
+  "Yang pertama kelihatan",
+  "Kamarmu, rumah kayu beratap ijuk",
+  "Air panasnya sampai kamar mandi",
+  "Jalan kaki ke kolam air panas",
+  "Makan malam lesehan",
+  "Menginap semalam, berendam dua kali",
 ];
 
-const aktivitas = [
-  { foto: "/images/kacapi-suling.webp", w: 819, h: 544, t: { id: "Kacapi suling main langsung", en: "Live kacapi suling" }, alt: "Pemain kacapi dan suling berpakaian Sunda tampil di Kampung Sumber Alam" },
-  { foto: "/images/pitaloka-spa.webp", w: 819, h: 546, t: { id: "Pijat di Pitaloka Spa", en: "Massage at Pitaloka Spa" }, alt: "Terapis memijat tamu di Pitaloka Spa" },
-  { foto: "/images/bermain-anak.webp", w: 819, h: 544, t: { id: "Area bermain anak", en: "Children's playground" }, alt: "Anak anak bermain di area bermain Kampung Sumber Alam" },
-  { foto: "/images/kolam-teratai-duduk.webp", w: 819, h: 544, t: { id: "Tepi kolam teratai", en: "By the lily pond" }, alt: "Tamu duduk di tepi kolam teratai yang rimbun" },
-  { foto: "/images/keluarga-taman.webp", w: 819, h: 546, t: { id: "Taman untuk keluarga", en: "Garden for families" }, alt: "Keluarga duduk di bangku taman Kampung Sumber Alam" },
-  { foto: "/images/kolam-renang-utama.webp", w: 840, h: 460, t: { id: "Kolam renang utama", en: "The main pool" }, alt: "Kolam renang utama Kampung Sumber Alam beratap kanopi" },
+const cara = [
+  { lbl: "Berdua · weekday", nama: "Menginap berdua, Minggu–Jumat", isi: "Kamu check-in berdua antara Minggu dan Jumat di kamar kawasan utama, sudah termasuk berendam di Kamar Rendam.", harga: "Mulai Rp1.189.000", img: caraBerdua, alt: "Bungalow kayu beratap ijuk di seberang balong berbatu", wa: "Halo, saya mau tanya paket menginap berdua Minggu–Jumat." },
+  { lbl: "Keluarga · weekend", nama: "Menginap Sabtu", isi: "Kalau pesan lewat WhatsApp, check-in Sabtu sudah termasuk makan pagi, makan malam, live music, paket pancingan, tiket kolam renang, dan Kamar Rendam.", harga: "Mulai Rp1.989.000 per kamar per malam (Kawung, 2 dewasa)", img: caraKeluarga, alt: "Tamu berjalan di antara rumah kayu dan balong teratai", wa: "Halo, saya mau tanya paket menginap Sabtu untuk keluarga." },
+  { lbl: "Kantor · weekday", nama: "Fullboard Meeting", isi: "Timmu menginap semalam di Bungalow: 3 kali buffet, 2 kali coffee break, ruang pertemuan sampai 350 orang, kolam renang, dan Kamar Rendam.", harga: "Rp1.433.000 per orang, Twin Share, weekday", img: caraKantor, alt: "Kawasan Kampung Sumber Alam dilihat dari udara", wa: "Halo, saya mau tanya Fullboard Meeting untuk kantor." },
 ];
 
-const hidangan = [
-  { foto: "/images/hidangan-nasi.webp", alt: "Hidangan nasi lengkap dengan lauk dan kopi" },
-  { foto: "/images/hidangan-sayur.webp", alt: "Semangkuk sayur berkuah" },
-  { foto: "/images/hidangan-bakso.webp", alt: "Bakso dengan pelengkapnya" },
-  { foto: "/images/hidangan-soto.webp", alt: "Soto berkuah dengan kerupuk" },
+const kampungCap = [
+  "Makan malam lesehan, tanpa lihat jam",
+  "Kacapi Suling dimainkan langsung di sini",
+  "Rumahnya beratap ijuk, berdinding bilik",
+  "Ikan berenang di antara teratai balong",
 ];
-
-const galeri = [
-  { foto: "/images/malam-lentera-tegak.webp", w: 1000, h: 1250, alt: "Lentera besar menyala di tepi kolam teratai pada malam hari" },
-  { foto: "/images/kampung-pagi-berkabut.webp", w: 1080, h: 810, alt: "Kabut pagi di atas kolam teratai dan deretan bungalow beratap ijuk" },
-  { foto: "/images/pandang-kolam.webp", w: 1000, h: 1250, alt: "Tamu memandang kolam teratai dari dalam pavilyun kayu" },
-  { foto: "/images/kampung-palem.webp", w: 819, h: 461, alt: "Bungalow beratap ijuk di antara pohon palem" },
-  { foto: "/images/taman-gunung.webp", w: 819, h: 544, alt: "Taman dan kolam Kampung Sumber Alam dengan latar pegunungan" },
-  { foto: "/images/gerbang-batu.webp", w: 819, h: 462, alt: "Gerbang batu menuju area bungalow Babakan Siluhur" },
+const kampungAlt = [
+  "Saung kayu terbuka untuk makan malam lesehan",
+  "Pemain kacapi dan suling Sunda",
+  "Atap ijuk rumah kayu dengan bunga bugenvil",
+  "Ikan koi di balong, bayangan pohon kelapa di air",
 ];
-
-const tanya = [
-  { t: { id: "Semua kamar dapat air panas alami?", en: "Do all rooms get natural hot spring water?" },
-    j: { id: "Ya. Tiap bungalow punya bak rendam dan shower berair panas alami dari sumber Gunung Guntur.", en: "Yes. Every bungalow has a soaking tub and shower fed by natural hot spring water from Mount Guntur." } },
-  { t: { id: "Berapa tarif menginap per malam?", en: "What is the nightly room rate?" },
-    j: { id: "Tarif kamar berubah menurut tanggal dan tipe. Angka terkini muncul di halaman pemesanan setelah tanggal dipilih. Tarif paket rapat dan outing ada di bagian rapat dan acara.", en: "Room rates move with the date and the type. The current figure appears on the booking page once you pick your dates. Meeting and outing package rates are listed in the meetings section." } },
-  { t: { id: "Ruang pertemuan muat berapa orang?", en: "How many people fit in the meeting rooms?" },
-    j: { id: "Purba Dewata Full memuat 350 orang dengan tata letak teater. Ruang terkecil, Gambir Wangi, memuat 15 orang dengan meja bundar.", en: "Purba Dewata Full takes 350 people theatre style. The smallest room, Gambir Wangi, takes 15 around a round table." } },
-  { t: { id: "Anak-anak ada kolam sendiri?", en: "Is there a children's pool?" },
-    j: { id: "Ada. Kolam anak terpisah dari kolam utama, dan area bermain ada di dekatnya.", en: "Yes. The children's pool sits apart from the main pool, with the playground nearby." } },
-  { t: { id: "Villa Sibentang bagian dari sini?", en: "Is Villa Sibentang part of this?" },
-    j: { id: "Satu manajemen, tapi pemesanan dan halamannya terpisah.", en: "Same management, but booking and its web pages are separate." } },
-];
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: tanya.map((q) => ({
-    "@type": "Question",
-    name: q.t.id,
-    acceptedAnswer: { "@type": "Answer", text: q.j.id },
-  })),
-};
-
-const judul = "font-display text-[clamp(1.75rem,5.4vw,3rem)] font-medium";
-const seksi = "mx-auto max-w-[1400px] px-5 sm:px-8";
-
-/* Titik masuk termurah, diambil dari data supaya angkanya tidak pernah
-   berbeda dengan sumbernya. */
-const termurah = TARIF_PAKET.map((t) => t.weekday).sort(
-  (a, b) => Number(a.replace(/\./g, "")) - Number(b.replace(/\./g, ""))
-)[0];
+const tipe = ["Bungalow", "Bungalow Siceeh", "Kawung", "Pondok Kalapa", "Junior Suite", "Deluxe Suite", "Babakan Siluhur"];
 ---
-
-<Base path="/" heroImg={HERO_PONSEL} heroImgWide={bingkai[0].src}>
-  {/* ============ HERO ============
-      Ponsel dan layar lebar sama sama berfoto. Ketenangan amanjiwo diambil
-      dari ritme dan penanda kapital berjarak, bukan dari layar kosong.
-      Layar lebar mengikuti bawahreserve: foto penuh bergantian, pernyataan
-      kapital besar di kiri bawah, titik penunjuk di kanan. Tombol tidak
-      diulang di hero karena bar pemesanan sudah menempel di dasar layar. */}
-  <section class="relative isolate flex min-h-svh flex-col">
-    <div class="absolute inset-0 -z-10">
-      {/* Ponsel: satu foto tetap, sumbernya yang paling tinggi resolusinya.
-          Layar lebar: tiga bingkai bergantian. Semua bingkai dipakai pada
-          UKURAN ASLI tanpa dipotong lebih dulu, supaya object-cover punya
-          piksel sebanyak mungkin. Memotong ke 16:9 dulu lalu membesarkannya
-          adalah penyebab hero terlihat pecah di percobaan sebelumnya. */}
-      <img
-        src={HERO_PONSEL}
-        width="1279" height="1599"
-        alt={bingkai[1].alt}
-        fetchpriority="high" decoding="async"
-        class="absolute inset-0 h-full w-full object-cover md:hidden"
-      />
-      <div class="absolute inset-0 hidden md:block">
-        {
-          bingkai.map((b) => (
-            <img
-              src={b.src} width={b.w} height={b.h} alt={b.alt}
-              class="bingkai absolute inset-0 h-full w-full object-cover"
-            />
-          ))
-        }
-      </div>
-      <div class="absolute inset-0 bg-tinta/45"></div>
-    </div>
-
-    <Header />
-
-    <div class={`${seksi} flex flex-1 flex-col justify-end pb-16 sm:pb-20`}>
-      <div class="max-w-[22ch] self-center text-center text-white md:max-w-none md:self-start md:text-left">
-        <p class="penanda text-white/75">
-          <T id="Cipanas, Garut, Jawa Barat" en="Cipanas, Garut, West Java" />
-        </p>
-        <h1 class="pernyataan mx-auto mt-5 max-w-[19ch] text-[clamp(1.85rem,7.6vw,3rem)] md:mx-0 md:mt-7 md:max-w-[15ch] md:text-[clamp(3.5rem,7.6vw,7rem)]">
-          <T id="Air panas alami, di kamar sendiri" en="Natural hot water, in your own room" />
-        </h1>
-        <p class="mx-auto mt-6 max-w-[38ch] text-white/85 md:mx-0 md:mt-8 md:max-w-[44ch]">
-          <T
-            id="Bungalow kayu beratap ijuk berdiri di atas kolam. Air panasnya mengalir dari Gunung Guntur."
-            en="Timber bungalows with thatched roofs stand over the ponds. The hot water runs down from Mount Guntur."
-          />
-        </p>
-      </div>
-    </div>
-
-    <div class="titik pointer-events-none absolute top-1/2 right-6 hidden -translate-y-1/2 flex-col gap-2.5 md:flex">
-      {bingkai.map(() => <span class="block h-1.5 w-1.5 rounded-full bg-white/35"></span>)}
+<Situs
+  title="Kampung Sumber Alam · Berendam air panas Gunung Guntur di kampung Sunda, Garut"
+  description="Menginap di rumah kayu beratap ijuk di atas balong, Cipanas Garut. Air panas alami Gunung Guntur ngalir sampai kamar mandi kamarmu."
+  waPesan={pesanWa}
+  preload={[
+    { srcset: hpAvif.srcSet.attribute, sizes: "100vw", media: MQ_HP, type: "image/avif" },
+    { srcset: dkAvif.srcSet.attribute, sizes: "100vw", media: MQ_DK, type: "image/avif" },
+  ]}
+>
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="h-hero">
+    <picture>
+      <source media={MQ_HP} type="image/avif" srcset={hpAvif.srcSet.attribute} sizes="100vw" />
+      <source media={MQ_HP} type="image/webp" srcset={hpWebp.srcSet.attribute} sizes="100vw" />
+      <source media={MQ_DK} type="image/avif" srcset={dkAvif.srcSet.attribute} sizes="100vw" />
+      <source media={MQ_DK} type="image/webp" srcset={dkWebp.srcSet.attribute} sizes="100vw" />
+      <img src={dkWebp.src} alt="Rumah kayu beratap ijuk di atas balong teratai, Gunung Guntur di belakangnya" width={heroDesk.width} height={heroDesk.height} fetchpriority="high" decoding="async" />
+    </picture>
+    <div class="hero-tx">
+      <h1 id="h-hero">Berendam air panas Gunung&nbsp;Guntur di kampung Sunda</h1>
     </div>
   </section>
 
-  <main>
-    {/* ============ KAMPUNG ============ */}
-    <section id="kampung" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Kampung" en="The village" /></p>
-        <h2 class={`${judul} mt-4 max-w-[20ch]`}>
-          <T id="Kampungnya dibangun di atas kolam." en="The village was built on the water." />
-        </h2>
-        <div class="mt-6 max-w-[54ch] space-y-4 text-tinta-lembut">
-          <p>
-            <T
-              id="Rumah panggung kayu, atap ijuk, berdiri langsung di atas air. Dari lantai kamar kelihatan teratai dan ikan. Jalan setapaknya batu."
-              en="Timber houses on stilts, thatched in palm fibre, standing directly over water. Lilies and fish are visible from the room floor. The paths are laid in stone."
-            />
-          </p>
-          <p>
-            <T
-              id="Bukan hotel yang ditempeli ornamen Sunda belakangan. Bentuk kampungnya lebih dulu ada, kamarnya menyesuaikan."
-              en="This is not a hotel that had Sundanese ornament added later. The village form came first, and the rooms followed it."
-            />
-          </p>
-        </div>
-      </div>
-      <div class={`${seksi} mt-10 sm:mt-14`}>
-        <img
-          src="/images/kampung-kolam-lotus.webp"
-          width="1200" height="675"
-          alt="Bungalow beratap ijuk berdiri di seberang kolam teratai yang sedang berbunga"
-          loading="lazy" decoding="async"
-          class="h-auto w-full"
-        />
-      </div>
-    </section>
+  <!-- Penanda merek -->
+  <div class="merek">
+    <img src="/logo/logogram-color.svg" alt="" width="64" height="64" />
+    <p class="nama">Kampung Sumber Alam</p>
+    <p class="sub">Sundanese Thermal Escape Village · Cipanas, Garut</p>
+    <p class="lead">Kamu menginap di rumah kayu di Cipanas,&nbsp;Garut, dan air panasnya ngalir sampai kamar mandi kamarmu.</p>
+    <div class="dua"><a class="btn btn-isi" href={waLink(pesanWa)} rel="noopener">Chat WhatsApp</a><a class="btn" href={BOOKING_URL} rel="noopener">Cek Kamar Kosong</a></div>
+  </div>
 
-    {/* ============ AIR PANAS ============ */}
-    <section id="air-panas" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-16`}>
-        <img
-          src="/images/bak-rendam.webp"
-          width="819" height="544"
-          alt="Bak rendam air panas alami di dalam kamar, ditemani lilin"
-          loading="lazy" decoding="async"
-          class="h-auto w-full"
-        />
-        <div>
-          <p class="penanda"><T id="Air panas" en="Hot spring" /></p>
-          <h2 class={`${judul} mt-4`}>
-            <T id="Air panasnya turun dari Gunung Guntur, dan sampai ke kamar." en="The hot water comes down from Mount Guntur, and reaches the room." />
-          </h2>
-          <div class="mt-6 max-w-[54ch] space-y-4 text-tinta-lembut">
-            <p>
-              <T
-                id="Tiap bungalow punya bak rendam dan shower yang mengalirkan air panas alami. Berendam tidak perlu menunggu pagi atau menunggu kolam sepi."
-                en="Every bungalow has a soaking tub and a shower running natural hot spring water. Soaking does not mean waiting for morning, or waiting for the pool to empty."
-              />
-            </p>
-            <p>
-              <T
-                id="Kolam besarnya tetap buka untuk yang mau berenang, kolam anak terpisah dari situ, dan sebagian unit punya kolam air panas sendiri di halamannya."
-                en="The large pool stays open for swimming, the children's pool sits apart from it, and some units have their own hot spring pool in the yard."
-              />
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Sambutan -->
+  <section class="sambut cv" aria-labelledby="h-sambut">
+    <div class="teks">
+      <p class="lbl">Wilujeng Sumping</p>
+      <h2 id="h-sambut">Kampung Sunda di atas balong</h2>
+      <p>Selamat datang di Kampung Sumber Alam, kampung Sunda di Cipanas, Garut. Rumah kayunya beratap ijuk dan berdiri di atas balong, kolam tempat teratai tumbuh dan ikan berenang.</p>
+      <p>Air panas di sini datang dari Gunung Guntur. Orang Garut sudah biasa berendam di Cipanas jauh sebelum kata healing ramai dipakai, dan di kampung ini kamu ikut kebiasaan itu.</p>
+    </div>
+    <figure class="f1">
+      <Picture src={sambut1} formats={["avif", "webp"]} widths={[400, 640, 900]} sizes="(min-width: 900px) 34vw, 78vw" quality={45} alt="Teras rumah kayu dengan kursi berbantal putih dan dinding bilik" loading="lazy" />
+    </figure>
+    <figure class="f2">
+      <Picture src={sambut2} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 28vw, 64vw" quality={45} alt="Teras rumah panggung terlihat di antara dedaunan, balong di bawahnya" loading="lazy" />
+    </figure>
+  </section>
 
-    {/* ============ MENGINAP ============ */}
-    <section id="menginap" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Menginap" en="Stay" /></p>
-        <h2 class={`${judul} mt-4 max-w-[26ch]`}>
-          <T id="Dua belas tipe, dari kamar berdua sampai rumah untuk delapan belas orang." en="Twelve types, from a room for two to a house for eighteen." />
-        </h2>
+  <div class="bilik" role="presentation"></div>
 
-        <div class="mt-10 grid gap-x-7 gap-y-11 sm:grid-cols-2 lg:grid-cols-4">
-          {
-            kelompok.map((g) => (
-              <div>
-                <img
-                  src={g.foto} width={g.w} height={g.h} alt={g.alt}
-                  loading="lazy" decoding="async"
-                  class="aspect-[4/3] w-full object-cover"
-                />
-                <h3 class="font-display mt-5 text-xl font-medium">
-                  <T id={g.id} en={g.en} />
-                </h3>
-                <p class="penanda mt-2"><T id={g.pax.id} en={g.pax.en} /></p>
-                <ul class="mt-4 space-y-1.5 text-tinta-lembut">
-                  {g.isi.map((k) => <li>{k.nama}</li>)}
-                </ul>
-              </div>
-            ))
-          }
-        </div>
+  <!-- Berendam -->
+  <section id="berendam" class="berendam on-gelap cv" aria-labelledby="h-berendam">
+    <div class="pita-img">
+      <picture>
+        <source media="(min-width: 768px)" srcset={(await getImage({ src: berendamDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
+        <img src={(await getImage({ src: berendamDesk, width: 1280, format: "webp", quality: 70 })).src} alt="Air panas mengalir dari pancuran batu ke kolam" width={berendamDesk.width} height={berendamDesk.height} loading="lazy" decoding="async" style="width:100%;height:auto" />
+      </picture>
+    </div>
+    <div class="kepala">
+      <div class="judul-garis"><h2 id="h-berendam">Berendam</h2></div>
+      <p class="pengantar">Kamu bisa berendam air panas di empat tempat, mulai dari kamar mandi kamarmu sendiri.</p>
+    </div>
+    <ol class="empat">
+      {berendam.map((b, i) => (
+        <li>
+          <span class="no">0{i + 1}</span>
+          <h3>{b.nama}</h3>
+          <p>{b.isi}{b.url && <> <a class="panah" href={b.url} rel="noopener">Lihat Sibentang →</a></>}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
 
-        <p class="mt-10 max-w-[56ch] text-sm text-tinta-lembut">
-          <T id="Tarif kamar berubah menurut tanggal. Angka terkini ada di halaman pemesanan." en="Room rates move with the date. Current figures are on the booking page." />{" "}
-          <a href={SIBENTANG_URL} rel="noopener" class="border-b border-hutan pb-0.5 text-hutan">
-            <T id="Villa Sibentang punya halaman sendiri." en="Villa Sibentang has its own site." />
-          </a>
-        </p>
-      </div>
-    </section>
+  <!-- Empat kata -->
+  <section class="kata cv" aria-labelledby="h-kata">
+    <div class="kepala">
+      <h2 id="h-kata">Sundanese Thermal Escape Village</h2>
+      <p>Tiap kata di nama ini menunjuk hal nyata yang bisa kamu lihat di Kampung Sumber Alam. Geser untuk membaca →</p>
+    </div>
+    <div class="geser" tabindex="0" aria-label="Empat kata tentang Kampung Sumber Alam">
+      {kataImg.map((img, i) => (
+        <figure class="kartu-foto">
+          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={kataAlt[i]} loading="lazy" />
+          <figcaption><span class="n">0{i + 1}</span><span>/ 05</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
 
-    {/* ============ MAKAN ============ */}
-    <section id="makan" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Makan" en="Dining" /></p>
-        <h2 class={`${judul} mt-4 max-w-[24ch]`}>
-          <T id={`Tiga tempat makan, salah satunya ${RESTORAN} yang menghadap kolam.`} en={`Three places to eat, one of them ${RESTORAN}, facing the pond.`} />
-        </h2>
-        <p class="mt-6 max-w-[54ch] text-tinta-lembut">
-          <T id={`${RESTORAN} menyajikan masakan Indonesia dan jajanan pasar. Sarapan prasmanan sudah termasuk di sebagian besar paket menginap.`} en={`${RESTORAN} serves Indonesian cooking and traditional market snacks. Buffet breakfast is included in most stay packages.`} />
-        </p>
-      </div>
-      <div class={`${seksi} mt-9`}>
-        <img
-          src="/images/restoran-tunjung.webp"
-          width="1200" height="797"
-          alt={`Ruang makan ${RESTORAN} berdinding kayu menghadap kolam`}
-          loading="lazy" decoding="async"
-          class="h-auto w-full"
-        />
-        <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {hidangan.map((h) => (
-            <img src={h.foto} width="800" height="531" alt={h.alt} loading="lazy" decoding="async" class="h-auto w-full" />
-          ))}
-        </div>
-      </div>
-    </section>
+  <!-- Menginap -->
+  <section id="menginap" class="menginap on-gelap cv" aria-labelledby="h-menginap">
+    <div class="kepala">
+      <div class="judul-garis"><h2 id="h-menginap">Menginap</h2></div>
+      <p>Ada 14 tipe rumah kayu beratap ijuk di atas balong, dari Bungalow untuk berdua sampai Babakan Siluhur untuk 18 orang, semuanya tersambung jalan setapak.</p>
+    </div>
+    <div class="geser" tabindex="0" aria-label="Tur singkat menginap di Kampung Sumber Alam">
+      <figure class="kartu-foto">
+        <Picture src={menginapImg} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt="Dua rumah kayu beratap ijuk di atas balong teratai" loading="lazy" />
+        <figcaption><span class="n">01</span><span>Rumah kayu di atas balong</span></figcaption>
+      </figure>
+      {turImg.map((img, i) => (
+        <figure class="kartu-foto">
+          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={turCap[i]} loading="lazy" />
+          <figcaption><span class="n">{String(i + 2).padStart(2, "0")}</span><span>{turCap[i]}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="aksi">
+      <a class="btn" href={BOOKING_URL} rel="noopener">Lihat semua kamar</a>
+      <p class="tipe">{tipe.map((t) => <span>{t}</span>)}</p>
+    </div>
+  </section>
 
-    {/* ============ AKTIVITAS ============ */}
-    <section class="pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Di dalam area" en="On the grounds" /></p>
-        <h2 class={`${judul} mt-4 max-w-[26ch]`}>
-          <T id={`Kacapi suling main langsung, ${SPA} buka di dalam area.`} en={`Kacapi suling plays live, and ${SPA} is inside the grounds.`} />
-        </h2>
-        <div class="mt-10 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            aktivitas.map((a) => (
-              <figure>
-                <img src={a.foto} width={a.w} height={a.h} alt={a.alt} loading="lazy" decoding="async" class="aspect-[3/2] w-full object-cover" />
-                <figcaption class="penanda mt-3"><T id={a.t.id} en={a.t.en} /></figcaption>
-              </figure>
-            ))
-          }
-        </div>
-        <ul class="mt-12 grid grid-cols-2 gap-x-8 gap-y-3.5 border-t border-garis pt-8 text-tinta-lembut lg:grid-cols-3">
-          {FASILITAS.map((f) => <li><T id={f.id} en={f.en} /></li>)}
-        </ul>
-      </div>
-    </section>
-
-    {/* ============ ULASAN ============ */}
-    <section class="pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Kata tamu" en="Guest ratings" /></p>
-        <h2 class={`${judul} mt-4 max-w-[26ch]`}>
-          <T id="Peringkat dua dari lima belas hotel di Garut menurut Tripadvisor." en="Ranked second of fifteen hotels in Garut on Tripadvisor." />
-        </h2>
-        <dl class="mt-9 grid gap-9 sm:grid-cols-2 sm:gap-14">
-          {
-            ULASAN.map((u) => (
-              <div class="border-t border-hutan pt-5">
-                <dt class="penanda">{u.sumber}</dt>
-                <dd class="mt-3">
-                  <span class="font-display text-5xl font-medium text-hutan">{u.nilai}</span>
-                  <span class="text-tinta-lembut"> <T id={`dari ${u.dari}`} en={`out of ${u.dari}`} /></span>
-                  <p class="mt-2 text-[0.9375rem] text-tinta-lembut">
-                    <T id={`${u.jumlah} ulasan`} en={`${u.jumlah} reviews`} />{". "}
-                    <T id={u.catatan.id} en={u.catatan.en} />
-                  </p>
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-      </div>
-    </section>
-
-    {/* ============ RAPAT DAN ACARA ============ */}
-    <section id="acara" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-16`}>
-        <div>
-          <p class="penanda"><T id="Rapat dan acara" en="Meetings and events" /></p>
-          <h2 class={`${judul} mt-4 max-w-[24ch]`}>
-            <T id="Purba Dewata memuat 350 orang dengan tata letak teater." en="Purba Dewata seats 350 people theatre style." />
-          </h2>
-          <p class="mt-6 max-w-[54ch] text-tinta-lembut">
-            <T
-              id="Tujuh ruang pertemuan, dari Gambir Wangi untuk 15 orang sampai Purba Dewata Full. Babakan Siluhur 1 memuat 18 orang dalam satu penginapan, Babakan Siluhur 2 memuat 12 orang dengan kolam terpisah dari tamu lain."
-              en="Seven meeting rooms, from Gambir Wangi for 15 up to Purba Dewata Full. Babakan Siluhur 1 sleeps 18 under one booking, and Babakan Siluhur 2 sleeps 12 with a pool separate from other guests."
-            />
-          </p>
-        </div>
-        <img src="/images/purba-dewata.webp" width="819" height="544" alt="Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain" loading="lazy" decoding="async" class="h-auto w-full" />
-      </div>
-
-      <div class={`${seksi} mt-12`}>
-        <table class="w-full border-collapse text-left text-[0.9375rem]">
-          <thead>
-            <tr class="border-b border-tinta">
-              <th class="penanda py-3 pr-3 text-tinta"><T id="Ruang" en="Room" /></th>
-              <th class="penanda py-3 pr-3 text-tinta">Theater</th>
-              <th class="penanda hidden py-3 pr-3 text-tinta md:table-cell"><T id="Kelas" en="Classroom" /></th>
-              <th class="penanda hidden py-3 pr-3 text-tinta md:table-cell">U-shape</th>
-              <th class="penanda py-3 text-tinta"><T id="Meja bundar" en="Round table" /></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              RUANG_MICE.map((r) => (
-                <tr class="border-b border-garis">
-                  <td class="py-3 pr-3">{r.nama}</td>
-                  <td class="py-3 pr-3 text-tinta-lembut tabular-nums">{r.theater ?? "-"}</td>
-                  <td class="hidden py-3 pr-3 text-tinta-lembut tabular-nums md:table-cell">{r.kelas ?? "-"}</td>
-                  <td class="hidden py-3 pr-3 text-tinta-lembut tabular-nums md:table-cell">{r.uShape ?? "-"}</td>
-                  <td class="py-3 text-tinta-lembut tabular-nums">{r.bundar}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-        <p class="mt-3 text-sm text-tinta-lembut md:hidden">
-          <T id="Tata letak kelas dan U-shape tampil di layar yang lebih lebar." en="Classroom and U-shape layouts appear on wider screens." />
-        </p>
-
-        {/* Daftar tarif penuh sengaja TIDAK ditayangkan di beranda. Tabel
-            empat baris kali dua kolom memaksa calon tamu membandingkan
-            sebelum dia tertarik, dan itu menaikkan gesekan bukan konversi.
-            Beranda cukup menyebut titik masuk termurah lalu mengajak bertanya.
-            Angkanya dihitung dari data, bukan ditulis ulang di sini. */}
-        <div class="mt-14 border-t border-hutan pt-7">
-          <p class="penanda"><T id="Paket rombongan" en="Group package" /></p>
-          <p class="mt-4">
-            <span class="font-display text-4xl font-medium text-hutan sm:text-5xl">Rp {termurah}</span>
-            <span class="text-tinta-lembut"> <T id="per orang" en="per person" /></span>
-          </p>
-          <p class="mt-3 max-w-[52ch] text-tinta-lembut">
-            <T
-              id="Menginap satu malam, tiga kali makan prasmanan, tiket kolam renang dan kamar rendam, pajak dan pelayanan. Berlaku untuk empat orang sekamar di hari kerja."
-              en="One night, three buffet meals, pool and soaking room access, tax and service. Based on four sharing a room on a weekday."
-            />
-          </p>
-        </div>
-
-        <div class="mt-9 grid gap-8 sm:grid-cols-3 sm:gap-10">
-          <div>
-            <p class="penanda"><T id="Termasuk di dua paket" en="Included in both" /></p>
-            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
-              {TERMASUK_SEMUA.map((x) => <li><T id={x.id} en={x.en} /></li>)}
-            </ul>
-          </div>
-          <div>
-            <p class="penanda"><T id="Tambahan paket rapat" en="Meeting package adds" /></p>
-            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
-              {TERMASUK_MEETING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
-            </ul>
-          </div>
-          <div>
-            <p class="penanda"><T id="Tambahan paket outing" en="Outing package adds" /></p>
-            <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
-              {TERMASUK_OUTING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
-            </ul>
-          </div>
-        </div>
-
-        <p class="mt-8 max-w-[60ch] text-sm text-tinta-lembut">
-          <T id="Tarif mulai dari ini berasal dari materi resmi resort dan dikonfirmasi ulang saat pemesanan. Rincian lengkap per jumlah peserta dikirim lewat WhatsApp." en="This entry rate comes from the resort's own published material and is reconfirmed at booking. Full details per group size are sent over WhatsApp." />
-        </p>
-        <a
-          href={waLink("Halo, saya mau tanya paket rapat dan gathering di Kampung Sumber Alam.")}
-          rel="noopener" target="_blank"
-          class="mt-7 inline-block border-b border-hutan pb-0.5 text-hutan"
-        >
-          <T id="Tanya paket rombongan lewat WhatsApp" en="Ask about group packages on WhatsApp" />
-        </a>
-      </div>
-    </section>
-
-    {/* ============ GALERI ============ */}
-    <section id="galeri" class="scroll-mt-24 pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Galeri" en="Gallery" /></p>
-        <h2 class={`${judul} mt-4 max-w-[24ch]`}>
-          <T id="Lentera malam, kabut pagi, gerbang batu." en="Lanterns at night, mist at dawn, a stone gate." />
-        </h2>
-      </div>
-      <div class={`${seksi} mt-9 grid grid-cols-2 gap-3 lg:grid-cols-3`}>
-        {galeri.map((g) => (
-          <img src={g.foto} width={g.w} height={g.h} alt={g.alt} loading="lazy" decoding="async" class="aspect-[4/5] w-full object-cover lg:aspect-[4/3]" />
+  <!-- Tiga cara datang -->
+  <section id="datang" class="cara cv" aria-labelledby="h-cara">
+    <div class="cara-in">
+      <h2 id="h-cara">Kamu datang berdua, sekeluarga, atau bareng kantor?</h2>
+      <div class="cara-grid">
+        {cara.map((c) => (
+          <article class="kartu">
+            <p class="lbl">{c.lbl}</p>
+            <h3>{c.nama}</h3>
+            <Picture src={c.img} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 30vw, 90vw" quality={45} alt={c.alt} loading="lazy" />
+            <p>{c.isi}</p>
+            <p class="harga">{c.harga}</p>
+            <a class="btn" href={waLink(c.wa)} rel="noopener">Tanya via WhatsApp</a>
+          </article>
         ))}
       </div>
-    </section>
+      <p class="catatan">Tarif kami konfirmasi ulang waktu kamu memesan lewat WhatsApp.</p>
+    </div>
+  </section>
 
-    {/* ============ PERTANYAAN ============ */}
-    <section class="pt-20 sm:pt-32">
-      <div class={seksi}>
-        <p class="penanda"><T id="Sebelum memesan" en="Before you book" /></p>
-        <h2 class={`${judul} mt-4 max-w-[22ch]`}>
-          <T id="Yang paling sering ditanyakan." en="What guests ask most." />
-        </h2>
-        <div class="mt-9 max-w-[64ch]">
-          {
-            tanya.map((q, i) => (
-              <details class="tanya border-b border-garis" open={i === 0}>
-                <summary class="flex items-start justify-between gap-6 py-4">
-                  <span><T id={q.t.id} en={q.t.en} /></span>
-                  <span aria-hidden="true" class="tanda mt-0.5 shrink-0 text-hutan">+</span>
-                </summary>
-                <p class="pb-5 text-tinta-lembut"><T id={q.j.id} en={q.j.en} /></p>
-              </details>
-            ))
-          }
-        </div>
+  <!-- Kampung -->
+  <section id="kampung" class="kampung cv" aria-labelledby="h-kampung">
+    <div class="kepala">
+      <h2 id="h-kampung">Seharian di kampung</h2>
+      <p>Kamu makan Nasi Liwet atau Nasi Tutug Oncom di restoran Tunjung Balebat, mampir ke Pitaloka Spa, dan anak-anak ikut Melukis Caping, Melukis Layangan, atau Jaipong.</p>
+    </div>
+    <div class="jajar">
+      {kampungImg.map((img, i) => (
+        <figure>
+          <Picture src={img} formats={["avif", "webp"]} widths={[240, 400, 600]} sizes="(min-width: 900px) 25vw, 50vw" quality={45} alt={kampungAlt[i]} loading="lazy" />
+          <figcaption>{kampungCap[i]}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <!-- Guntur + lokasi -->
+  <section id="lokasi" class="guntur cv" aria-labelledby="h-lokasi">
+    <picture>
+      <source media="(min-width: 768px)" srcset={(await getImage({ src: lokasiDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+      <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+      <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
+      <img src={(await getImage({ src: lokasiDesk, width: 1280, format: "webp", quality: 70 })).src} alt="Kampung Sumber Alam dan Cipanas dilihat dari udara" width={lokasiDesk.width} height={lokasiDesk.height} loading="lazy" decoding="async" />
+    </picture>
+    <div class="kotak on-gelap">
+      <p class="lbl">Kaki Guntur</p>
+      <h2 id="h-lokasi">Kami ada di Cipanas, Garut</h2>
+      <p>Kaki Gunung Guntur, asal air panas yang kamu pakai berendam, sekitar 15 menit perjalanan dari Kampung Sumber Alam.</p>
+      <p style="margin-top:12px">Alamat kami Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, Jawa Barat, dan kalau bingung jalannya, telepon saja <a href="tel:+62262238000">(0262) 238000</a>.</p>
+      <a class="btn" href={MAPS_URL} rel="noopener" style="margin-top:20px">Buka Google Maps</a>
+    </div>
+  </section>
+
+  <!-- Ulasan -->
+  <section class="ulasan cv" aria-labelledby="h-ulasan">
+    <div class="ulasan-in">
+      <h2 id="h-ulasan" style="font-size:clamp(1.9rem,3.4vw,2.8rem)">Begini penilaian tamu Kampung Sumber Alam di Tripadvisor dan Traveloka.</h2>
+      <div class="angka">
+        {ULASAN.map((u) => (
+          <div>
+            <p class="lbl">{u.sumber}</p>
+            <p class="skor">{u.nilai}<small> / {u.dari}</small></p>
+            <p>{u.jumlah} ulasan · {u.catatan.id}</p>
+          </div>
+        ))}
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <Footer />
-  <BarPesan />
+  <div class="bilik" role="presentation"></div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
-</Base>
+  <!-- Penutup -->
+  <section class="penutup cv" aria-labelledby="h-tutup">
+    <h2 id="h-tutup">Kalau tanggalnya sudah ada, cek kamarnya, atau ngobrol dulu sama kami juga boleh.</h2>
+    <div class="dua">
+      <a class="btn btn-isi" href={waLink(pesanWa)} rel="noopener">Chat WhatsApp</a>
+      <a class="btn" href={BOOKING_URL} rel="noopener">Cek Kamar Kosong</a>
+    </div>
+  </section>
+</Situs>

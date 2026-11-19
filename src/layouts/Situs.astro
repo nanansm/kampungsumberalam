@@ -1,0 +1,118 @@
+---
+import "../styles/situs.css";
+import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON_TAMPIL, EMAIL, IG_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink } from "../data/content";
+
+interface Props {
+  title: string;
+  description: string;
+  waPesan: string;
+  preload?: { srcset: string; sizes: string; media?: string; type?: string }[];
+}
+const { title, description, waPesan, preload = [] } = Astro.props;
+const kanonik = new URL(Astro.url.pathname, SITE).href;
+const tahun = new Date().getFullYear();
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Resort",
+  name: NAMA_PANJANG,
+  url: SITE,
+  telephone: "+62262238000",
+  email: EMAIL,
+  address: { "@type": "PostalAddress", streetAddress: "Jl. Raya Cipanas No. 122", addressLocality: "Garut", addressRegion: "Jawa Barat", postalCode: "44151", addressCountry: "ID" },
+  geo: { "@type": "GeoCoordinates", latitude: GEO.lat, longitude: GEO.lng },
+  sameAs: [IG_URL],
+};
+---
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={kanonik} />
+  <meta name="theme-color" content="#FCFAE6" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={kanonik} />
+  <meta property="og:locale" content="id_ID" />
+  <link rel="icon" href="/logo/logogram-color.svg" type="image/svg+xml" />
+  {preload.map((p) => <link rel="preload" as="image" imagesrcset={p.srcset} imagesizes={p.sizes} media={p.media} type={p.type} fetchpriority="high" />)}
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="skip" href="#isi">Langsung ke isi</a>
+  <header class="hdr">
+    <div class="hdr-in">
+      <button type="button" popovertarget="menu" aria-label="Buka menu">Menu</button>
+      <a class="logo" href="/" aria-label={NAMA_PANJANG}><img src="/logo/logotype-color.svg" alt={NAMA_PANJANG} width="113" height="36" /></a>
+      <a class="lbl-a kanan" href={BOOKING_URL} rel="noopener">Pesan</a>
+    </div>
+  </header>
+
+  <div id="menu" class="menu" popover>
+    <div class="menu-in">
+      <div class="menu-top">
+        <button type="button" popovertarget="menu" popovertargetaction="hide">Tutup</button>
+        <img src="/logo/logotype-putih.svg" alt="" width="113" height="36" loading="lazy" />
+        <a class="lbl" href={BOOKING_URL} style="text-decoration:none">Pesan</a>
+      </div>
+      <nav aria-label="Menu utama">
+        <a href="/#berendam">Berendam</a>
+        <a href="/#menginap">Menginap</a>
+        <a href="/#datang">Rombongan &amp; Kantor</a>
+        <a href="/#kampung">Kampung</a>
+        <a href="/#lokasi">Lokasi</a>
+        <a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a>
+      </nav>
+      <div class="kecil lbl">
+        <a href={waLink(waPesan)} rel="noopener">WhatsApp</a>
+        <a href={`tel:+62262238000`}>{TELEPON_TAMPIL}</a>
+        <a href={IG_URL} rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </div>
+
+  <main id="isi"><slot /></main>
+
+  <footer class="ftr cv">
+    <div class="ftr-in">
+      <div>
+        <img src="/logo/lockup-putih.svg" alt={NAMA_PANJANG} width="89" height="64" loading="lazy" />
+        <p style="margin-top:18px;max-width:34ch">{ALAMAT_SATU_BARIS}</p>
+      </div>
+      <div>
+        <p class="lbl">Hubungi</p>
+        <ul>
+          <li><a href={waLink(waPesan)} rel="noopener">WhatsApp</a></li>
+          <li><a href="tel:+62262238000">{TELEPON_TAMPIL}</a></li>
+          <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Pesan</p>
+        <ul>
+          <li><a href={BOOKING_URL} rel="noopener">Cek kamar kosong</a></li>
+          <li><a href={TRAVELOKA_URL} rel="noopener">Traveloka</a></li>
+          <li><a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Ikuti</p>
+        <ul>
+          <li><a href={IG_URL} rel="noopener">Instagram {IG_HANDLE}</a></li>
+          <li><a href={MAPS_URL} rel="noopener">Google Maps</a></li>
+        </ul>
+      </div>
+      <p class="bawah">© {tahun} {NAMA_PANJANG} · Cipanas, Garut</p>
+    </div>
+  </footer>
+
+  <nav class="bar" aria-label="Pesan cepat">
+    <a href={waLink(waPesan)} rel="noopener">Chat WhatsApp</a>
+    <a href={BOOKING_URL} rel="noopener">Cek Kamar</a>
+  </nav>
+</body>
+</html>
