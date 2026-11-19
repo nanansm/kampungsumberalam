@@ -102,7 +102,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
               <source media={MQ_HP} type="image/webp" srcset={awalHp ? sl.hpWebp : GIF} data-srcset={awalHp ? undefined : sl.hpWebp} sizes="100vw" />
               <source media={MQ_DK} type="image/avif" srcset={awalDk || sl.n === 1 ? sl.dkAvif : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkAvif} sizes="100vw" />
               <source media={MQ_DK} type="image/webp" srcset={awalDk || sl.n === 1 ? sl.dkWebp : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkWebp} sizes="100vw" />
-              <img src={GIF} alt={sl.alt} width="1440" height="1800" fetchpriority={awalHp || awalDk ? "high" : "low"} decoding="async" />
+              <img src={GIF} alt={sl.alt} width="1440" height="1800" fetchpriority={awalHp || awalDk ? "high" : "low"} decoding={awalHp || awalDk ? "sync" : "async"} />
             </picture>
             {sl.kata && <p class="kata" aria-hidden="true">{sl.kata}</p>}
           </figure>
@@ -111,10 +111,9 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
     </section>
     <div class="layar1-logo">
       <img src="/logo/lockup-color.svg" alt="Kampung Sumber Alam Resort" width="1948" height="1396" />
-      <p>Cipanas · Garut</p>
     </div>
   </div>
-  <script is:inline>(()=>{const h=document.querySelector('.hero');if(!h)return;const S=[...h.querySelectorAll('.sl')];let mulai=false;const muat=()=>{h.querySelectorAll('source[data-srcset]').forEach(x=>{x.srcset=x.dataset.srcset;x.removeAttribute('data-srcset')})};const aktif=()=>S.filter(x=>getComputedStyle(x).display!=='none');const jalan=()=>{if(mulai||matchMedia('(prefers-reduced-motion: reduce)').matches)return;mulai=true;muat();let i=0;setInterval(()=>{if(document.hidden)return;const A=aktif();const c=A.findIndex(x=>x.classList.contains('tampil'));const k=c<0?0:c;const n=(k+1)%A.length;const im=A[n].querySelector('img');const ganti=()=>{A.forEach(x=>x.classList.remove('tampil'));A[n].classList.add('tampil')};if(im.complete&&im.naturalWidth>1)ganti();else im.addEventListener('load',ganti,{once:true})},5000)};S.forEach(x=>x.classList.remove('on','on-dk'));aktif()[0].classList.add('tampil');const t0=()=>setTimeout(jalan,1500);document.readyState==='complete'?t0():addEventListener('load',t0,{once:true})})()</script>
+  <script is:inline>(()=>{const h=document.querySelector('.hero');if(!h)return;const S=[...h.querySelectorAll('.sl')];let mulai=false;const muat=()=>{h.querySelectorAll('source[data-srcset]').forEach(x=>{x.srcset=x.dataset.srcset;x.removeAttribute('data-srcset')})};const aktif=()=>S.filter(x=>getComputedStyle(x).display!=='none');const jalan=()=>{if(mulai||matchMedia('(prefers-reduced-motion: reduce)').matches)return;mulai=true;S.forEach(x=>x.classList.remove('on','on-dk'));aktif()[0].classList.add('tampil');muat();let i=0;setInterval(()=>{if(document.hidden)return;const A=aktif();const c=A.findIndex(x=>x.classList.contains('tampil'));const k=c<0?0:c;const n=(k+1)%A.length;const im=A[n].querySelector('img');const ganti=()=>{A.forEach(x=>x.classList.remove('tampil'));A[n].classList.add('tampil')};if(im.complete&&im.naturalWidth>1)ganti();else im.addEventListener('load',ganti,{once:true})},5000)};const t0=()=>setTimeout(jalan,1500);document.readyState==='complete'?t0():addEventListener('load',t0,{once:true})})()</script>
 
   <!-- Video udara: dimuat saat mendekati layar, tanpa suara -->
   <section class="udara-vid" aria-label={t("video.label")}>
@@ -156,8 +155,8 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
     <div class="pita-img">
       <picture>
         <source media="(min-width: 768px)" srcset={(await getImage({ src: berendamDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
         <img src={(await getImage({ src: berendamDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.berendam")} width={berendamDesk.width} height={berendamDesk.height} loading="lazy" decoding="async" style="width:100%;height:auto" />
       </picture>
     </div>

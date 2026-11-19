@@ -40,6 +40,7 @@ const schema = {
   geo: { "@type": "GeoCoordinates", latitude: GEO.lat, longitude: GEO.lng },
   sameAs: [IG_URL],
 };
+const adaHero = Astro.slots.has("hero");
 ---
 <!doctype html>
 <html lang={lang}>
@@ -79,7 +80,7 @@ const schema = {
 <body>
   <a class="skip" href="#isi">{t("ui.skip")}</a>
   <slot name="hero" />
-  <header class="hdr">
+  <header class:list={["hdr", { "tanpa-hero": !adaHero }]}>
     <div class="hdr-in">
       <div class="kiri">
       <button class="burger" type="button" popovertarget="menu" aria-label={t("ui.menu")}><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span class="burger-tx">{t("ui.menu")}</span></button>
@@ -94,6 +95,7 @@ const schema = {
       </div>
     </div>
   </header>
+  <script is:inline>(()=>{const h=document.querySelector(".hdr"),z=document.querySelector(".layar1,.hal-hero");if(!h||!z)return;h.classList.add("sembunyi");new IntersectionObserver(e=>{h.classList.toggle("sembunyi",e[0].isIntersecting)},{rootMargin:"-60px 0px 0px 0px"}).observe(z)})()</script>
 
   <div id="menu" class="menu" popover>
     <div class="menu-in">
@@ -123,7 +125,7 @@ const schema = {
     </div>
   </div>
 
-  <main id="isi"><slot /></main>
+  <main id="isi" class:list={[{ "isi-tanpa-hero": !adaHero }]}><slot /></main>
 
   <footer class="ftr cv">
     <div class="ftr-in">

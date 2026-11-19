@@ -54,7 +54,10 @@ a[href^="tel"] { white-space: nowrap; }
 :focus-visible { outline: 2px solid var(--pohon); outline-offset: 3px; }
 
 /* ---------- Header ---------- */
-.hdr { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--garis); }
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--garis); box-shadow: 0 2px 14px rgba(35,34,38,.06); transition: transform .35s ease, visibility 0s linear 0s; }
+.hdr.sembunyi { transform: translateY(-100%); visibility: hidden; box-shadow: none; transition: transform .35s ease, visibility 0s linear .35s; }
+.isi-tanpa-hero { padding-top: 60px; }
+@media (prefers-reduced-motion: reduce) { .hdr, .hdr.sembunyi { transition: none; } }
 .hdr .kiri { justify-self: start; display: flex; align-items: center; gap: clamp(12px, 2.4vw, 24px); }
 .hdr-in { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 60px; padding: 0 var(--pad); }
 .hdr button, .hdr .lbl-a { justify-self: start; display: inline-flex; align-items: center; height: 44px; font-size: .8rem !important; background: none; border: 0; color: var(--tinta); cursor: pointer; padding: 12px 0; min-height: 44px; font: 500 .75rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; text-decoration: none; }
