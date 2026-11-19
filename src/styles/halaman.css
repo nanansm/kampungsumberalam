@@ -4,8 +4,9 @@
 
 /* ---------- Hero halaman dalam (gaya beranda: foto dulu, header di bawahnya) ---------- */
 .hal-hero { position: relative; height: clamp(360px, 62svh, 640px); overflow: hidden; background: #b9c2bd; border-bottom: 1px solid var(--garis); }
-.hal-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hal-hero::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .3); }
+.hal-hero-foto { position: absolute; inset: 0; }
+.hal-hero img { position: absolute; left: 0; top: -8%; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+.hal-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(4, 40, 33, .38) 0%, rgba(4, 40, 33, .12) 34%, rgba(4, 40, 33, .46) 100%); }
 .hal-hero-tx { position: relative; z-index: 1; height: 100%; max-width: 1440px; margin: 0 auto; padding: 0 var(--pad) clamp(28px, 5vw, 56px); display: flex; flex-direction: column; justify-content: flex-end; color: #fff; }
 .hal-hero-tx .lbl { color: rgba(255,255,255,.85); }
 .hal-hero h1 { margin-top: 12px; max-width: 20ch; font-size: clamp(2.1rem, 6vw, 4.4rem); line-height: 1.02; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.3); }
@@ -91,3 +92,9 @@
 @media (min-width: 768px) { .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .hal ul.border-t { list-style: none; padding-left: 0; }
+
+/* Redesign 2027: blok isi halaman dalam muncul pelan saat digulir (hanya saat gerak boleh) */
+html.gerak .hal .seksi > *, html.gerak .hal .judul-seksi { opacity: 0; }
+html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
+.hal picture { overflow: hidden; }
+.hal .btn { margin-right: 4px; }

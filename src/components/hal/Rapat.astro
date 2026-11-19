@@ -36,10 +36,10 @@ const { lang } = Astro.props;
   path="/meetings/"
   og="/og/meetings.jpg"
   title={{ id: 'Paket Fullboard Meeting dan Outing di Garut | Kampung Sumber Alam', en: 'Fullboard meeting and outing packages in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Tujuh ruang pertemuan di Kampung Sumber Alam Garut, dari 15 sampai 350 orang. Fullboard Meeting mulai Rp1.143.000 per orang sudah termasuk menginap, tiga kali makan, pajak, dan pelayanan.', en: 'Seven meeting rooms at Kampung Sumber Alam Garut, for 15 to 350 people. Fullboard Meeting from Rp1,143,000 per person, including the stay, three meals, tax and service.' }}
+  description={{ id: 'Tiga ruang meeting di Kampung Sumber Alam Garut, untuk 15 sampai 350 orang. Fullboard Meeting mulai Rp1.143.000 per orang sudah termasuk menginap, tiga kali makan, pajak, dan pelayanan.', en: 'Three meeting rooms at Kampung Sumber Alam Garut, for 15 to 350 people. Fullboard Meeting from Rp1,143,000 per person, including the stay, three meals, tax and service.' }}
   penanda={{id: "Rapat dan outing", en: "Meetings and outings"}}
-  judul={{id: "Tujuh ruang, sampai 350 orang duduk teater",
-      en: "Seven rooms, up to 350 seated theatre style",}}
+  judul={{id: "Tiga ruang meeting, sampai 350 orang susunan theatre",
+      en: "Three meeting rooms, up to 350 seated theatre style",}}
   foto="/images/kampung-kolam-teratai.webp"
   w={1600}
   h={768}
@@ -283,9 +283,8 @@ const { lang } = Astro.props;
             href={waLink("Halo, saya mau tanya paket rapat dan gathering di Kampung Sumber Alam.")}
             rel="noopener"
             target="_blank"
-            class="penanda mt-8 inline-block bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
-          >
-            <T id="Minta penawaran lewat WhatsApp" en="Request a quote on WhatsApp" />
+            class="btn btn-isi btn-wa mt-8"
+          ><span class="btn-tx"><T id="Minta penawaran lewat WhatsApp" en="Request a quote on WhatsApp" /></span>
           </a>
         </div>
       </div>

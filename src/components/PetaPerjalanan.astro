@@ -1,0 +1,160 @@
+---
+/**
+ * Peta perjalanan: seberapa jauh tempat di sekitar dari Kampung Sumber Alam.
+ * Adaptasi "The Faraway Nearby" (bedah ownprimland.com), jujur pada data:
+ * bukan peta geografis. Panjang garis sebanding waktu tempuh (Data Master
+ * bab 02 §6); arah garis sengaja tidak bermakna dan disebut di catatan.
+ *
+ * Desktop: kipas garis dari logo KSA + daftar di kanan. HP: daftar dengan
+ * batang waktu di tiap baris. Garis tergambar (DrawSVG) saat tujuan dipilih.
+ */
+import { JARAK_TEMPUH } from "../data/content";
+import { lekat } from "../data/rag";
+
+interface Props { lang: "id" | "en"; judulTingkat?: "h2" | "h3" }
+const { lang, judulTingkat = "h2" } = Astro.props;
+const Judul = judulTingkat;
+
+const MAKS = 90; // menit, cincin terluar
+const VB = { w: 1000, h: 580 };
+const O = { x: 500, y: 532 };
+const R0 = 40; // jari-jari lingkar logo
+const R = 476; // ujung 90 menit
+
+const urut = [...JARAK_TEMPUH].sort((a, b) => a.menit - b.menit);
+/* sebar garis pendek dan panjang bergantian supaya titik ujung tidak bertumpuk:
+   urutan sudut = permutasi bit-balik dari urutan waktu */
+const n = urut.length;
+const bitBalik = (i: number, bit: number) => parseInt(i.toString(2).padStart(bit, "0").split("").reverse().join(""), 2);
+const BIT = Math.ceil(Math.log2(n));
+const posisi = [...Array(2 ** BIT).keys()].map((i) => bitBalik(i, BIT)).filter((i) => i < n);
+const sudut = (slot: number) => Math.PI - (Math.PI * 0.04) - (slot / (n - 1)) * Math.PI * 0.92;
+
+const garis = urut.map((t, i) => {
+  const slot = posisi.indexOf(i);
+  const a = sudut(slot);
+  const r = R0 + (t.menit / MAKS) * (R - R0);
+  const x1 = O.x + Math.cos(a) * R0, y1 = O.y - Math.sin(a) * R0;
+  const x2 = O.x + Math.cos(a) * r, y2 = O.y - Math.sin(a) * r;
+  return { ...t, no: i + 1, x1, y1, x2, y2, px: (x2 / VB.w) * 100, py: (y2 / VB.h) * 100, kanan: x2 > O.x };
+});
+const cincin = [15, 30, 60, 90].map((m) => ({ m, r: R0 + (m / MAKS) * (R - R0) }));
+const waktu = (m: number) => {
+  const j = Math.floor(m / 60), s = m % 60;
+  if (lang === "en") return j ? `${j} hr${s ? ` ${s} min` : ""}` : `${s} min`;
+  return j ? `${j} jam${s ? ` ${s} menit` : ""}` : `${s} menit`;
+};
+const pilihAwal = garis.findIndex((g) => g.nama === "Kaki Gunung Guntur");
+const T = {
+  penanda: { id: "Di sekitar Kampung Sumber Alam", en: "Around Kampung Sumber Alam" },
+  judul: { id: "Kaki Gunung Guntur cuma 15 menit dari Kampung Sumber Alam", en: "The foot of Mount Guntur is only 15 minutes from Kampung Sumber Alam" },
+  teks: { id: "Panjang tiap garis mengikuti waktu tempuh dari Kampung Sumber Alam. Pilih satu tujuan untuk melihat garisnya.", en: "Each line is as long as the travel time from Kampung Sumber Alam. Pick a place to trace its line." },
+  catatan: { id: "Arah garis tidak menunjukkan arah mata angin, dan waktu tempuhnya diambil dari katalog Kampung Sumber Alam.", en: "Line direction is not compass direction, and the travel times come from the Kampung Sumber Alam catalogue." },
+  daftar: { id: "Waktu tempuh", en: "Travel time" },
+};
+const L = (d: { id: string; en: string }) => lekat(d[lang]);
+---
+<section class="jalan" aria-labelledby="h-jalan" data-jalan>
+  <div class="jalan-in">
+    <div class="jalan-kepala">
+      <p class="lbl" data-muncul>{L(T.penanda)}</p>
+      <Judul id="h-jalan" class="jalan-judul" data-judul>{L(T.judul)}</Judul>
+      <p class="jalan-teks" data-muncul>{L(T.teks)}</p>
+    </div>
+
+    <div class="jalan-kipas" aria-hidden="true">
+      <svg viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid meet">
+        {cincin.map((c) => (
+          <g class="cincin">
+            <path d={`M ${O.x - c.r} ${O.y} A ${c.r} ${c.r} 0 0 1 ${O.x + c.r} ${O.y}`} />
+            <text x={O.x - c.r} y={O.y + 24} text-anchor="middle">{waktu(c.m)}</text>
+          </g>
+        ))}
+        <line class="dasar" x1={O.x - R - 10} y1={O.y} x2={O.x + R + 10} y2={O.y} />
+        {garis.map((g, i) => (
+          <line class="sinar" data-i={i} x1={g.x1.toFixed(1)} y1={g.y1.toFixed(1)} x2={g.x2.toFixed(1)} y2={g.y2.toFixed(1)} />
+        ))}
+      </svg>
+      <img class="jalan-logo" src="/logo/logogram-color.svg" alt="" width="64" height="64" style={`left:${(O.x / VB.w) * 100}%;top:${(O.y / VB.h) * 100}%`} />
+      {garis.map((g, i) => (
+        <span class:list={["jalan-titik", { kanan: g.kanan }]} data-i={i} style={`left:${g.px.toFixed(2)}%;top:${g.py.toFixed(2)}%`}>
+          <span class="titik-no">{g.no}</span>
+          <span class="titik-ket"><b>{g.nama}</b> {waktu(g.menit)}</span>
+        </span>
+      ))}
+    </div>
+
+    <div class="jalan-daftar">
+      <p class="lbl">{L(T.daftar)}</p>
+      <ol>
+        {garis.map((g, i) => (
+          <li>
+            <button type="button" data-i={i} aria-pressed={i === pilihAwal ? "true" : "false"}>
+              <span class="baris-no">{g.no}.</span>
+              <span class="baris-nama">{g.nama}{g.ket && <small>{L(g.ket)}</small>}</span>
+              <span class="baris-waktu">{waktu(g.menit)}</span>
+              <span class="baris-batang" aria-hidden="true" style={`--p:${(g.menit / MAKS).toFixed(3)}`}><span></span></span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <p class="jalan-catatan">{L(T.catatan)}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, gerakBoleh, bermouse } from "../scripts/gerak";
+  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+  gsap.registerPlugin(DrawSVGPlugin);
+
+  document.querySelectorAll<HTMLElement>("[data-jalan]").forEach((akar) => {
+    const sinar = [...akar.querySelectorAll<SVGLineElement>(".sinar")];
+    const titik = [...akar.querySelectorAll<HTMLElement>(".jalan-titik")];
+    const tombol = [...akar.querySelectorAll<HTMLButtonElement>(".jalan-daftar button")];
+    const gerak = gerakBoleh();
+    let pilih = tombol.findIndex((b) => b.getAttribute("aria-pressed") === "true");
+    let sudahMasuk = false;
+
+    function setPilih(i: number, gambar = true) {
+      const lama = pilih;
+      pilih = i;
+      tombol.forEach((b, n) => b.setAttribute("aria-pressed", String(n === i)));
+      titik.forEach((t, n) => t.classList.toggle("dipilih", n === i));
+      sinar.forEach((s, n) => s.classList.toggle("dipilih", n === i));
+      akar.classList.add("ada-pilihan");
+      if (!gerak || !gambar || !sudahMasuk) return;
+      if (lama >= 0 && lama !== i) gsap.to(sinar[lama], { drawSVG: "100% 100%", duration: 0.6, ease: "ksaIO", onComplete: () => gsap.set(sinar[lama], { drawSVG: "0% 100%" }) });
+      gsap.fromTo(sinar[i], { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 1, ease: "ksaIO" });
+    }
+
+    tombol.forEach((b, i) => {
+      b.addEventListener("click", () => setPilih(i));
+      b.addEventListener("focus", () => pilih !== i && setPilih(i));
+      if (bermouse()) b.addEventListener("pointerenter", () => pilih !== i && setPilih(i));
+    });
+    titik.forEach((t, i) => t.addEventListener("pointerenter", () => bermouse() && pilih !== i && setPilih(i)));
+
+    if (!gerak) {
+      sudahMasuk = true;
+      if (pilih >= 0) setPilih(pilih, false);
+      return;
+    }
+    // masuk layar: semua garis tergambar dari logo, berurutan dari yang terdekat
+    gsap.set(sinar, { drawSVG: "0% 0%" });
+    gsap.set(titik, { opacity: 0, scale: 0.6 });
+    ScrollTrigger.create({
+      trigger: akar,
+      start: "top 70%",
+      once: true,
+      onEnter() {
+        const tl = gsap.timeline({ onComplete: () => { sudahMasuk = true; if (pilih >= 0) setPilih(pilih, false); } });
+        tl.to(sinar, { drawSVG: "0% 100%", duration: 1.1, ease: "ksa", stagger: 0.07 }, 0)
+          .to(titik, { opacity: 1, scale: 1, duration: 0.6, ease: "ksa", stagger: 0.07 }, 0.45);
+        akar.querySelectorAll<HTMLElement>(".baris-batang span").forEach((b, n) =>
+          gsap.fromTo(b, { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: "ksa", delay: 0.1 + n * 0.05 }),
+        );
+      },
+    });
+  });
+</script>

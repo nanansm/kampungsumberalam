@@ -36,15 +36,15 @@ const ukuran = `(max-width: 767px) max(100vw, ${Math.ceil((62 * w) / h)}vh), 100
 const webp = await getImage({ src: m.default, widths: W, format: "webp", quality: 65 });
 ---
 <Situs lang={lang} T={T} title={title[lang]} description={description[lang]} waPesan={pesan} path={path} og={og} noindex={noindex}>
-  <section class="hal-hero" slot="hero" aria-labelledby="h-hal">
-    <picture>
+  <section class="hal-hero" slot="hero" aria-labelledby="h-hal" data-hero data-parallax="7">
+    <picture class="hal-hero-foto">
       <source type="image/avif" srcset={avif.srcSet.attribute} sizes={ukuran} />
       <source type="image/webp" srcset={webp.srcSet.attribute} sizes={ukuran} />
       <img src={webp.src} width={w} height={h} alt={alt} fetchpriority="high" decoding="async" />
     </picture>
     <div class="hal-hero-tx">
-      <p class="lbl">{penanda[lang]}</p>
-      <h1 id="h-hal">{judul[lang]}</h1>
+      <p class="lbl" data-muncul>{penanda[lang]}</p>
+      <h1 id="h-hal" data-judul>{judul[lang]}</h1>
     </div>
   </section>
   <div class="hal"><slot /></div>

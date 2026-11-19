@@ -21,3 +21,4 @@ pnpm-debug.log*
 # scratch — sumber aset mentah & bahan riset, jangan ikut ke repo
 assets-source/
 reference/
+tools/peta/_kerja/

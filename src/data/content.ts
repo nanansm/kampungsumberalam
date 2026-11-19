@@ -598,35 +598,28 @@ export const ACARA: Acara[] = [
   },
 ];
 
-/* ---------- Di sekitar resort ----------
- * Sumber: halaman POINT OF INTEREST situs lama, dibaca 13 Agu 2026.
- * Jarak dan waktu tempuh SENGAJA TIDAK ditulis: situs lama tidak menyebutnya
- * dan menaksir sendiri berarti mengarang. Isi angkanya kalau sudah diukur.
+/* ---------- Waktu tempuh ke tempat di sekitar ----------
+ * Data Master KSA FINAL bab 02 §6 (Catalog KSA hlm 27). Nama ditulis persis
+ * seperti katalog. Moda perjalanan tidak disebut katalog, jadi situs juga
+ * tidak menyebutnya. Waktu dari Jakarta/Bandung TIDAK ada di Data Master:
+ * jangan ditaksir sendiri.
+ * (Daftar lama 'Di sekitar resort' dari situs lama dibuang 19 Nov 2026:
+ * menyebut pemandian pesaing dan tidak ada di Data Master.)
  */
-
-export const SEKITAR = [
-  {
-    nama: "Kebun Mawar Situhapa",
-    teks: {
-      id: "Taman mawar seluas lima hektar di ketinggian 1.150 mdpl. Hawanya jauh lebih dingin daripada di Cipanas.",
-      en: "A five-hectare rose garden at 1,150 metres above sea level. The air up there runs much colder than in Cipanas.",
-    },
-  },
-  {
-    nama: "Waterboom Sabda Alam",
-    teks: {
-      id: "Kolam seluncur yang airnya juga air panas alami dari Gunung Guntur, jadi anak-anak tidak kedinginan walau main air seharian.",
-      en: "A waterpark fed by the same natural hot springs from Mount Guntur, so children do not get cold after a full day in the water.",
-    },
-  },
-  {
-    nama: "Cilopang Adventure Camp",
-    teks: {
-      id: "Area kemah di Tarogong Kaler yang juga jadi titik awal pendakian Gunung Guntur.",
-      en: "A camping ground in Tarogong Kaler that also serves as a starting point for the Mount Guntur hike.",
-    },
-  },
-] as const;
+export const JARAK_TEMPUH: { nama: string; menit: number; ket?: { id: string; en: string } }[] = [
+  { nama: "CFD Ibrahim Adji", menit: 5 },
+  { nama: "Tegal Malaka", menit: 6 },
+  { nama: "Pusat Oleh-oleh", menit: 8 },
+  { nama: "Pusat Oleh-oleh Chocodot", menit: 9 },
+  { nama: "Kaki Gunung Guntur", menit: 15, ket: { id: "asal air panas Kampung Sumber Alam", en: "where the resort's hot spring water comes from" } },
+  { nama: "Stasiun", menit: 19, ket: { id: "dari stasiun ke Kampung Sumber Alam", en: "from the station to the resort" } },
+  { nama: "Situ Bagendit", menit: 22 },
+  { nama: "Sukaregang", menit: 25 },
+  { nama: "Candi Cangkuang", menit: 34 },
+  { nama: "Kebun Mawar", menit: 35 },
+  { nama: "Talaga Bodas", menit: 75 },
+  { nama: "Papandayan", menit: 82 },
+];
 
 /* ---------- Meta bawaan ---------- */
 

@@ -1,0 +1,84 @@
+---
+/**
+ * Hero beranda: video drone (manifest Penyunting Video, cadangan video udara lama)
+ * + judul yang muncul huruf per huruf dari kabur.
+ *
+ * H1 selalu ada di HTML dan terbaca tanpa JavaScript. Animasi hanya mengubah
+ * opacity/blur tiap huruf (SplitText memberi aria-label utuh ke H1), jadi
+ * pembaca layar dan mesin pencari tetap membaca kalimat lengkap.
+ */
+import { HERO_VIDEO } from "../data/drone";
+
+interface Props {
+  lang: "id" | "en"; judul: string; sub: string; gulir: string; alt: string;
+  /** srcset AVIF poster HP & desktop (dihitung di Beranda supaya bisa di-preload) */
+  posterHp: string; posterDk: string; posterSrc: string;
+}
+const { judul, sub, gulir, alt, posterHp, posterDk, posterSrc } = Astro.props;
+
+/* satu kata penekanan: "Escape" (fokus kampanye 2027, Data Master bab 00).
+   Huruf dipecah saat build, bukan oleh JavaScript: judul langsung tampil di cat
+   pertama (LCP cepat), animasinya CSS murni, dan pembaca layar membaca aria-label utuh. */
+let urut = 0;
+const kata = judul.split(" ").map((k) => ({ k, miring: k === "Escape", huruf: [...k].map((h) => ({ h, i: urut++ })) }));
+const MQ_HP = "(max-width: 767px)";
+const MQ_DK = "(min-width: 768px)";
+---
+<section class="hero2" data-hero aria-labelledby="h-hero">
+  <div class="hero-media">
+    <picture>
+      <source media={MQ_HP} type="image/avif" srcset={posterHp} sizes="100vw" />
+      <source media={MQ_DK} type="image/avif" srcset={posterDk} sizes="100vw" />
+      <img class="hero-poster" src={posterSrc} alt={alt} width="1600" height="900" fetchpriority="high" decoding="async" />
+    </picture>
+    <video class="hero-video" muted loop playsinline preload="none" aria-hidden="true"
+      data-dk-mp4={HERO_VIDEO.desktop.mp4} data-dk-webm={HERO_VIDEO.desktop.webm}
+      data-dkk-mp4={HERO_VIDEO.desktopKecil.mp4} data-dkk-webm={HERO_VIDEO.desktopKecil.webm}
+      data-hp-mp4={HERO_VIDEO.hp.mp4} data-hp-webm={HERO_VIDEO.hp.webm}></video>
+  </div>
+  <div class="hero-isi">
+    <h1 id="h-hero" class="hero-judul" lang="en" aria-label={judul}>
+      {kata.map((w, n) => (
+        <>
+          {n > 0 && " "}
+          <span class:list={["hj-kata", { miring: w.miring }]} aria-hidden="true">{w.huruf.map((c) => <span class="huruf" style={`--i:${c.i}`}>{c.h}</span>)}</span>
+        </>
+      ))}
+    </h1>
+    <p class="hero-sub">{sub.split(" · ").map((b, i) => <>{i > 0 && <span class="sub-titik" aria-hidden="true"> · </span>}<span class="sub-bagian">{b}</span></>)}</p>
+  </div>
+  <a class="hero-gulir" href="#pembuka"><span>{gulir}</span><span class="hero-gulir-garis" aria-hidden="true"></span></a>
+</section>
+
+<script>
+  import { gsap, gerakBoleh } from "../scripts/gerak";
+
+  const hero = document.querySelector<HTMLElement>("[data-hero]");
+  const video = hero?.querySelector<HTMLVideoElement>(".hero-video");
+
+  if (hero && gerakBoleh() && document.documentElement.classList.contains("gerak")) {
+    // hero sedikit naik & meredup saat ditinggalkan; huruf judul sudah dianimasikan CSS sejak cat pertama
+    gsap.to(hero.querySelector(".hero-isi"), { yPercent: -16, opacity: 0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom 30%", scrub: 0.4 } });
+    gsap.to(hero.querySelector(".hero-media"), { yPercent: 14, scale: 1.04, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 0.4 } });
+  }
+
+  // video dimuat setelah halaman selesai (tidak mengganggu LCP), tidak diputar saat reduced motion
+  if (video && gerakBoleh()) {
+    const mulai = () => {
+      const hp = matchMedia("(max-width: 767px)").matches;
+      const kecil = !hp && window.innerWidth < 1440;
+      const k = hp ? "hp" : kecil ? "dkk" : "dk";
+      const webm = video.dataset[`${k}Webm` as "dkWebm"];
+      const mp4 = video.dataset[`${k}Mp4` as "dkMp4"];
+      if (webm) video.insertAdjacentHTML("beforeend", `<source src="${webm}" type="video/webm">`);
+      if (mp4) video.insertAdjacentHTML("beforeend", `<source src="${mp4}" type="video/mp4">`);
+      video.addEventListener("playing", () => video.classList.add("main"), { once: true });
+      video.load();
+      video.play().catch(() => {});
+    };
+    const nanti = () => ("requestIdleCallback" in window ? (window as any).requestIdleCallback(mulai, { timeout: 1200 }) : setTimeout(mulai, 600));
+    document.readyState === "complete" ? nanti() : addEventListener("load", nanti, { once: true });
+    // hemat: jeda saat hero tidak terlihat
+    new IntersectionObserver(([e]) => (e.isIntersecting ? video.play().catch(() => {}) : video.pause())).observe(hero!);
+  }
+</script>

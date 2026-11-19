@@ -12,9 +12,9 @@ import {
   TELEPON_TAMPIL,
   TELEPON_ALT_TAMPIL,
   EMAIL,
-  SEKITAR,
   waLink,
 } from "../../data/content";
+import PetaPerjalanan from "../PetaPerjalanan.astro";
 
 /* Halaman lokasi.
    ⚠️ Jarak dan waktu tempuh dari Bandung atau Jakarta SENGAJA TIDAK ditulis.
@@ -64,9 +64,8 @@ const { lang } = Astro.props;
             href={MAPS_URL}
             rel="noopener"
             target="_blank"
-            class="penanda mt-7 inline-block bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
-          >
-            <T id="Buka di Google Maps" en="Open in Google Maps" />
+            class="btn btn-isi mt-7"
+          ><span class="btn-tx"><T id="Buka di Google Maps" en="Open in Google Maps" /></span>
           </a>
         </div>
 
@@ -149,34 +148,6 @@ const { lang } = Astro.props;
       </div>
     </section>
 
-    {/* ============ DI SEKITARNYA ============ */}
-    <section class="pt-16 sm:pt-24">
-      <div class={seksi}>
-        <p class="penanda"><T id="Di sekitarnya" en="Nearby" /></p>
-        <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
-          <T
-            id="Yang biasa didatangi tamu sebelum atau sesudah menginap."
-            en="Where guests tend to go before or after a stay."
-          />
-        </h2>
-        <div class="mt-9 grid gap-x-8 gap-y-9 sm:grid-cols-3">
-          {
-            SEKITAR.map((s) => (
-              <div class="border-t border-hutan pt-5">
-                <h3 class="font-display text-lg font-medium">{s.nama}</h3>
-                <p class="mt-3 text-[0.9375rem] text-tinta-lembut">
-                  <T id={s.teks.id} en={s.teks.en} />
-                </p>
-              </div>
-            ))
-          }
-        </div>
-        <p class="mt-9 max-w-[56ch] text-sm text-tinta-lembut">
-          <T
-            id="Ketiganya dikelola pihak lain dan punya tiket masuk sendiri. Tim reservasi bisa menyebutkan jarak tempuhnya dari resort saat ditanya."
-            en="All three are run by other operators and charge their own entry. The reservations team can give driving times from the resort on request."
-          />
-        </p>
-      </div>
-    </section>
+    {/* ============ WAKTU TEMPUH KE SEKITAR (Data Master bab 02 §6) ============ */}
+    <div class="pt-16 sm:pt-24"><PetaPerjalanan lang={lang} /></div>
   </Halaman>

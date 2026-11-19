@@ -88,10 +88,10 @@ const { lang } = Astro.props;
   penanda={{id: "Menginap", en: "Stay"}}
   judul={{id: "Empat belas tipe kamar, semuanya berair panas alami",
       en: "Fourteen room types, all on hot spring water",}}
-  foto="/images/halaman-kolam.webp"
-  w={1200}
-  h={560}
-  alt="Halaman berumput di tepi kolam Kampung Sumber Alam dengan bungalow beratap ijuk"
+  foto="/images/menginap-balong.jpg"
+  w={1600}
+  h={1200}
+  alt="Bungalow kayu beratap ijuk berdiri di atas balong berdaun teratai"
 >
     {/* ============ PEMBUKA ============ */}
     <section class="pt-16 sm:pt-24">
@@ -99,8 +99,8 @@ const { lang } = Astro.props;
         <div class="max-w-[56ch] space-y-4 text-tinta-lembut">
           <p>
             <T
-              id="Tidak ada kamar yang cuma dapat air panas lewat kolam umum. Tiap unit punya bak rendam dan shower yang mengalirkan air panas alami dari Gunung Guntur, jadi berendam tidak perlu menunggu pagi."
-              en="No room here gets its hot water only through a shared pool. Every unit has a soaking tub and a shower running natural hot spring water from Mount Guntur, so a soak never means waiting for morning."
+              id="Tidak ada kamar yang cuma dapat air panas lewat kolam umum. Tiap unit punya bak rendam yang dialiri air panas alami dari Gunung Guntur, jadi berendam tidak perlu menunggu pagi."
+              en="No room here gets its hot water only through a shared pool. Every unit has a soaking tub fed with natural hot spring water from Mount Guntur, so a soak never means waiting for morning."
             />
           </p>
           <p>
@@ -219,7 +219,7 @@ const { lang } = Astro.props;
                       <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
                     </span>
                   </div>
-                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · {k.unit} villa · </span><span class="tabular-nums"><T id={`mulai Rp${k.harga.weekday}`} en={`from Rp${k.harga.weekday}`} /></span></p>
+                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · {k.unit} villa · </span><T id="harga di situs Villa Sibentang" en="rates on the Villa Sibentang site" /></p>
                 </li>
               ))
             }
@@ -237,13 +237,7 @@ const { lang } = Astro.props;
               </li>
             ))}
           </ul>
-          <a
-            href={SIBENTANG_URL}
-            rel="noopener"
-            class="mt-7 inline-block border-b border-hutan pb-0.5 text-hutan"
-          >
-            <T id="Buka situs Villa Sibentang" en="Open the Villa Sibentang site" />
-          </a>
+          <a href={SIBENTANG_URL} rel="noopener" class="btn btn-sibentang mt-7"><span class="btn-tx"><T id="Buka situs Villa Sibentang" en="Open the Villa Sibentang site" /></span></a>
         </div>
         <Gbr
           src="/images/kolam-privat-putih.webp"
@@ -279,21 +273,8 @@ const { lang } = Astro.props;
             <li><T id={TERMASUK_KAMAR.weekend.id} en={TERMASUK_KAMAR.weekend.en} /></li>
           </ul>
           <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <a
-              href={BOOKING_URL}
-              rel="noopener"
-              class="penanda bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
-            >
-              <T id="Cek kamar dan tanggal" en="Check rooms and dates" />
-            </a>
-            <a
-              href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")}
-              rel="noopener"
-              target="_blank"
-              class="border-b border-hutan pb-0.5 text-hutan"
-            >
-              <T id="Tanya lewat WhatsApp" en="Ask on WhatsApp" />
-            </a>
+            <a href={BOOKING_URL} rel="noopener" class="btn btn-isi"><span class="btn-tx"><T id="Cek kamar dan tanggal" en="Check rooms and dates" /></span></a>
+            <a href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")} rel="noopener" target="_blank" class="btn btn-wa"><span class="btn-tx"><T id="Tanya lewat WhatsApp" en="Ask on WhatsApp" /></span></a>
           </div>
         </div>
       </div>

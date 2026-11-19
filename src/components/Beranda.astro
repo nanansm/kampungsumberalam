@@ -1,6 +1,10 @@
 ---
 import { Picture, getImage } from "astro:assets";
 import Situs from "../layouts/Situs.astro";
+import Hero from "./Hero.astro";
+import PetaKawasan from "./peta/PetaKawasan.astro";
+import PetaPerjalanan from "./PetaPerjalanan.astro";
+import { HERO_VIDEO } from "../data/drone";
 import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, KAMAR, DAY_VISIT, waLink } from "../data/content";
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
@@ -31,38 +35,15 @@ const kataImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../a
 const turImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/tur-*.jpg", { eager: true })).map((m) => m.default);
 const kampungImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kampung-*.jpg", { eager: true })).map((m) => m.default);
 
-/* Hero = auto carousel ala Bambu Indah.
-   HP: 5 slide statement utuh (4:5, teks sudah di gambar).
-   Desktop: 4 foto dari slide yang sama (S2-S5) dipotong lebar tanpa teks, judul satu kata dari HTML.
-   Hanya slide pertama dimuat saat buka halaman; sisanya dimuat setelah halaman selesai (lihat script). */
-const Q = 34;
-const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-const hpMods = import.meta.glob<{ default: ImageMetadata }>("../assets/foto/hero-hp-*.jpg", { eager: true });
-const dkMods = import.meta.glob<{ default: ImageMetadata }>("../assets/foto/hero-dk-*.jpg", { eager: true });
-const HP_W = [480, 720, 960, 1440];
-const DK_W = [1024, 1440, 1920];
-const kata = ["", "Sundanese", "Thermal", "Escape", "Village"];
-const slides = await Promise.all([1, 2, 3, 4, 5].map(async (n) => {
-  const hp = hpMods[`../assets/foto/hero-hp-${n}.jpg`].default;
-  const dk = n > 1 ? dkMods[`../assets/foto/hero-dk-${n}.jpg`].default : undefined;
-  return {
-    n,
-    alt: t(`hero.alt${n}`),
-    kata: kata[n - 1],
-    hpAvif: (await getImage({ src: hp, widths: HP_W, format: "avif", quality: Q })).srcSet.attribute,
-    hpWebp: (await getImage({ src: hp, widths: HP_W, format: "webp", quality: 70 })).srcSet.attribute,
-    dkAvif: dk ? (await getImage({ src: dk, widths: DK_W, format: "avif", quality: Q })).srcSet.attribute : GIF,
-    dkWebp: dk ? (await getImage({ src: dk, widths: DK_W, format: "webp", quality: 70 })).srcSet.attribute : GIF,
-  };
-}));
-/* LCP: HP = slide 1, desktop = slide 2 (slide 1 hanya untuk HP) */
-const lcpHp = slides[0];
-const lcpDk = slides[1];
+/* Poster hero = gambar LCP. Poster manifest drone kalau sudah ada, kalau belum poster video udara lama. */
 const MQ_HP = "(max-width: 767px)";
-const vhpPoster = await getImage({ src: vHp, widths: [480, 720], format: "avif", quality: 40 });
-const vdkPoster = await getImage({ src: vDk, widths: [1024, 1600], format: "avif", quality: 40 });
-const vdkPosterW = await getImage({ src: vDk, width: 1280, format: "webp", quality: 65 });
 const MQ_DK = "(min-width: 768px)";
+const lamaHp = await getImage({ src: vHp, widths: [480, 720], format: "avif", quality: 42 });
+const lamaDk = await getImage({ src: vDk, widths: [1024, 1600, 2048], format: "avif", quality: 42 });
+const lamaDkWebp = await getImage({ src: vDk, width: 1600, format: "webp", quality: 70 });
+const posterHp = HERO_VIDEO.hp.posterAvif ?? lamaHp.srcSet.attribute;
+const posterDk = HERO_VIDEO.desktop.posterAvif ?? lamaDk.srcSet.attribute;
+const posterSrc = HERO_VIDEO.desktop.poster ?? lamaDkWebp.src;
 
 const pesanWa = t("wa.umum");
 const berendam = [1, 2, 3, 4].map((n) => ({ nama: t(`berendam.${n}.nama`), isi: t(`berendam.${n}.isi`), url: n === 4 ? SIBENTANG_URL : undefined }));
@@ -70,12 +51,13 @@ const kataAlt = [2, 3, 4, 5].map((n) => t(`alt.kata${n}`));
 const turCap = [2, 3, 4, 5, 6, 7, 8].map((n) => t(`menginap.foto${n}`));
 const caraImg = [caraBerdua, caraKeluarga, caraKantor];
 const waKey = ["wa.berdua", "wa.keluarga", "wa.kantor"];
-const cara = [1, 2, 3].map((n, i) => ({ lbl: t(`cara.${n}.label`), nama: t(`cara.${n}.nama`), isi: t(`cara.${n}.isi`), harga: t(`cara.${n}.harga`).replace("Twin Share", "Twin\u00a0Share").replace(/(\d) (per)/, "$1\u00a0$2"), img: caraImg[i], alt: t(`alt.cara${n}`), wa: t(waKey[i]) }));
+const cara = [1, 2, 3].map((n, i) => ({ lbl: t(`cara.${n}.label`), nama: t(`cara.${n}.nama`), isi: t(`cara.${n}.isi`), harga: t(`cara.${n}.harga`).replace("Twin Share", "Twin Share").replace(/(\d) (per)/, "$1 $2"), img: caraImg[i], alt: t(`alt.cara${n}`), wa: t(waKey[i]) }));
 const kampungCap = [1, 2, 3, 4].map((n) => t(`seharian.foto${n}`));
 const kampungAlt = [1, 2, 3, 4].map((n) => t(`alt.seharian${n}`));
-const tipe = KAMAR.map((k) => k.nama);
+const tipe = KAMAR.filter((k) => k.kelompok !== "villa").map((k) => k.nama);
 const telHref = `tel:${TELEPON}`;
 const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
+const geser = lang === "en" ? "Drag" : "Geser";
 ---
 <Situs
   lang={lang}
@@ -84,66 +66,35 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   description={t("meta.desc")}
   waPesan={pesanWa}
   preload={[
-    { srcset: lcpHp.hpAvif, sizes: "100vw", media: MQ_HP, type: "image/avif" },
-    { srcset: lcpDk.dkAvif, sizes: "100vw", media: MQ_DK, type: "image/avif" },
+    { srcset: posterHp, sizes: "100vw", media: MQ_HP, type: "image/avif" },
+    { srcset: posterDk, sizes: "100vw", media: MQ_DK, type: "image/avif" },
   ]}
 >
-  <!-- Layar pertama ala Bambu Indah: carousel gambar, lalu blok logo. Header baru muncul setelah scroll. -->
-  <div class="layar1" slot="hero">
-    <section class="hero" aria-roledescription="carousel" aria-labelledby="h-hero">
-      <h1 id="h-hero" class="sr">{t("hero.h1")}</h1>
-      {slides.map((sl) => {
-        const awalHp = sl.n === 1;
-        const awalDk = sl.n === 2;
-        return (
-          <figure class:list={["sl", { "hp-saja": sl.n === 1, on: sl.n === 1, "on-dk": sl.n === 2 }]} aria-roledescription="slide" aria-label={`${sl.n} / 5`}>
-            <picture>
-              <source media={MQ_HP} type="image/avif" srcset={awalHp ? sl.hpAvif : GIF} data-srcset={awalHp ? undefined : sl.hpAvif} sizes="100vw" />
-              <source media={MQ_HP} type="image/webp" srcset={awalHp ? sl.hpWebp : GIF} data-srcset={awalHp ? undefined : sl.hpWebp} sizes="100vw" />
-              <source media={MQ_DK} type="image/avif" srcset={awalDk || sl.n === 1 ? sl.dkAvif : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkAvif} sizes="100vw" />
-              <source media={MQ_DK} type="image/webp" srcset={awalDk || sl.n === 1 ? sl.dkWebp : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkWebp} sizes="100vw" />
-              <img src={GIF} alt={sl.alt} width="1440" height="1800" fetchpriority={awalHp || awalDk ? "high" : "low"} decoding={awalHp || awalDk ? "sync" : "async"} />
-            </picture>
-            {sl.kata && <p class="kata" aria-hidden="true">{sl.kata}</p>}
-          </figure>
-        );
-      })}
-    </section>
-    <div class="layar1-logo">
-      <img src="/logo/lockup-color.svg" alt="Kampung Sumber Alam Resort" width="1948" height="1396" />
+  <Hero slot="hero" lang={lang} judul={t("hero.h1")} sub={t("hero.sub")} gulir={t("hero.gulir")} alt={t("video.label")} posterHp={posterHp} posterDk={posterDk} posterSrc={posterSrc} />
+
+  <!-- Pembuka: satu kalimat yang menyala kata demi kata saat digulir -->
+  <div class="pembuka" id="pembuka">
+    <p class="pembuka-lead" data-nyala>{t("pembuka.lead")}</p>
+    <div class="dua" data-muncul>
+      <a class="btn btn-isi btn-wa" href={waLink(pesanWa)} rel="noopener"><span class="btn-tx">{t("penutup.tombol1")}</span></a>
+      <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("penutup.tombol2")}</span></a>
     </div>
   </div>
-  <script is:inline>(()=>{const h=document.querySelector('.hero');if(!h)return;const S=[...h.querySelectorAll('.sl')];let mulai=false;const muat=()=>{h.querySelectorAll('source[data-srcset]').forEach(x=>{x.srcset=x.dataset.srcset;x.removeAttribute('data-srcset')})};const aktif=()=>S.filter(x=>getComputedStyle(x).display!=='none');const jalan=()=>{if(mulai||matchMedia('(prefers-reduced-motion: reduce)').matches)return;mulai=true;S.forEach(x=>x.classList.remove('on','on-dk'));aktif()[0].classList.add('tampil');muat();let i=0;setInterval(()=>{if(document.hidden)return;const A=aktif();const c=A.findIndex(x=>x.classList.contains('tampil'));const k=c<0?0:c;const n=(k+1)%A.length;const im=A[n].querySelector('img');const ganti=()=>{A.forEach(x=>x.classList.remove('tampil'));A[n].classList.add('tampil')};if(im.complete&&im.naturalWidth>1)ganti();else im.addEventListener('load',ganti,{once:true})},3000)};const t0=()=>setTimeout(jalan,1500);document.readyState==='complete'?t0():addEventListener('load',t0,{once:true})})()</script>
 
-  <!-- Video udara: dimuat saat mendekati layar, tanpa suara -->
-  <section class="udara-vid" aria-label={t("video.label")}>
-    <picture>
-      <source media={MQ_HP} type="image/avif" srcset={vhpPoster.srcSet.attribute} sizes="100vw" />
-      <source media={MQ_DK} type="image/avif" srcset={vdkPoster.srcSet.attribute} sizes="100vw" />
-      <img src={vdkPosterW.src} alt={t("video.label")} width="1600" height="900" loading="lazy" decoding="async" />
-    </picture>
-    <video muted loop playsinline preload="none" aria-hidden="true" data-hp="/video/udara-hp" data-dk="/video/udara-dk"></video>
-  </section>
-  <script is:inline>(()=>{const v=document.querySelector('.udara-vid video');if(!v||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const E=['scroll','pointerdown','keydown','touchstart'];const go=()=>{E.forEach(e=>removeEventListener(e,go));const o=new IntersectionObserver(x=>{if(x[0].isIntersecting){o.disconnect();const b=matchMedia('(max-width: 767px)').matches?v.dataset.hp:v.dataset.dk;v.src=b+(v.canPlayType('video/mp4; codecs="avc1.64001f"')?'.mp4':'.webm');v.addEventListener('playing',()=>v.classList.add('on'),{once:true});v.play().catch(()=>{})}},{rootMargin:'300px'});o.observe(v)};E.forEach(e=>addEventListener(e,go,{passive:true}))})()</script>
-
-  <!-- Penanda brand -->
-  <div class="merek">
-    <p class="lead">{t("pembuka.lead")}</p>
-    <div class="dua"><a class="btn btn-isi" href={waLink(pesanWa)} rel="noopener">{t("penutup.tombol1")}</a><a class="btn" href={BOOKING_URL} rel="noopener">{t("penutup.tombol2")}</a></div>
-  </div>
+  <PetaKawasan lang={lang} />
 
   <!-- Sambutan -->
   <section class="sambut cv" aria-labelledby="h-sambut">
     <div class="teks">
-      <p class="lbl">{t("sambut.label")}</p>
-      <h2 id="h-sambut">{t("sambut.judul")}</h2>
-      <p>{t("sambut.p1")}</p>
-      <p>{t("sambut.p2")}</p>
+      <p class="lbl" data-muncul>{t("sambut.label")}</p>
+      <h2 id="h-sambut" data-judul>{t("sambut.judul")}</h2>
+      <p data-muncul>{t("sambut.p1")}</p>
+      <p data-muncul>{t("sambut.p2")}</p>
     </div>
-    <figure class="f1">
+    <figure class="f1" data-singkap>
       <Picture src={sambut1} formats={["avif", "webp"]} widths={[400, 640, 900]} sizes="(min-width: 900px) 34vw, 78vw" quality={45} alt={t("alt.sambut1")} loading="lazy" />
     </figure>
-    <figure class="f2">
+    <figure class="f2" data-singkap>
       <Picture src={sambut2} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 28vw, 64vw" quality={45} alt={t("alt.sambut2")} loading="lazy" />
     </figure>
   </section>
@@ -152,21 +103,21 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 
   <!-- Berendam -->
   <section id="berendam" class="berendam cv" aria-labelledby="h-berendam">
-    <div class="pita-img">
+    <div class="pita-img" data-parallax="7">
       <picture>
         <source media="(min-width: 768px)" srcset={(await getImage({ src: berendamDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
         <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
         <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
-        <img src={(await getImage({ src: berendamDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.berendam")} width={berendamDesk.width} height={berendamDesk.height} loading="lazy" decoding="async" style="width:100%;height:auto" />
+        <img src={(await getImage({ src: berendamDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.berendam")} width={berendamDesk.width} height={berendamDesk.height} loading="lazy" decoding="async" />
       </picture>
     </div>
     <div class="kepala">
-      <div class="judul-garis"><h2 id="h-berendam">{t("berendam.judul")}</h2></div>
-      <p class="pengantar">{t("berendam.pengantar")}</p>
+      <div class="judul-garis"><h2 id="h-berendam" data-judul>{t("berendam.judul")}</h2></div>
+      <p class="pengantar" data-muncul>{t("berendam.pengantar")}</p>
     </div>
     <ol class="empat">
       {berendam.map((b, i) => (
-        <li>
+        <li data-muncul>
           <span class="no">0{i + 1}</span>
           <h3>{b.nama}</h3>
           <p>{b.isi}{b.url && <> <a class="panah" href={b.url} rel="noopener">{t("berendam.4.link")}</a></>}</p>
@@ -174,10 +125,10 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
       ))}
     </ol>
     <div class="dv">
-      <h3 class="dv-judul">{lang === "en" ? "Coming for the day, without staying" : "Datang tanpa menginap"}</h3>
+      <h3 class="dv-judul" data-muncul>{t("dv.judul")}</h3>
       <ul>
         {DAY_VISIT.map((d) => (
-          <li>
+          <li data-muncul>
             <p class="dv-nama">{d.nama}</p>
             <p class="dv-harga">{d.harga[lang]}</p>
             <p>{d.isi[lang]}</p>
@@ -190,13 +141,14 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   <!-- Empat kata -->
   <section class="kata cv" aria-labelledby="h-kata">
     <div class="kepala">
-      <h2 id="h-kata">{t("kata.judul")}</h2>
-      <p>{t("kata.p")}</p>
+      <h2 id="h-kata" data-judul>{t("kata.judul")}</h2>
+      <p data-muncul>{t("kata.p")}</p>
     </div>
-    <div class="geser" tabindex="0" aria-label={t("kata.judul")}>
+    <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / 0{kataImg.length}</span></div>
+    <div class="geser" tabindex="0" aria-label={t("kata.judul")} data-kursor={geser}>
       {kataImg.map((img, i) => (
         <figure class="kartu-foto">
-          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={kataAlt[i]} loading="lazy" />
+          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={kataAlt[i]} loading="lazy" draggable="false" />
           <figcaption><span class="n">0{i + 1}</span><span>/ 04</span></figcaption>
         </figure>
       ))}
@@ -206,41 +158,42 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   <!-- Menginap -->
   <section id="menginap" class="menginap cv" aria-labelledby="h-menginap">
     <div class="kepala">
-      <div class="judul-garis"><h2 id="h-menginap">{t("menginap.judul")}</h2></div>
-      <p>{t("menginap.p")}</p>
+      <div class="judul-garis"><h2 id="h-menginap" data-judul>{t("menginap.judul")}</h2></div>
+      <p data-muncul>{t("menginap.p")}</p>
     </div>
-    <div class="geser" tabindex="0" aria-label={t("menginap.judul")}>
+    <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / {String(turImg.length + 1).padStart(2, "0")}</span></div>
+    <div class="geser" tabindex="0" aria-label={t("menginap.judul")} data-kursor={geser}>
       <figure class="kartu-foto">
-        <Picture src={menginapImg} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={t("menginap.foto1")} loading="lazy" />
+        <Picture src={menginapImg} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={t("menginap.foto1")} loading="lazy" draggable="false" />
         <figcaption><span class="n">01</span><span>{t("menginap.foto1")}</span></figcaption>
       </figure>
       {turImg.map((img, i) => (
         <figure class="kartu-foto">
-          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={turCap[i]} loading="lazy" />
+          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={turCap[i]} loading="lazy" draggable="false" />
           <figcaption><span class="n">{String(i + 2).padStart(2, "0")}</span><span>{turCap[i]}</span></figcaption>
         </figure>
       ))}
     </div>
-    <div class="aksi">
-      <a class="btn" href={BOOKING_URL} rel="noopener">{t("menginap.tombol")}</a>
+    <div class="aksi" data-muncul>
+      <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("menginap.tombol")}</span></a>
       <a class="panah" href={lang === "en" ? "/en/accommodation/" : "/accommodation/"}>{t("menginap.semua")}</a>
-      <p class="tipe">{tipe.map((x) => <span>{x}</span>)}</p>
+      <p class="tipe">{tipe.map((x) => <span>{x}</span>)}<span><a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a></span></p>
     </div>
   </section>
 
   <!-- Tiga cara datang -->
   <section id="datang" class="cara cv" aria-labelledby="h-cara">
     <div class="cara-in">
-      <h2 id="h-cara">{t("cara.judul")}</h2>
+      <h2 id="h-cara" data-judul>{t("cara.judul")}</h2>
       <div class="cara-grid">
         {cara.map((c) => (
-          <article class="kartu">
+          <article class="kartu" data-muncul>
             <p class="lbl">{c.lbl}</p>
             <h3>{c.nama}</h3>
-            <Picture src={c.img} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 30vw, 90vw" quality={45} alt={c.alt} loading="lazy" />
+            <div class="kartu-gbr"><Picture src={c.img} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 30vw, 90vw" quality={45} alt={c.alt} loading="lazy" /></div>
             <p>{c.isi}</p>
             <p class="harga">{c.harga}</p>
-            <a class="btn" href={waLink(c.wa)} rel="noopener">{t("cara.tombol")}</a>
+            <a class="btn btn-wa" href={waLink(c.wa)} rel="noopener"><span class="btn-tx">{t("cara.tombol")}</span></a>
           </article>
         ))}
       </div>
@@ -252,45 +205,49 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   <!-- Seharian -->
   <section id="seharian" class="kampung cv" aria-labelledby="h-kampung">
     <div class="kepala">
-      <h2 id="h-kampung">{t("seharian.judul")}</h2>
-      <p>{t("seharian.p")}</p>
+      <h2 id="h-kampung" data-judul>{t("seharian.judul")}</h2>
+      <p data-muncul>{t("seharian.p")}</p>
     </div>
     <div class="jajar">
       {kampungImg.map((img, i) => (
-        <figure>
-          <Picture src={img} formats={["avif", "webp"]} widths={[240, 400, 600]} sizes="(min-width: 900px) 25vw, 50vw" quality={45} alt={kampungAlt[i]} loading="lazy" />
+        <figure data-muncul>
+          <div class="jajar-gbr"><Picture src={img} formats={["avif", "webp"]} widths={[240, 400, 600]} sizes="(min-width: 900px) 25vw, 50vw" quality={45} alt={kampungAlt[i]} loading="lazy" /></div>
           <figcaption>{kampungCap[i]}</figcaption>
         </figure>
       ))}
     </div>
   </section>
 
+  <PetaPerjalanan lang={lang} />
+
   <!-- Guntur + lokasi -->
   <section id="lokasi" class="guntur cv" aria-labelledby="h-lokasi">
-    <picture>
-      <source media="(min-width: 768px)" srcset={(await getImage({ src: lokasiDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-      <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-      <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
-      <img src={(await getImage({ src: lokasiDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.lokasi")} width={lokasiDesk.width} height={lokasiDesk.height} loading="lazy" decoding="async" />
-    </picture>
-    <div class="kotak">
+    <div class="guntur-gbr" data-parallax="6">
+      <picture>
+        <source media="(min-width: 768px)" srcset={(await getImage({ src: lokasiDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
+        <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
+        <img src={(await getImage({ src: lokasiDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.lokasi")} width={lokasiDesk.width} height={lokasiDesk.height} loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="kotak" data-muncul>
       <p class="lbl">{t("lokasi.label")}</p>
       <h2 id="h-lokasi">{t("lokasi.judul")}</h2>
       <p>{t("lokasi.p1")}</p>
       <p style="margin-top:12px">{p2[0]}{p2.length > 1 && <><a href={telHref}>{TELEPON_TAMPIL}</a>{p2[1]}</>}</p>
-      <a class="btn" href={MAPS_URL} rel="noopener" style="margin-top:20px">{t("lokasi.tombol")}</a>
+      <a class="btn" href={MAPS_URL} rel="noopener" style="margin-top:20px"><span class="btn-tx">{t("lokasi.tombol")}</span></a>
     </div>
   </section>
 
   <!-- Ulasan -->
   <section class="ulasan cv" aria-labelledby="h-ulasan">
     <div class="ulasan-in">
-      <h2 id="h-ulasan" style="font-size:clamp(1.9rem,3.4vw,2.8rem)">{t("ulasan.judul")}</h2>
+      <h2 id="h-ulasan" data-judul>{t("ulasan.judul")}</h2>
       <div class="angka">
         {ULASAN.map((u) => (
-          <div>
+          <div data-muncul>
             <p class="lbl">{u.sumber}</p>
-            <p class="skor">{u.nilai}<small> / {u.dari}</small></p>
+            <p class="skor"><span data-angka={u.nilai}>{u.nilai}</span><small> / {u.dari}</small></p>
             <p>{u.jumlah} {t("ulasan.kata")} · {u.catatan[lang]}</p>
           </div>
         ))}
@@ -302,10 +259,10 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 
   <!-- Penutup -->
   <section class="penutup cv" aria-labelledby="h-tutup">
-    <h2 id="h-tutup">{t("penutup.judul")}</h2>
-    <div class="dua">
-      <a class="btn btn-isi" href={waLink(pesanWa)} rel="noopener">{t("penutup.tombol1")}</a>
-      <a class="btn" href={BOOKING_URL} rel="noopener">{t("penutup.tombol2")}</a>
+    <h2 id="h-tutup" data-judul>{t("penutup.judul")}</h2>
+    <div class="dua" data-muncul>
+      <a class="btn btn-isi btn-wa" href={waLink(pesanWa)} rel="noopener"><span class="btn-tx">{t("penutup.tombol1")}</span></a>
+      <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("penutup.tombol2")}</span></a>
     </div>
   </section>
 </Situs>
