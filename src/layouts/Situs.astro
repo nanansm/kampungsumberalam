@@ -1,23 +1,33 @@
 ---
 import "../styles/situs.css";
-import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON_TAMPIL, EMAIL, IG_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink } from "../data/content";
+import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON, TELEPON_TAMPIL, EMAIL, IG_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink } from "../data/content";
 
 interface Props {
+  lang: "id" | "en";
+  T: Record<string, string>;
   title: string;
   description: string;
   waPesan: string;
   preload?: { srcset: string; sizes: string; media?: string; type?: string }[];
 }
-const { title, description, waPesan, preload = [] } = Astro.props;
-const kanonik = new URL(Astro.url.pathname, SITE).href;
+const { lang, T, title, description, waPesan, preload = [] } = Astro.props;
+const t = (k: string) => {
+  if (T[k] === undefined) throw new Error(`Teks hilang: ${lang}.${k}`);
+  return T[k];
+};
+const akar = lang === "en" ? "/en/" : "/";
+const urlId = new URL("/", SITE).href;
+const urlEn = new URL("/en/", SITE).href;
+const kanonik = lang === "en" ? urlEn : urlId;
 const tahun = new Date().getFullYear();
+const tel = `tel:${TELEPON}`;
 
 const schema = {
   "@context": "https://schema.org",
   "@type": "Resort",
   name: NAMA_PANJANG,
   url: SITE,
-  telephone: "+62262238000",
+  telephone: TELEPON,
   email: EMAIL,
   address: { "@type": "PostalAddress", streetAddress: "Jl. Raya Cipanas No. 122", addressLocality: "Garut", addressRegion: "Jawa Barat", postalCode: "44151", addressCountry: "ID" },
   geo: { "@type": "GeoCoordinates", latitude: GEO.lat, longitude: GEO.lng },
@@ -25,51 +35,63 @@ const schema = {
 };
 ---
 <!doctype html>
-<html lang="id">
+<html lang={lang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={kanonik} />
+  <link rel="alternate" hreflang="id" href={urlId} />
+  <link rel="alternate" hreflang="en" href={urlEn} />
+  <link rel="alternate" hreflang="x-default" href={urlId} />
   <meta name="theme-color" content="#FCFAE6" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={kanonik} />
-  <meta property="og:locale" content="id_ID" />
+  <meta property="og:locale" content={lang === "en" ? "en_US" : "id_ID"} />
+  <meta property="og:locale:alternate" content={lang === "en" ? "id_ID" : "en_US"} />
   <link rel="icon" href="/logo/logogram-color.svg" type="image/svg+xml" />
   {preload.map((p) => <link rel="preload" as="image" imagesrcset={p.srcset} imagesizes={p.sizes} media={p.media} type={p.type} fetchpriority="high" />)}
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
 <body>
-  <a class="skip" href="#isi">Langsung ke isi</a>
+  <a class="skip" href="#isi">{t("ui.skip")}</a>
   <header class="hdr">
     <div class="hdr-in">
-      <button type="button" popovertarget="menu" aria-label="Buka menu">Menu</button>
-      <a class="logo" href="/" aria-label={NAMA_PANJANG}><img src="/logo/logotype-color.svg" alt={NAMA_PANJANG} width="113" height="36" /></a>
-      <a class="lbl-a kanan" href={BOOKING_URL} rel="noopener">Pesan</a>
+      <button type="button" popovertarget="menu" aria-label={t("ui.menu")}>{t("ui.menu")}</button>
+      <a class="logo" href={akar} aria-label={NAMA_PANJANG}><img src="/logo/logotype-color.svg" alt={NAMA_PANJANG} width="113" height="36" /></a>
+      <div class="kanan">
+        <nav class="bahasa" aria-label="Bahasa / Language">
+          <a href="/" hreflang="id" lang="id" aria-current={lang === "id" ? "true" : undefined}>ID</a>
+          <a href="/en/" hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
+        </nav>
+        <a class="lbl-a pesan" href={BOOKING_URL} rel="noopener">{t("ui.pesan")}</a>
+      </div>
     </div>
   </header>
 
   <div id="menu" class="menu" popover>
     <div class="menu-in">
       <div class="menu-top">
-        <button type="button" popovertarget="menu" popovertargetaction="hide">Tutup</button>
+        <button type="button" popovertarget="menu" popovertargetaction="hide">{t("ui.tutup")}</button>
         <img src="/logo/logotype-putih.svg" alt="" width="113" height="36" loading="lazy" />
-        <a class="lbl" href={BOOKING_URL} style="text-decoration:none">Pesan</a>
+        <a class="lbl" href={BOOKING_URL} style="text-decoration:none">{t("ui.pesan")}</a>
       </div>
-      <nav aria-label="Menu utama">
-        <a href="/#berendam">Berendam</a>
-        <a href="/#menginap">Menginap</a>
-        <a href="/#datang">Rombongan &amp; Kantor</a>
-        <a href="/#kampung">Kampung</a>
-        <a href="/#lokasi">Lokasi</a>
+      <nav aria-label={t("ui.menu")}>
+        <a href={`${akar}#berendam`}>{t("nav.berendam")}</a>
+        <a href={`${akar}#menginap`}>{t("nav.menginap")}</a>
+        <a href={`${akar}#datang`}>{t("nav.rombongan")}</a>
+        <a href={`${akar}#seharian`}>{t("nav.seharian")}</a>
+        <a href={`${akar}#lokasi`}>{t("nav.lokasi")}</a>
         <a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a>
       </nav>
       <div class="kecil lbl">
+        <a href="/" hreflang="id" lang="id">Bahasa Indonesia</a>
+        <a href="/en/" hreflang="en" lang="en">English</a>
         <a href={waLink(waPesan)} rel="noopener">WhatsApp</a>
-        <a href={`tel:+62262238000`}>{TELEPON_TAMPIL}</a>
+        <a href={tel}>{TELEPON_TAMPIL}</a>
         <a href={IG_URL} rel="noopener">Instagram</a>
       </div>
     </div>
@@ -84,35 +106,36 @@ const schema = {
         <p style="margin-top:18px;max-width:34ch">{ALAMAT_SATU_BARIS}</p>
       </div>
       <div>
-        <p class="lbl">Hubungi</p>
+        <p class="lbl">{t("ui.hubungi")}</p>
         <ul>
           <li><a href={waLink(waPesan)} rel="noopener">WhatsApp</a></li>
-          <li><a href="tel:+62262238000">{TELEPON_TAMPIL}</a></li>
+          <li><a href={tel}>{TELEPON_TAMPIL}</a></li>
           <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
         </ul>
       </div>
       <div>
-        <p class="lbl">Pesan</p>
+        <p class="lbl">{t("ui.pesan")}</p>
         <ul>
-          <li><a href={BOOKING_URL} rel="noopener">Cek kamar kosong</a></li>
+          <li><a href={BOOKING_URL} rel="noopener">{t("penutup.tombol2")}</a></li>
           <li><a href={TRAVELOKA_URL} rel="noopener">Traveloka</a></li>
           <li><a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a></li>
         </ul>
       </div>
       <div>
-        <p class="lbl">Ikuti</p>
+        <p class="lbl">{t("ui.ikuti")}</p>
         <ul>
           <li><a href={IG_URL} rel="noopener">Instagram {IG_HANDLE}</a></li>
           <li><a href={MAPS_URL} rel="noopener">Google Maps</a></li>
+          <li><a href={lang === "en" ? "/" : "/en/"} hreflang={lang === "en" ? "id" : "en"}>{lang === "en" ? "Bahasa Indonesia" : "English"}</a></li>
         </ul>
       </div>
       <p class="bawah">© {tahun} {NAMA_PANJANG} · Cipanas, Garut</p>
     </div>
   </footer>
 
-  <nav class="bar" aria-label="Pesan cepat">
-    <a href={waLink(waPesan)} rel="noopener">Chat WhatsApp</a>
-    <a href={BOOKING_URL} rel="noopener">Cek Kamar</a>
+  <nav class="bar" aria-label={t("ui.pesan")}>
+    <a href={waLink(waPesan)} rel="noopener">{t("penutup.tombol1")}</a>
+    <a href={BOOKING_URL} rel="noopener">{t("ui.bar.cek")}</a>
   </nav>
 </body>
 </html>

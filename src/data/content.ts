@@ -16,7 +16,7 @@ export const NAMA_PANJANG = "Kampung Sumber Alam Resort";
 export const BOOKING_URL =
   "https://be.dip.id/booking/cekrooms?keyid=9dd581618cf12284f0e72f99c9316523";
 
-export const WA = "6281112117838";
+export const WA = "6281110557838";
 export const TELEPON = "+62262238000";
 export const TELEPON_TAMPIL = "(0262) 238000";
 export const TELEPON_ALT_TAMPIL = "(0262) 237700";
