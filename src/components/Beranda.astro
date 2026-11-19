@@ -72,7 +72,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   ]}
 >
   <!-- Hero: HP = slide statement utuh (teks sudah di gambar), desktop = foto penuh + judul -->
-  <section class="hero" aria-labelledby="h-hero">
+  <section class="hero" slot="hero" aria-labelledby="h-hero">
     <picture>
       <source media={MQ_HP} type="image/avif" srcset={hpAvif.srcSet.attribute} sizes="100vw" />
       <source media={MQ_HP} type="image/webp" srcset={hpWebp.srcSet.attribute} sizes="100vw" />
