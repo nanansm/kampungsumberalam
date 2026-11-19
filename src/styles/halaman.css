@@ -83,7 +83,6 @@
 .hal .bg-hutan, .hal .bg-hutan.penanda { color: #fff; }
 .hal .seksi > .seksi { padding: 0; }
 .hal h3.font-display { font-size: 1.45rem; line-height: 1.15; }
-@media (max-width: 767px) { .wa-float { width: 52px; height: 52px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); } }
 @media (max-width: 767px) { .hal { padding-bottom: 96px; } .hal td, .hal th { padding-right: 10px; } }
 .hal .break-all { word-break: normal; overflow-wrap: anywhere; }
 .hal .judul-seksi + .seksi, .hal h2 + div.columns-2 { margin-top: 24px; }

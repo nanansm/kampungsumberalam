@@ -86,22 +86,30 @@ a[href^="tel"] { white-space: nowrap; }
 .menu .kecil { margin-top: auto; padding-top: 32px; display: flex; flex-wrap: wrap; gap: 12px 28px; }
 .menu .kecil a { text-decoration: none; }
 
-/* ---------- Hero ---------- */
-/* Hero gaya Bambu Indah: gambar dulu, header ada di bawahnya lalu menempel saat scroll */
-/* HP: slide statement utuh, tinggi ikut gambar (4:5), tanpa crop */
-.hero { position: relative; background: #b9c2bd; }
-.hero picture { display: block; }
-.hero picture img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; }
-.hero-tx { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-/* Desktop: foto (sudah di-toning) penuh ±70% layar + logogram + judul putih */
+/* ---------- Layar pertama (gaya Bambu Indah) ---------- */
+/* Carousel gambar di paling atas, tanpa header. Di bawahnya blok logo yang mengisi sisa layar.
+   Header ada sesudah blok ini (di Situs.astro) dan baru menempel saat scroll. */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.layar1 { min-height: 100svh; display: flex; flex-direction: column; background: #fff; }
+.hero { position: relative; aspect-ratio: 4 / 5; background: #c9cfc9; overflow: hidden; flex: none; }
+.sl { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.2s ease; }
+.sl.on, .sl.tampil { opacity: 1; }
+.sl picture, .sl img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sl .kata { display: none; }
+.layar1-logo { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px var(--pad) 36px; text-align: center; }
+.layar1-logo img { width: min(56vw, 230px); height: auto; }
+.layar1-logo p { margin: 0; font: 500 .66rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tinta-2); }
 @media (min-width: 768px) {
-  .hero { height: max(480px, 70svh); max-height: 980px; overflow: hidden; }
-  .hero picture img { height: 100%; aspect-ratio: auto; object-fit: cover; }
-  .hero::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .22); }
-  .hero-tx { position: absolute; inset: 0; z-index: 1; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 var(--pad); color: #fff; }
-  .hero-mark { width: clamp(44px, 4vw, 64px); height: auto; margin-bottom: 18px; }
-  .hero h1 { font-size: clamp(3rem, 6.4vw, 6.4rem); line-height: 1; max-width: 18ch; color: #fff; text-shadow: 0 2px 28px rgba(0,0,0,.35); }
+  .hero { aspect-ratio: auto; height: max(460px, 70svh); max-height: 980px; }
+  .sl.hp-saja { display: none; }
+  .sl.on { opacity: 0; }
+  .sl.on-dk, .sl.tampil { opacity: 1; }
+  .sl::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .26); background: radial-gradient(ellipse 45% 40% at 50% 50%, rgba(0,0,0,.42), rgba(0,0,0,.24)); }
+  .sl .kata { display: block; position: absolute; inset: 0; z-index: 1; margin: 0; display: flex; align-items: center; justify-content: center; font: 400 clamp(2.2rem, 3.3vw, 3.4rem)/1.05 var(--sans); letter-spacing: .03em; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.35), 0 2px 24px rgba(0,0,0,.45); }
+  .layar1-logo { gap: 16px; padding: 24px var(--pad) 32px; }
+  .layar1-logo img { width: clamp(170px, 13vw, 220px); }
 }
+@media (prefers-reduced-motion: reduce) { .sl { transition: none; } }
 
 /* ---------- Video udara ---------- */
 .udara-vid { position: relative; aspect-ratio: 9 / 16; max-height: calc(100svh - 60px); width: 100%; overflow: hidden; background: #b9c2bd; }
@@ -249,16 +257,17 @@ a[href^="tel"] { white-space: nowrap; }
 @media (min-width: 900px) { .ftr { padding-bottom: 32px; } .ftr-in { grid-template-columns: 1.3fr repeat(4, 1fr); } .ftr .bawah { grid-column: 1 / -1; } }
 
 /* ---------- Bar CTA bawah (HP) ---------- */
-.wa-float { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 30; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--alam); color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
-.wa-float:hover { background: var(--tinta); }
+.wa-float { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 30; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--alam); border: 1px solid var(--garis); box-shadow: 0 4px 18px rgba(0,0,0,.16); }
+.wa-float:hover { background: var(--alam); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 
 /* HP: logo header lebih kecil (harus setelah .logo img dasar) */
 @media (max-width: 767px) { .logo img { height: 30px; } }
 @media (max-width: 374px) { .logo img { height: 24px; } }
-.hero { border-bottom: 1px solid var(--garis); }
 @media (min-width: 560px) and (max-width: 899px) { .ftr-in { grid-template-columns: 1fr 1fr; } .ftr-in > div:first-child, .ftr .bawah { grid-column: 1 / -1; } }
 .panah { color: var(--alam); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
 .panah::after { content: " \2192"; }
 .menginap .aksi .panah { display: inline-block; margin-top: 14px; }
+@media (max-width: 767px) { .wa-float { width: 52px; height: 52px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); } }
+.catatan .panah { color: var(--tinta); }

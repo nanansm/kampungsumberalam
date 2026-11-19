@@ -5,8 +5,6 @@ import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, 
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
 
-import heroHp from "../assets/foto/hero-hp.jpg";
-import heroDesk from "../assets/foto/hero-desk.jpg";
 import sambut1 from "../assets/foto/sambut-1.jpg";
 import sambut2 from "../assets/foto/sambut-3.jpg";
 import berendamHp from "../assets/foto/berendam-hp.jpg";
@@ -33,14 +31,33 @@ const kataImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../a
 const turImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/tur-*.jpg", { eager: true })).map((m) => m.default);
 const kampungImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kampung-*.jpg", { eager: true })).map((m) => m.default);
 
-/* Hero: dua potongan (HP tegak, desktop lebar). AVIF + preload supaya LCP cepat. */
+/* Hero = auto carousel ala Bambu Indah.
+   HP: 5 slide statement utuh (4:5, teks sudah di gambar).
+   Desktop: 4 foto dari slide yang sama (S2-S5) dipotong lebar tanpa teks, judul satu kata dari HTML.
+   Hanya slide pertama dimuat saat buka halaman; sisanya dimuat setelah halaman selesai (lihat script). */
 const Q = 34;
-const heroHpW = [480, 720, 960];
-const heroDeskW = [1024, 1440, 1920, 2400];
-const hpAvif = await getImage({ src: heroHp, widths: heroHpW, format: "avif", quality: Q });
-const hpWebp = await getImage({ src: heroHp, widths: heroHpW, format: "webp", quality: 70 });
-const dkAvif = await getImage({ src: heroDesk, widths: heroDeskW, format: "avif", quality: Q });
-const dkWebp = await getImage({ src: heroDesk, widths: heroDeskW, format: "webp", quality: 70 });
+const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+const hpMods = import.meta.glob<{ default: ImageMetadata }>("../assets/foto/hero-hp-*.jpg", { eager: true });
+const dkMods = import.meta.glob<{ default: ImageMetadata }>("../assets/foto/hero-dk-*.jpg", { eager: true });
+const HP_W = [480, 720, 960, 1440];
+const DK_W = [1024, 1440, 1920];
+const kata = ["", "Sundanese", "Thermal", "Escape", "Village"];
+const slides = await Promise.all([1, 2, 3, 4, 5].map(async (n) => {
+  const hp = hpMods[`../assets/foto/hero-hp-${n}.jpg`].default;
+  const dk = n > 1 ? dkMods[`../assets/foto/hero-dk-${n}.jpg`].default : undefined;
+  return {
+    n,
+    alt: t(`hero.alt${n}`),
+    kata: kata[n - 1],
+    hpAvif: (await getImage({ src: hp, widths: HP_W, format: "avif", quality: Q })).srcSet.attribute,
+    hpWebp: (await getImage({ src: hp, widths: HP_W, format: "webp", quality: 70 })).srcSet.attribute,
+    dkAvif: dk ? (await getImage({ src: dk, widths: DK_W, format: "avif", quality: Q })).srcSet.attribute : GIF,
+    dkWebp: dk ? (await getImage({ src: dk, widths: DK_W, format: "webp", quality: 70 })).srcSet.attribute : GIF,
+  };
+}));
+/* LCP: HP = slide 1, desktop = slide 2 (slide 1 hanya untuk HP) */
+const lcpHp = slides[0];
+const lcpDk = slides[1];
 const MQ_HP = "(max-width: 767px)";
 const vhpPoster = await getImage({ src: vHp, widths: [480, 720], format: "avif", quality: 40 });
 const vdkPoster = await getImage({ src: vDk, widths: [1024, 1600], format: "avif", quality: 40 });
@@ -67,24 +84,37 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   description={t("meta.desc")}
   waPesan={pesanWa}
   preload={[
-    { srcset: hpAvif.srcSet.attribute, sizes: "100vw", media: MQ_HP, type: "image/avif" },
-    { srcset: dkAvif.srcSet.attribute, sizes: "100vw", media: MQ_DK, type: "image/avif" },
+    { srcset: lcpHp.hpAvif, sizes: "100vw", media: MQ_HP, type: "image/avif" },
+    { srcset: lcpDk.dkAvif, sizes: "100vw", media: MQ_DK, type: "image/avif" },
   ]}
 >
-  <!-- Hero: HP = slide statement utuh (teks sudah di gambar), desktop = foto penuh + judul -->
-  <section class="hero" slot="hero" aria-labelledby="h-hero">
-    <picture>
-      <source media={MQ_HP} type="image/avif" srcset={hpAvif.srcSet.attribute} sizes="100vw" />
-      <source media={MQ_HP} type="image/webp" srcset={hpWebp.srcSet.attribute} sizes="100vw" />
-      <source media={MQ_DK} type="image/avif" srcset={dkAvif.srcSet.attribute} sizes="100vw" />
-      <source media={MQ_DK} type="image/webp" srcset={dkWebp.srcSet.attribute} sizes="100vw" />
-      <img src={dkWebp.src} alt={t("hero.alt")} width={heroDesk.width} height={heroDesk.height} fetchpriority="high" decoding="async" />
-    </picture>
-    <div class="hero-tx">
-      <img class="hero-mark" src="/logo/logogram-putih.svg" alt="" width="56" height="56" />
-      <h1 id="h-hero">{t("hero.h1")}</h1>
+  <!-- Layar pertama ala Bambu Indah: carousel gambar, lalu blok logo. Header baru muncul setelah scroll. -->
+  <div class="layar1" slot="hero">
+    <section class="hero" aria-roledescription="carousel" aria-labelledby="h-hero">
+      <h1 id="h-hero" class="sr">{t("hero.h1")}</h1>
+      {slides.map((sl) => {
+        const awalHp = sl.n === 1;
+        const awalDk = sl.n === 2;
+        return (
+          <figure class:list={["sl", { "hp-saja": sl.n === 1, on: sl.n === 1, "on-dk": sl.n === 2 }]} aria-roledescription="slide" aria-label={`${sl.n} / 5`}>
+            <picture>
+              <source media={MQ_HP} type="image/avif" srcset={awalHp ? sl.hpAvif : GIF} data-srcset={awalHp ? undefined : sl.hpAvif} sizes="100vw" />
+              <source media={MQ_HP} type="image/webp" srcset={awalHp ? sl.hpWebp : GIF} data-srcset={awalHp ? undefined : sl.hpWebp} sizes="100vw" />
+              <source media={MQ_DK} type="image/avif" srcset={awalDk || sl.n === 1 ? sl.dkAvif : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkAvif} sizes="100vw" />
+              <source media={MQ_DK} type="image/webp" srcset={awalDk || sl.n === 1 ? sl.dkWebp : GIF} data-srcset={awalDk || sl.n === 1 ? undefined : sl.dkWebp} sizes="100vw" />
+              <img src={GIF} alt={sl.alt} width="1440" height="1800" fetchpriority={awalHp || awalDk ? "high" : "low"} decoding="async" />
+            </picture>
+            {sl.kata && <p class="kata" aria-hidden="true">{sl.kata}</p>}
+          </figure>
+        );
+      })}
+    </section>
+    <div class="layar1-logo">
+      <img src="/logo/lockup-color.svg" alt="Kampung Sumber Alam Resort" width="1948" height="1396" />
+      <p>Cipanas · Garut</p>
     </div>
-  </section>
+  </div>
+  <script is:inline>(()=>{const h=document.querySelector('.hero');if(!h)return;const S=[...h.querySelectorAll('.sl')];let mulai=false;const muat=()=>{h.querySelectorAll('source[data-srcset]').forEach(x=>{x.srcset=x.dataset.srcset;x.removeAttribute('data-srcset')})};const aktif=()=>S.filter(x=>getComputedStyle(x).display!=='none');const jalan=()=>{if(mulai||matchMedia('(prefers-reduced-motion: reduce)').matches)return;mulai=true;muat();let i=0;setInterval(()=>{if(document.hidden)return;const A=aktif();const c=A.findIndex(x=>x.classList.contains('tampil'));const k=c<0?0:c;const n=(k+1)%A.length;const im=A[n].querySelector('img');const ganti=()=>{A.forEach(x=>x.classList.remove('tampil'));A[n].classList.add('tampil')};if(im.complete&&im.naturalWidth>1)ganti();else im.addEventListener('load',ganti,{once:true})},5000)};S.forEach(x=>x.classList.remove('on','on-dk'));aktif()[0].classList.add('tampil');const t0=()=>setTimeout(jalan,1500);document.readyState==='complete'?t0():addEventListener('load',t0,{once:true})})()</script>
 
   <!-- Video udara: dimuat saat mendekati layar, tanpa suara -->
   <section class="udara-vid" aria-label={t("video.label")}>
@@ -99,9 +129,6 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 
   <!-- Penanda brand -->
   <div class="merek">
-    <img src="/logo/logogram-color.svg" alt="" width="64" height="64" />
-    <p class="nama">Kampung Sumber Alam</p>
-    <p class="sub">Sundanese Thermal Escape Village · Cipanas, Garut</p>
     <p class="lead">{t("pembuka.lead")}</p>
     <div class="dua"><a class="btn btn-isi" href={waLink(pesanWa)} rel="noopener">{t("penutup.tombol1")}</a><a class="btn" href={BOOKING_URL} rel="noopener">{t("penutup.tombol2")}</a></div>
   </div>

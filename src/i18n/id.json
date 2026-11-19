@@ -2,7 +2,6 @@
  "meta.title": "Kampung Sumber Alam · Menginap dan berendam air panas di Cipanas, Garut",
  "meta.desc": "Kamu menginap di rumah kayu beratap ijuk di atas kolam ikan, di Cipanas, Garut. Air panas alami Gunung Guntur ngalir sampai kamar mandi kamarmu.",
  "hero.h1": "Sundanese Thermal Escape Village",
- "hero.alt": "Rumah kayu beratap ijuk di atas balong teratai, Kampung Sumber Alam, Cipanas Garut",
  "pembuka.lead": "Kamu menginap di rumah kayu di Kampung Sumber Alam, Cipanas, Garut. Bak rendamnya ada di kamar mandimu sendiri, jadi kamu bisa berendam pagi-pagi atau malam sebelum tidur.",
  "sambut.label": "Wilujeng Sumping",
  "sambut.judul": "Kamu menginap di rumah kayu di atas kolam ikan",
@@ -103,5 +102,10 @@
  "nav.beranda": "Beranda",
  "nav.rapat": "Rapat & Outing",
  "menginap.semua": "Lihat semua tipe kamar",
- "cara.semua": "Lihat paket rapat dan outing"
+ "cara.semua": "Lihat paket rapat dan outing",
+ "hero.alt1": "Sundanese Thermal Escape Village: Gunung Guntur dan rumah beratap ijuk di Kampung Sumber Alam, Cipanas Garut",
+ "hero.alt2": "Sundanese: beranda rumah kayu berdinding anyaman bambu, tamu dipersilakan duduk dulu",
+ "hero.alt3": "Thermal: air panas alami dari kaki Gunung Guntur mengalir di atas batu berlumut",
+ "hero.alt4": "Escape: tenda di tepi kolam dengan Gunung Guntur di belakang",
+ "hero.alt5": "Village: rumah kayu beratap ijuk berdiri di atas balong teratai"
 }
