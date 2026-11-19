@@ -3,15 +3,15 @@ import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
-import { KAMAR, BOOKING_URL, SIBENTANG_URL, waLink } from "../../data/content";
+import { KAMAR, TERMASUK_KAMAR, THERMAL_RESET, BOOKING_URL, SIBENTANG_URL, waLink } from "../../data/content";
 
 /* Halaman menginap. Beranda cuma mengelompokkan kamar menurut jumlah orang
    karena itu yang dipakai tamu untuk menyaring. Di sini urutannya menurut
    jenis bangunan, sebab tamu yang sampai halaman ini sudah tahu dia berapa
    orang dan sekarang mau tahu bentuk kamarnya.
 
-   Tarif tetap tidak ditayangkan. Daftar resmi belum turun dari klien, dan
-   angka OTA belum termasuk pajak serta berubah tiap tanggal. */
+   Harga = Publish Rate dari Data Master KSA (bab 03), ditulis "mulai" karena
+   KSA memakai dynamic pricing. Harga di DIP bisa beda per tanggal. */
 
 const kelompok = [
   {
@@ -22,8 +22,8 @@ const kelompok = [
       en: "Timber houses of one or two storeys, standing over the ponds.",
     },
     teks: {
-      id: "Enam tipe, semuanya beratap ijuk dengan teras yang menggantung di atas air. Yang membedakan cuma jumlah lantai, jarak ke lobi, dan apakah sarapan ikut atau tidak.",
-      en: "Six types, all thatched in palm fibre with a terrace hanging over the water. What separates them is the number of storeys, the walk back to the lobby, and whether breakfast is included.",
+      id: "Lima tipe, 60 unit, semuanya beratap ijuk. Yang membedakan cuma jumlah lantai, jumlah orang, dan jarak jalan kaki ke lobi.",
+      en: "Five types, 60 units, all thatched in palm fibre. What separates them is the number of storeys, the head count, and the walk back to the lobby.",
     },
     foto: "/images/bungalow-interior.webp",
     w: 900,
@@ -34,12 +34,12 @@ const kelompok = [
     kunci: "suite" as const,
     penanda: { id: "Suite", en: "Suites" },
     judul: {
-      id: "Empat tipe untuk yang mau kolam sendiri di halamannya.",
-      en: "Four types for guests who want a pool of their own outside the door.",
+      id: "Lima tipe suite untuk yang mau berendam tanpa keluar kamar.",
+      en: "Five suite types for guests who want to soak without leaving the room.",
     },
     teks: {
-      id: "Junior Suite menghadap kolam ikan. Suite Arileu punya dua tempat tidur king dan kolam kecil pribadi. Deluxe Suite dua lantai dengan tiga kamar tidur, kolam pribadi, dan gazebo.",
-      en: "The Junior Suite looks onto the fish pond. Suite Arileu has two king beds and a small private pool. The Deluxe Suite runs to two storeys with three bedrooms, a private pool and a gazebo.",
+      id: "Suite Couple, Suite Room, Suite Arileu, dan Junior Suite punya private whirlpool, untuk empat orang. Deluxe Suite punya tiga kamar tidur, private pool, dan pendopo, untuk enam orang.",
+      en: "Suite Couple, Suite Room, Suite Arileu and Junior Suite each have a private whirlpool and sleep four. The Deluxe Suite has three bedrooms, a private pool and a pendopo, and sleeps six.",
     },
     foto: "/images/suite-ranjang.webp",
     w: 900,
@@ -84,10 +84,10 @@ const { lang } = Astro.props;
   path="/accommodation/"
   og="/og/accommodation.jpg"
   title={{ id: 'Bungalow dan Suite Air Panas Alami di Garut | Kampung Sumber Alam', en: 'Bungalows and suites with natural hot spring water in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Dua belas tipe kamar di Kampung Sumber Alam, dari bungalow untuk berdua sampai Babakan Siluhur untuk delapan belas orang. Semuanya dialiri air panas alami Gunung Guntur.', en: 'Twelve room types at Kampung Sumber Alam, from bungalows for two to Babakan Siluhur for eighteen. Every one runs on natural hot spring water from Mount Guntur.' }}
+  description={{ id: 'Empat belas tipe kamar di Kampung Sumber Alam, dari bungalow untuk berdua sampai Babakan Siluhur untuk delapan belas orang. Semuanya dialiri air panas alami Gunung Guntur.', en: 'Fourteen room types at Kampung Sumber Alam, from bungalows for two to Babakan Siluhur for eighteen. Every one runs on natural hot spring water from Mount Guntur.' }}
   penanda={{id: "Menginap", en: "Stay"}}
-  judul={{id: "Dua belas tipe kamar, semuanya berair panas alami",
-      en: "Twelve room types, all on hot spring water",}}
+  judul={{id: "Empat belas tipe kamar, semuanya berair panas alami",
+      en: "Fourteen room types, all on hot spring water",}}
   foto="/images/halaman-kolam.webp"
   w={1200}
   h={560}
@@ -149,6 +149,10 @@ const { lang } = Astro.props;
                           <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
                         </span>
                       </div>
+                      <p class="mt-1 text-[0.9375rem]">
+                        <span class="text-tinta-lembut">{k.kelas} · {k.unit} unit · </span>
+                        <span class="tabular-nums"><T id={`mulai Rp${k.harga.weekday}`} en={`from Rp${k.harga.weekday}`} /></span>
+                      </p>
                       {k.fakta.length > 0 && (
                         <p class="mt-1.5 text-[0.9375rem] text-tinta-lembut">
                           {k.fakta.map((f, j) => (
@@ -201,21 +205,37 @@ const { lang } = Astro.props;
           </h2>
           <p class="mt-5 max-w-[52ch] text-tinta-lembut">
             <T
-              id="Dua tipe, satu kamar dan dua kamar, keduanya dengan kolam air panas pribadi. Manajemennya sama dengan Kampung Sumber Alam, tapi pemesanan dan halamannya terpisah."
-              en="Two types, one bedroom and two bedrooms, both with a private hot spring pool. Same management as Kampung Sumber Alam, but booking and its pages sit separately."
+              id="Sembilan villa, satu kamar dan dua kamar, semuanya dengan private pool berair panas alami. Di villa ini KSA menjalankan Sibentang Thermal Reset Journey, rangkaian menginap untuk pasangan."
+              en="Nine villas, one bedroom and two bedrooms, each with a private pool of natural hot spring water. This is where KSA runs the Sibentang Thermal Reset Journey, a stay designed for couples."
             />
           </p>
           <ul class="mt-8 border-t border-garis">
             {
               villa.map((k) => (
-                <li class="flex items-baseline justify-between gap-4 border-b border-garis py-4">
-                  <h3 class="font-display text-lg font-medium">{k.nama}</h3>
-                  <span class="penanda shrink-0">
-                    <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
-                  </span>
+                <li class="border-b border-garis py-4">
+                  <div class="flex items-baseline justify-between gap-4">
+                    <h3 class="font-display text-lg font-medium">{k.nama}</h3>
+                    <span class="penanda shrink-0">
+                      <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
+                    </span>
+                  </div>
+                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · {k.unit} villa · </span><span class="tabular-nums"><T id={`mulai Rp${k.harga.weekday}`} en={`from Rp${k.harga.weekday}`} /></span></p>
                 </li>
               ))
             }
+          </ul>
+          <p class="penanda mt-9">Sibentang Thermal Reset Journey</p>
+          <ul class="mt-3 border-t border-garis">
+            {THERMAL_RESET.map((r) => (
+              <li class="border-b border-garis py-4">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="font-display text-lg font-medium">{r.nama}</h3>
+                  <span class="penanda shrink-0">{r.durasi}</span>
+                </div>
+                <p class="mt-1 text-[0.9375rem] italic text-tinta-lembut">{r.janji}</p>
+                <p class="mt-1 text-[0.9375rem] text-tinta-lembut"><T id={r.isi.id} en={r.isi.en} /></p>
+              </li>
+            ))}
           </ul>
           <a
             href={SIBENTANG_URL}
@@ -244,16 +264,20 @@ const { lang } = Astro.props;
           <p class="penanda"><T id="Tarif" en="Rates" /></p>
           <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
             <T
-              id="Tarif kamar berubah menurut tanggal dan tipe."
-              en="Room rates move with the date and the type."
+              id="Harga di atas adalah harga weekday. Isinya beda untuk weekday dan weekend."
+              en="Prices above are weekday rates. What is included differs on weekdays and weekends."
             />
           </h2>
           <p class="mt-5 max-w-[54ch] text-tinta-lembut">
             <T
-              id="Angka terkini muncul di halaman pemesanan setelah tanggal dipilih. Untuk rombongan dan acara, tarif paketnya ada di halaman rapat serta halaman acara."
-              en="The current figure appears on the booking page once you pick your dates. For groups and celebrations, package rates sit on the meetings page and the events page."
+              id="Harga resmi (Publish Rate) per kamar per malam, sudah termasuk pajak dan pelayanan. Harga mengikuti tanggal, jadi angka pasti muncul di halaman pemesanan setelah tanggal dipilih."
+              en="Official prices (Publish Rate) per room per night, tax and service included. Prices follow the date, so the exact figure appears on the booking page once dates are picked."
             />
           </p>
+          <ul class="mt-5 max-w-[60ch] space-y-2 text-[0.9375rem] text-tinta-lembut">
+            <li><T id={TERMASUK_KAMAR.weekday.id} en={TERMASUK_KAMAR.weekday.en} /></li>
+            <li><T id={TERMASUK_KAMAR.weekend.id} en={TERMASUK_KAMAR.weekend.en} /></li>
+          </ul>
           <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
             <a
               href={BOOKING_URL}

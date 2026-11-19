@@ -9,9 +9,10 @@ import { NAMA, RESTORAN, SPA, MUSIK, ULASAN } from "../../data/content";
    Sumbernya halaman ABOUT US situs lama (versi Inggris) dan paragraf
    arsitektur berbahasa Indonesia di halaman yang sama, dibaca 13 Agu 2026.
 
-   Tiga prinsip Rest, Recover, Rejuvenate dan sebutan Sundanese Thermal
-   Sanctuary Village adalah rumusan resort sendiri, bukan karangan halaman
-   ini. Keduanya dikutip apa adanya karena itu posisi merek yang dipilih
+   Tiga prinsip Rest, Recover, Rejuvenate dan nama kampanye Sundanese Thermal
+   Escape Village adalah rumusan resort sendiri, bukan karangan halaman
+   ini. Kata "sanctuary" TIDAK dipakai sampai program Bungalow Siceeh
+   lengkap (Data Master KSA bab 01 §4.6, rapat 6 Nov 2026). Keduanya dikutip apa adanya karena itu posisi merek yang dipilih
    klien. Prosa jualan di sekelilingnya dipangkas, faktanya dipertahankan. */
 
 const prinsip = [
@@ -38,7 +39,8 @@ const prinsip = [
   },
 ];
 
-const tripadvisor = ULASAN[0];
+const tripadvisor = ULASAN.find((u) => u.sumber === "Tripadvisor")!;
+const gmaps = ULASAN.find((u) => u.sumber === "Google Maps")!;
 
 const judulSeksi = "judul-seksi";
 const seksi = "seksi";
@@ -85,8 +87,8 @@ const { lang } = Astro.props;
           </p>
           <p>
             <T
-              id={`Resort ini menyebut dirinya Sundanese Thermal Sanctuary Village. Yang dimaksud bukan tempat yang terpencil, melainkan tempat yang enak ditinggali bersama orang lain: ${MUSIK} main langsung, ${RESTORAN} menghadap kolam, dan ${SPA} buka di dalam area yang sama.`}
-              en={`The resort calls itself a Sundanese Thermal Sanctuary Village. What it means by sanctuary is not seclusion but somewhere comfortable to be among other people: ${MUSIK} played live, ${RESTORAN} facing the pond, and ${SPA} open on the same grounds.`}
+              id={`Resort ini menyebut dirinya Sundanese Thermal Escape Village: kampung Sunda tempat orang lari sejenak dari rutinitas kota untuk berendam air panas alami. Kampungnya tetap enak ditinggali bersama orang lain: ${MUSIK} main langsung, ${RESTORAN} menghadap kolam, dan ${SPA} buka di dalam area yang sama.`}
+              en={`The resort calls itself a Sundanese Thermal Escape Village: a Sundanese village where people slip away from city routine to soak in natural hot spring water. It stays a comfortable place to be among other people: ${MUSIK} played live, ${RESTORAN} facing the pond, and ${SPA} open on the same grounds.`}
             />
           </p>
         </div>
@@ -150,8 +152,8 @@ const { lang } = Astro.props;
           </p>
           <p>
             <T
-              id={`Di Tripadvisor nilainya ${tripadvisor.nilai} dari ${tripadvisor.dari} sepanjang ${tripadvisor.jumlah} ulasan. ${tripadvisor.catatan.id}.`}
-              en={`On Tripadvisor it holds ${tripadvisor.nilai} out of ${tripadvisor.dari} across ${tripadvisor.jumlah} reviews. ${tripadvisor.catatan.en}.`}
+              id={`Di Google Maps nilainya ${gmaps.nilai} dari ${gmaps.dari} sepanjang ${gmaps.jumlah} ulasan. Di Tripadvisor nilainya ${tripadvisor.nilai} dari ${tripadvisor.dari} sepanjang ${tripadvisor.jumlah} ulasan, dengan ${tripadvisor.catatan.id}.`}
+              en={`On Google Maps it holds ${gmaps.nilai} out of ${gmaps.dari} across ${gmaps.jumlah} reviews. On Tripadvisor it holds ${tripadvisor.nilai} out of ${tripadvisor.dari} across ${tripadvisor.jumlah} reviews, with ${tripadvisor.catatan.en}.`}
             />
           </p>
         </div>

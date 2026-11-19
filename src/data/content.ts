@@ -16,11 +16,15 @@ export const NAMA_PANJANG = "Kampung Sumber Alam Resort";
 export const BOOKING_URL =
   "https://be.dip.id/booking/cekrooms?keyid=9dd581618cf12284f0e72f99c9316523";
 
-export const WA = "6281110557838";
+/** WhatsApp reservasi KSA: 0811 1211 7838 (Data Master KSA FINAL 9 Nov 2026,
+ *  bab 01 §2; sama dengan flyer dan katalog WhatsApp Business KSA).
+ *  Sebelumnya 6281110557838 dari situs lama — perlu konfirmasi KSA. */
+export const WA = "6281112117838";
 export const TELEPON = "+62262238000";
 export const TELEPON_TAMPIL = "(0262) 238000";
 export const TELEPON_ALT_TAMPIL = "(0262) 237700";
-export const EMAIL = "sumberalamresort@gmail.com";
+/** Data Master KSA bab 01 §2. Sebelumnya sumberalamresort@gmail.com. */
+export const EMAIL = "reservation@resort-kampungsumberalam.com";
 export const TRAVELOKA_URL = "https://trv.lk/7f628e23";
 /** Listing Agoda dipakai bersama KSA + Sibentang (Nanan 19 Nov 2026). */
 export const AGODA_URL = "https://www.agoda.com/sibentang-wellness-private-villa/hotel/garut-id.html";
@@ -61,192 +65,187 @@ export function waLink(pesan: string): string {
 }
 
 /* ---------- Tipe akomodasi ----------
- * Sumber: halaman ACCOMODATION resort-kampungsumberalam.com (12 Agu 2026).
- * `harga` sengaja null di semua tipe — daftar resmi belum turun dari klien.
- * JANGAN isi dari angka OTA: itu belum termasuk pajak dan dinamis.
+ * Sumber: Data Master KSA FINAL (9 Nov 2026) bab 03 §1–5, dari Publish Rate
+ * Catalog KSA 27 Agu 2026. 14 nama unit, 80 kamar.
+ * `kelas` = nama kelas di Room Rate Catalog KSA hlm 25 (dipasangkan lewat
+ * harga yang identik). Harga = Publish Rate per kamar per malam, sudah
+ * termasuk pajak & pelayanan. Weekday = check-in Minggu–Jumat, weekend =
+ * check-in Sabtu/libur. KSA memakai dynamic pricing: harga di DIP bisa beda.
  */
 
 export type Kamar = {
   slug: string;
   nama: string;
-  /** kapasitas maksimum, dalam orang */
+  /** nama kelas Room Rate, ditulis persis seperti katalog KSA */
+  kelas: string;
+  unit: number;
+  /** kapasitas maksimum, dalam orang dewasa */
   pax: number;
   kelompok: "bungalow" | "suite" | "rombongan" | "villa";
   /** fakta pendek, bukan kalimat jualan */
   fakta: { id: string; en: string }[];
-  /** null selama daftar resmi belum dikonfirmasi klien */
-  harga: number | null;
-  /** true kalau unitnya punya air panas alami sendiri */
+  /** Publish Rate, rupiah tanpa "Rp" */
+  harga: { weekday: string; weekend: string };
   airPanasPribadi: boolean;
-  /** dipakai untuk unit yang dijual di situs terpisah */
   situsLain?: string;
-  catatan?: string;
 };
 
 export const KAMAR: Kamar[] = [
   {
-    slug: "bungalow",
-    nama: "Bungalow",
-    pax: 2,
-    kelompok: "bungalow",
+    slug: "kawung", nama: "Kawung", kelas: "Thermal Studio", unit: 10, pax: 2, kelompok: "bungalow",
     fakta: [
-      { id: "40 unit tersedia", en: "40 units available" },
-      { id: "Tersedia extra bed", en: "Extra bed available" },
+      { id: "Dua lantai: tempat tidur di atas, ruang lesehan di bawah", en: "Two storeys: bed upstairs, floor-seating lounge below" },
+      { id: "±70 m dari lobi", en: "±70 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
-    catatan: "Situs lama menyebutnya Bungalow 1–14.",
+    harga: { weekday: "1.189.000", weekend: "1.989.000" }, airPanasPribadi: true,
   },
   {
-    slug: "bungalow-siceeh",
-    nama: "Bungalow Siceeh",
-    pax: 2,
-    kelompok: "bungalow",
+    slug: "pondok-kalapa", nama: "Pondok Kalapa", kelas: "Thermal Bungalow", unit: 4, pax: 2, kelompok: "bungalow",
     fakta: [
-      { id: "200 meter dari lobi", en: "200 metres from the lobby" },
-      { id: "Tersedia extra bed", en: "Extra bed available" },
+      { id: "Bungalow satu lantai", en: "Single-storey bungalow" },
+      { id: "±60 m dari lobi", en: "±60 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
   {
-    slug: "bungalow-sipipir",
-    nama: "Bungalow Sipipir",
-    pax: 2,
-    kelompok: "bungalow",
-    fakta: [{ id: "Tanpa sarapan", en: "Room only, breakfast not included" }],
-    harga: null,
-    airPanasPribadi: true,
-  },
-  {
-    slug: "bungalow-arileu",
-    nama: "Bungalow Arileu",
-    pax: 4,
-    kelompok: "bungalow",
+    slug: "bungalow-1-14", nama: "Bungalow 1-14", kelas: "Thermal Bungalow", unit: 14, pax: 2, kelompok: "bungalow",
     fakta: [
-      { id: "Dua lantai", en: "Two storeys" },
-      { id: "Dua tempat tidur double", en: "Two double beds" },
+      { id: "Bungalow satu lantai, tiga deret", en: "Single-storey bungalows in three rows" },
+      { id: "±100 m dari lobi", en: "±100 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
   {
-    slug: "pondok-kalapa",
-    nama: "Pondok Kalapa",
-    pax: 2,
-    kelompok: "bungalow",
+    slug: "bungalow-siceeh", nama: "Bungalow Siceeh", kelas: "Thermal Bungalow", unit: 26, pax: 2, kelompok: "bungalow",
     fakta: [
-      { id: "Dekat lobi", en: "Close to the lobby" },
-      { id: "Bak air panas alami", en: "Natural hot spring tub" },
+      { id: "Satu atau dua lantai seperti rumah panggung, twin bed", en: "One or two storeys like a stilt house, twin beds" },
+      { id: "±250 m dari lobi", en: "±250 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
   {
-    slug: "kawung",
-    nama: "Kawung",
-    pax: 2,
-    kelompok: "bungalow",
+    slug: "bungalow-arileu", nama: "Bungalow Arileu", kelas: "Grand Thermal Bungalow", unit: 6, pax: 4, kelompok: "bungalow",
     fakta: [
-      { id: "Studio dua lantai", en: "Two-storey studio" },
-      { id: "Air panas alami", en: "Natural hot spring water" },
+      { id: "Dua lantai, ruang lesehan, tempat tidur bertirai", en: "Two storeys, floor-seating lounge, curtained beds" },
+      { id: "±130 m dari lobi", en: "±130 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "1.969.000", weekend: "3.529.000" }, airPanasPribadi: true,
   },
   {
-    slug: "junior-suite",
-    nama: "Junior Suite",
-    pax: 4,
-    kelompok: "suite",
+    slug: "suite-couple", nama: "Suite Couple", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
-      { id: "Menghadap kolam ikan", en: "Overlooking the fish pond" },
-      { id: "Bak air panas alami", en: "Natural hot spring tub" },
+      { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
+      { id: "Private whirlpool · ±30 m dari lobi", en: "Private whirlpool · ±30 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
   {
-    slug: "suite-arileu",
-    nama: "Suite Arileu",
-    // ⚠️ Situs lama menulis 2 pax di halaman akomodasi, sumber lain menulis 4.
-    // Angka 2 dipakai karena halaman akomodasi lebih dekat ke klien.
-    // WAJIB dikonfirmasi sebelum tayang.
-    pax: 2,
-    kelompok: "suite",
+    slug: "suite-room", nama: "Suite Room", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
-      { id: "Dua lantai", en: "Two storeys" },
-      { id: "Dua tempat tidur king", en: "Two king beds" },
-      { id: "Kolam kecil pribadi", en: "Private mini pool" },
+      { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
+      { id: "Private whirlpool · ±100 m dari lobi", en: "Private whirlpool · ±100 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
-    catatan: "Kapasitas perlu konfirmasi klien: 2 atau 4 orang.",
+    harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
   {
-    slug: "suite-room",
-    nama: "Suite Room",
-    pax: 4,
-    kelompok: "suite",
-    fakta: [],
-    harga: null,
-    airPanasPribadi: true,
-    catatan: "Perlu konfirmasi: apakah terpisah dari Suite Couple di daftar lama.",
-  },
-  {
-    slug: "deluxe-suite",
-    nama: "Deluxe Suite",
-    pax: 6,
-    kelompok: "suite",
+    slug: "suite-arileu", nama: "Suite Arileu", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
-      { id: "Dua lantai, tiga kamar tidur", en: "Two storeys, three bedrooms" },
-      { id: "Kolam pribadi dan gazebo", en: "Private pool and gazebo" },
+      { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
+      { id: "Private whirlpool · ±130 m dari lobi", en: "Private whirlpool · ±130 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
   {
-    slug: "babakan-siluhur-1",
-    nama: "Babakan Siluhur 1",
-    pax: 18,
-    kelompok: "rombongan",
-    fakta: [{ id: "Kolam air panas alami", en: "Natural hot spring pool" }],
-    harga: null,
-    airPanasPribadi: true,
-  },
-  {
-    slug: "babakan-siluhur-2",
-    nama: "Babakan Siluhur 2",
-    pax: 12,
-    kelompok: "rombongan",
+    slug: "junior-suite", nama: "Junior Suite", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
-      { id: "Dua bungalow", en: "Two bungalows" },
-      { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
+      { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
+      { id: "Private whirlpool · ±250 m dari lobi", en: "Private whirlpool · ±250 m from the lobby" },
     ],
-    harga: null,
-    airPanasPribadi: true,
+    harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
   {
-    slug: "villa-sibentang-1br",
-    nama: "Villa Sibentang 1 Kamar",
-    pax: 2,
-    kelompok: "villa",
-    fakta: [{ id: "Kolam air panas pribadi", en: "Private hot spring pool" }],
-    harga: null,
-    airPanasPribadi: true,
-    situsLain: SIBENTANG_URL,
+    slug: "deluxe-suite", nama: "Deluxe Suite", kelas: "Grand Thermal Pool Suite", unit: 1, pax: 6, kelompok: "suite",
+    fakta: [
+      { id: "Tiga kamar tidur privat", en: "Three private bedrooms" },
+      { id: "Private pool dan pendopo · dekat area memancing", en: "Private pool and pendopo · near the fishing pond" },
+    ],
+    harga: { weekday: "4.969.000", weekend: "8.649.000" }, airPanasPribadi: true,
   },
   {
-    slug: "villa-sibentang-2br",
-    nama: "Villa Sibentang 2 Kamar",
-    pax: 4,
-    kelompok: "villa",
-    fakta: [{ id: "Kolam air panas pribadi", en: "Private hot spring pool" }],
-    harga: null,
-    airPanasPribadi: true,
-    situsLain: SIBENTANG_URL,
+    slug: "babakan-siluhur-1", nama: "Babakan Siluhur 1", kelas: "Signature Estate 1", unit: 1, pax: 18, kelompok: "rombongan",
+    fakta: [
+      { id: "Satu kompleks berisi 3 bungalow", en: "One compound of 3 bungalows" },
+      { id: "Private whirlpool, gazebo, dan pendopo", en: "Private whirlpool, gazebo and pendopo" },
+    ],
+    harga: { weekday: "11.519.000", weekend: "16.629.000" }, airPanasPribadi: true,
+  },
+  {
+    slug: "babakan-siluhur-2", nama: "Babakan Siluhur 2", kelas: "Signature Estate 2", unit: 1, pax: 12, kelompok: "rombongan",
+    fakta: [
+      { id: "Satu kompleks berisi 2 bungalow berhadapan", en: "One compound of 2 facing bungalows" },
+      { id: "Private whirlpool, gazebo, dan pendopo", en: "Private whirlpool, gazebo and pendopo" },
+    ],
+    harga: { weekday: "8.659.000", weekend: "12.399.000" }, airPanasPribadi: true,
+  },
+  {
+    slug: "villa-sibentang-1br", nama: "Villa Sibentang 1 BR", kelas: "Signature Private Villa - 1", unit: 4, pax: 2, kelompok: "villa",
+    fakta: [{ id: "Private pool air panas, mini pantry", en: "Private hot spring pool, mini pantry" }],
+    harga: { weekday: "4.199.000", weekend: "4.629.000" }, airPanasPribadi: true, situsLain: SIBENTANG_URL,
+  },
+  {
+    slug: "villa-sibentang-2br", nama: "Villa Sibentang 2 BR", kelas: "Signature Private Villa - 2", unit: 5, pax: 4, kelompok: "villa",
+    fakta: [{ id: "Private pool air panas, mini pantry", en: "Private hot spring pool, mini pantry" }],
+    harga: { weekday: "5.859.000", weekend: "7.009.000" }, airPanasPribadi: true, situsLain: SIBENTANG_URL,
   },
 ];
+
+/** Isi Publish Rate (Data Master bab 03 §2). */
+export const TERMASUK_KAMAR = {
+  weekday: {
+    id: "Weekday (check-in Minggu–Jumat): sarapan, tiket kolam renang dan Kamar Rendam, pajak dan pelayanan.",
+    en: "Weekday (check-in Sunday–Friday): breakfast, swimming pool and Kamar Rendam access, tax and service.",
+  },
+  weekend: {
+    id: "Weekend (check-in Sabtu dan libur): sarapan, makan malam, live music, paket pancingan, tiket kolam renang dan Kamar Rendam, pajak dan pelayanan.",
+    en: "Weekend (check-in Saturday and holidays): breakfast, dinner, live music, fishing package, swimming pool and Kamar Rendam access, tax and service.",
+  },
+} as const;
+
+/** Sibentang Thermal Reset Journey (Data Master bab 09 §9.4). Harga sengaja
+ *  tidak ditulis: keputusan 9 Agu 2026, harga paket dijawab lewat WhatsApp. */
+export const THERMAL_RESET = [
+  { nama: "Thermal Reset", durasi: "2D1N", janji: "A Gentle Escape to Pause, Restore & Reconnect",
+    isi: { id: "Satu malam di villa: Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy, dan Slow Dining Experience.", en: "One night in the villa: Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy and Slow Dining Experience." } },
+  { nama: "Deep Reset", durasi: "3D2N", janji: "A Deeper Journey to Pause, Restore & Reconnect",
+    isi: { id: "Dua malam. Hari kedua menjadi inti perjalanan, dengan Sundanese Cultural Touch.", en: "Two nights. Day two is the heart of the journey, with the Sundanese Cultural Touch." } },
+  { nama: "Integration Reset", durasi: "4D3N", janji: "A Deeper Sanctuary Escape to Pause, Restore & Reconnect",
+    isi: { id: "Tiga malam dengan jadwal paling longgar. Thermal Restoration menjadi inti perjalanan.", en: "Three nights on the loosest schedule. Thermal Restoration is the heart of the journey." } },
+] as const;
+
+/** Datang tanpa menginap (Data Master bab 04 §2–3, flyer resmi KSA 2026). */
+export const DAY_VISIT = [
+  { nama: "Tiket Kolam Renang", harga: { id: "Rp40.000 weekday · Rp50.000 weekend per orang", en: "Rp40,000 weekday · Rp50,000 weekend per person" },
+    isi: { id: "Berenang di Kolam Renang Tasik Madu yang berair panas.", en: "Swim in the hot spring water of Kolam Renang Tasik Madu." } },
+  { nama: "Kamar Rendam", harga: { id: "Rp50.000 per 25 menit", en: "Rp50,000 per 25 minutes" },
+    isi: { id: "Berendam privat, sudah dengan sabun, sampo, handuk, dan bandrek atau bajigur.", en: "A private soak, with soap, shampoo, towel and bandrek or bajigur." } },
+  { nama: "Paket MABAR", harga: { id: "Rp69.000 atau Rp99.000 per orang, minimal 6 orang", en: "Rp69,000 or Rp99,000 per person, minimum 6" },
+    isi: { id: "Makan dan Berenang Bareng: berenang ditambah satu menu utama.", en: "Makan dan Berenang Bareng (eat and swim together): a swim plus one main course." } },
+  { nama: "Swim & Grill", harga: { id: "Rp100.000 per orang, minimal 4 orang", en: "Rp100,000 per person, minimum 4" },
+    isi: { id: "Tiket kolam ditambah satu set Suki & Grill di Restoran Tunjung Balebat, weekday, 3 jam.", en: "Pool entry plus a Suki & Grill set at Restoran Tunjung Balebat, weekdays, 3 hours." } },
+  { nama: "Exclusive Swim & Grill at Private Villa Sibentang", harga: { id: "Rp120.000 per orang, minimal 6 orang", en: "Rp120,000 per person, minimum 6" },
+    isi: { id: "Akses Private Villa Sibentang ditambah satu set Suki & Grill, weekday, 3 jam, saat villa kosong.", en: "Private Villa Sibentang access plus a Suki & Grill set, weekdays, 3 hours, when the villa is free." } },
+] as const;
+
+/* ---------- Makan ----------
+ * Data Master bab 06 §1 dan §3. */
+export const OUTLET_MAKAN = ["Restoran Tunjung Balebat", "Restoran Ligar Wangi", "Saung Tegal Pangulinan", "Coffee House", "Cafetaria"] as const;
+export const MENU_SUNDA = [
+  { nama: "Nasi Liwet 4 Orang", harga: "350.000" },
+  { nama: "Nasi Lulun Botram 4 Orang", harga: "300.000" },
+  { nama: "Nasi Tutug Oncom 4 Orang", harga: "230.000" },
+  { nama: "Nasi Bakar", harga: "75.000" },
+  { nama: "Secang", harga: "25.000" },
+] as const;
 
 /* ---------- Fasilitas ----------
  * Sumber: situs lama + halaman OTA. Sengaja TIDAK menyebut kecepatan WiFi
@@ -273,96 +272,104 @@ export const SPA = "Pitaloka Spa";
 export const MUSIK = "Kacapi Suling";
 
 /* ---------- Ulasan ----------
+ * Data Master KSA bab 01 §9, diambil 30 Okt 2026.
  * Ditulis sebagai TEKS dengan menyebut platformnya. JANGAN dipakai sebagai
- * markup aggregateRating: ulasan ini milik Tripadvisor dan Traveloka, bukan
- * dikumpulkan situs ini, dan memarkupnya melanggar kebijakan Google.
+ * markup aggregateRating: ulasan ini milik platform lain, bukan situs ini.
  */
 
 export const ULASAN = [
   {
-    sumber: "Tripadvisor",
-    nilai: "4",
+    sumber: "Google Maps",
+    nilai: "4,5",
     dari: "5",
-    jumlah: "1.211",
-    catatan: {
-      id: "Peringkat 2 dari 15 hotel di Garut",
-      en: "Ranked 2nd of 15 hotels in Garut",
-    },
+    jumlah: "9.902",
+    catatan: { id: "Ulasan terbanyak dari semua platform", en: "The most reviews of any platform" },
   },
   {
-    sumber: "Traveloka",
-    nilai: "8,3",
-    dari: "10",
-    jumlah: "1.642",
-    catatan: { id: "Predikat Mengesankan", en: "Rated Impressive" },
+    sumber: "Tripadvisor",
+    nilai: "4,7",
+    dari: "5",
+    jumlah: "1.413",
+    catatan: { id: "Travelers' Choice 2025", en: "Travelers' Choice 2025" },
   },
 ] as const;
 
 /* ---------- Ruang pertemuan ----------
- * Sumber: flyer resmi Fullboard Meeting dari klien. Angka kapasitas, bukan
- * janji komersial. null berarti tata letak itu tidak dilayani di ruang tsb.
- */
+ * Data Master KSA bab 05 §1 (Catalog KSA hlm 21–25).
+ * null = susunan itu tidak tersedia. "tanya" = kapasitas belum tercatat,
+ * dipastikan ke reservasi. */
 
-export const RUANG_MICE = [
-  { nama: "Purba Dewata Full", theater: 350, kelas: 250, uShape: 160, bundar: 100 },
-  { nama: "Purba Dewata 1", theater: 200, kelas: 150, uShape: 90, bundar: 60 },
-  { nama: "Purba Dewata 2", theater: 150, kelas: 100, uShape: 70, bundar: 50 },
-  { nama: "Intan Dewata Full", theater: 150, kelas: 100, uShape: 70, bundar: 54 },
-  { nama: "Intan Dewata 1", theater: 100, kelas: 60, uShape: 40, bundar: 30 },
+type Kap = number | null | "tanya";
+export const RUANG_MICE: { nama: string; theater: Kap; kelas: Kap; uShape: Kap; bundar: Kap }[] = [
+  { nama: "Purba Dewata Full", theater: 350, kelas: "tanya", uShape: 160, bundar: "tanya" },
+  { nama: "Purba Dewata 1", theater: 200, kelas: "tanya", uShape: 90, bundar: 60 },
+  { nama: "Purba Dewata 2", theater: 150, kelas: "tanya", uShape: 70, bundar: 50 },
+  { nama: "Intan Dewata Full", theater: "tanya", kelas: "tanya", uShape: 70, bundar: 54 },
+  { nama: "Intan Dewata 1", theater: "tanya", kelas: 60, uShape: 40, bundar: 30 },
   { nama: "Intan Dewata 2", theater: 50, kelas: 40, uShape: 30, bundar: 24 },
   { nama: "Gambir Wangi", theater: null, kelas: null, uShape: null, bundar: 15 },
-] as const;
+];
 
-/* ---------- Tarif paket ----------
- * Sumber: flyer resmi klien untuk Fullboard Meeting dan Outing serta Family
- * Gathering. Kedua flyer memakai tabel tarif yang sama.
- * ⚠️ FLYERNYA TIDAK BERTANGGAL. Halaman WAJIB menyebut bahwa tarif
- * dikonfirmasi ulang saat pemesanan. Jangan hapus catatan itu.
+/* ---------- Tarif paket rombongan ----------
+ * Data Master KSA bab 05 §3–4. Harga per orang, termasuk pajak & pelayanan.
+ * Fullboard Meeting dan Outing Family Gathering punya tabel SENDIRI-SENDIRI.
  */
 
-export const TARIF_PAKET = [
-  {
-    isi: { id: "Sendiri di kamar", en: "Single occupancy" },
-    weekday: "1.470.000",
-    weekend: "1.855.000",
-  },
-  {
-    isi: { id: "Berdua sekamar", en: "Twin share" },
-    weekday: "970.000",
-    weekend: "1.105.000",
-  },
-  {
-    isi: { id: "Bertiga sekamar", en: "Triple share" },
-    weekday: "865.000",
-    weekend: "970.000",
-  },
-  {
-    isi: { id: "Berempat sekamar", en: "Quad share" },
-    weekday: "820.000",
-    weekend: "900.000",
-  },
-] as const;
+type Baris = { isi: { id: string; en: string }; weekday: string; weekend: string };
+const OKUPANSI = {
+  single: { id: "Single Occupied (sendiri)", en: "Single Occupied" },
+  twin: { id: "Twin Share (berdua)", en: "Twin Share" },
+  triple: { id: "Triple Share (bertiga, +1 extra bed)", en: "Triple Share (+1 extra bed)" },
+  quadra: { id: "Quadra (berempat, +2 extra bed)", en: "Quadra (+2 extra beds)" },
+};
+
+export const TARIF_FULLBOARD: Baris[] = [
+  { isi: OKUPANSI.single, weekday: "2.201.000", weekend: "2.590.000" },
+  { isi: OKUPANSI.twin, weekday: "1.433.000", weekend: "1.557.000" },
+  { isi: OKUPANSI.triple, weekday: "1.241.000", weekend: "1.330.000" },
+  { isi: OKUPANSI.quadra, weekday: "1.143.000", weekend: "1.156.000" },
+];
+
+export const TARIF_OUTING: Baris[] = [
+  { isi: OKUPANSI.single, weekday: "2.540.000", weekend: "2.782.000" },
+  { isi: OKUPANSI.twin, weekday: "1.772.000", weekend: "1.802.000" },
+  { isi: OKUPANSI.triple, weekday: "1.556.000", weekend: "1.676.000" },
+  { isi: OKUPANSI.quadra, weekday: "1.482.000", weekend: "1.570.000" },
+];
 
 export const TERMASUK_SEMUA = [
   { id: "Menginap satu malam di kamar Bungalow", en: "One night in a Bungalow room" },
-  { id: "Sarapan, makan siang, dan makan malam prasmanan", en: "Buffet breakfast, lunch and dinner" },
-  { id: "Tiket kolam renang dan kamar rendam", en: "Swimming pool and soaking room access" },
+  { id: "Buffet breakfast, lunch, dan dinner", en: "Buffet breakfast, lunch and dinner" },
+  { id: "Kolam renang dan Kamar Rendam", en: "Swimming pool and Kamar Rendam" },
   { id: "Pajak dan pelayanan", en: "Tax and service" },
 ] as const;
 
 export const TERMASUK_MEETING = [
-  { id: "Dua kali rehat kopi", en: "Two coffee breaks" },
-  { id: "Ruang pertemuan berikut proyektor, layar, AC, dan air mineral", en: "Meeting room with projector, screen, air conditioning and mineral water" },
+  { id: "2 kali coffee break", en: "Two coffee breaks" },
+  { id: "Ruang pertemuan: notebook, pensil, permen, air mineral, AC, proyektor, layar", en: "Meeting room: notebook, pencil, sweets, mineral water, AC, projector, screen" },
 ] as const;
 
 export const TERMASUK_OUTING = [
-  { id: "Satu kali rehat kopi", en: "One coffee break" },
-  { id: "Live musik electone, satu penyanyi dan satu pemain, sampai tiga jam", en: "Live electone music, one singer and one player, up to three hours" },
+  { id: "1 kali coffee break", en: "One coffee break" },
+  { id: "Entertainment: 1 singer + 1 player, 18.30–22.00", en: "Entertainment: 1 singer + 1 player, 18.30–22.00" },
   { id: "Fun games", en: "Fun games" },
 ] as const;
 
+/** Rombongan tanpa menginap dan Babakan Siluhur (Data Master bab 04 §8, bab 05 §4). */
+export const PAKET_TANPA_MENGINAP = [
+  { nama: "Non Residental Meeting", harga: { id: "Rp484.000–Rp847.000 per orang", en: "Rp484,000–Rp847,000 per person" },
+    isi: { id: "Halfday Rp484.000, Full Day Rp605.000, One Day Rp847.000. Sudah termasuk makan, coffee break, ruang pertemuan, pajak, dan pelayanan.", en: "Halfday Rp484,000, Full Day Rp605,000, One Day Rp847,000. Meals, coffee breaks, meeting room, tax and service included." } },
+  { nama: "Fullday Gathering", harga: { id: "Rp1.023.000", en: "Rp1,023,000" },
+    isi: { id: "Buffet lunch, coffee break, venue resto, fun games, entertainment, kolam renang, Kamar Rendam, pajak, dan pelayanan.", en: "Buffet lunch, coffee break, restaurant venue, fun games, entertainment, swimming pool, Kamar Rendam, tax and service." } },
+  { nama: "Siluhur Private Meeting · Siluhur Private Gathering", harga: { id: "mulai Rp8.659.000 per kompleks", en: "from Rp8,659,000 per compound" },
+    isi: { id: "Tim kecil rapat, menginap, dan berkumpul di satu kompleks Babakan Siluhur sendiri, 12 atau 18 orang.", en: "A small team meets, stays and gathers in its own Babakan Siluhur compound, for 12 or 18 people." } },
+] as const;
+
 /* ---------- Paket acara ----------
- * Sumber: halaman EVENTS resort-kampungsumberalam.com beserta sembilan
+ * Nama dan harga dicek ulang ke Data Master KSA bab 05 §5–6 (19 Nov 2026):
+ * nama paket resmi tidak diterjemahkan, Birthday Rp146.000, paket Bulan madu
+ * dibuang karena tidak ada di materi resmi KSA 2026.
+ * Sumber awal: halaman EVENTS resort-kampungsumberalam.com beserta sembilan
  * halaman paketnya, dibaca lewat REST API situs lama pada 13 Agu 2026.
  * Angka disalin persis. Ejaan sumbernya yang keliru (Kampug, menginp,
  * Sibentan, Birtday) dirapikan, angkanya tidak disentuh.
@@ -395,7 +402,7 @@ export type Acara = {
 export const ACARA: Acara[] = [
   {
     slug: "engagement",
-    nama: { id: "Tunangan", en: "Engagement" },
+    nama: { id: "Engagement Package", en: "Engagement Package" },
     harga: "180.000",
     satuan: "orang",
     minimal: 50,
@@ -420,7 +427,7 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "akad",
-    nama: { id: "Akad", en: "Akad ceremony" },
+    nama: { id: "Akad Package", en: "Akad Package" },
     harga: "205.000",
     satuan: "orang",
     minimal: 100,
@@ -445,7 +452,7 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "intimate-wedding",
-    nama: { id: "Pernikahan kecil", en: "Intimate wedding" },
+    nama: { id: "Intimate Wedding Package", en: "Intimate Wedding Package" },
     harga: "260.000",
     satuan: "orang",
     minimal: 100,
@@ -470,7 +477,7 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "pre-wedding",
-    nama: { id: "Foto pra nikah", en: "Pre-wedding shoot" },
+    nama: { id: "Pre Wedding Package · Paket 1", en: "Pre Wedding Package · Package 1" },
     harga: "800.000",
     satuan: "paket",
     minimal: null,
@@ -491,10 +498,7 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "pre-wedding-sibentang",
-    nama: {
-      id: "Foto pra nikah dengan Villa Sibentang",
-      en: "Pre-wedding shoot with Villa Sibentang",
-    },
+    nama: { id: "Pre Wedding Package · Paket 2", en: "Pre Wedding Package · Package 2" },
     harga: "1.500.000",
     satuan: "paket",
     minimal: null,
@@ -511,27 +515,9 @@ export const ACARA: Acara[] = [
     alt: "Kolam pribadi berdinding putih di halaman villa",
   },
   {
-    slug: "honeymoon",
-    nama: { id: "Bulan madu", en: "Honeymoon" },
-    harga: "2.100.000",
-    satuan: "paket",
-    minimal: null,
-    termasuk: [
-      { id: "Menginap di bungalow", en: "One stay in a bungalow" },
-      { id: "Makan malam berteman lilin", en: "Candlelit dinner" },
-      { id: "Kue kecil", en: "Mini cake" },
-      { id: "Dekorasi kamar", en: "Room decoration" },
-    ],
-    tambahan: [],
-    foto: "/images/suite-kolam-senja.webp",
-    w: 960,
-    h: 640,
-    alt: "Suite dengan kolam pribadi pada sore hari",
-  },
-  {
     slug: "ulang-tahun",
-    nama: { id: "Ulang tahun", en: "Birthday party" },
-    harga: "136.000",
+    nama: { id: "Birthday Package", en: "Birthday Package" },
+    harga: "146.000",
     satuan: "orang",
     minimal: 50,
     termasuk: [
@@ -554,7 +540,7 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "ulang-tahun-anak",
-    nama: { id: "Ulang tahun anak", en: "Kids birthday" },
+    nama: { id: "Kids Birthday Package", en: "Kids Birthday Package" },
     harga: "126.000",
     satuan: "orang",
     minimal: 50,
@@ -566,7 +552,7 @@ export const ACARA: Acara[] = [
     ],
     tambahan: [
       { id: "Dekorasi", en: "Decoration" },
-      { id: "Pembawa acara dan pesulap", en: "MC and magician" },
+      { id: "MC dan pesulap", en: "MC and magician" },
       { id: "Badut", en: "Clown" },
     ],
     foto: "/images/bermain-anak.webp",
@@ -576,16 +562,13 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "arisan-sibentang",
-    nama: {
-      id: "Arisan dan reuni di Villa Sibentang",
-      en: "Social gathering at Villa Sibentang",
-    },
+    nama: { id: "Social Event at Private Villa Sibentang", en: "Social Event at Private Villa Sibentang" },
     harga: "160.000",
     satuan: "orang",
     minimal: 6,
     termasuk: [
-      { id: "Pemakaian Private Villa Sibentang", en: "Use of Private Villa Sibentang" },
-      { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
+      { id: "Buffet", en: "Buffet" },
+      { id: "Private pool Villa Sibentang", en: "Private pool at Villa Sibentang" },
     ],
     tambahan: [],
     catatan: {
@@ -599,16 +582,13 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "berenang-sibentang",
-    nama: {
-      id: "Berenang di Villa Sibentang",
-      en: "Swimming at Villa Sibentang",
-    },
+    nama: { id: "Swimming at Private Villa Sibentang", en: "Swimming at Private Villa Sibentang" },
     harga: "85.000",
     satuan: "orang",
     minimal: 6,
     termasuk: [
       { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
-      { id: "Camilan", en: "Snacks" },
+      { id: "Light meal", en: "Light meal" },
     ],
     tambahan: [],
     foto: "/images/grotto-privat.webp",

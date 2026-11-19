@@ -5,7 +5,9 @@ import Gbr from "../Gbr.astro";
 import T from "../T.astro";
 import {
   RUANG_MICE,
-  TARIF_PAKET,
+  TARIF_FULLBOARD,
+  TARIF_OUTING,
+  PAKET_TANPA_MENGINAP,
   TERMASUK_SEMUA,
   TERMASUK_MEETING,
   TERMASUK_OUTING,
@@ -34,7 +36,7 @@ const { lang } = Astro.props;
   path="/meetings/"
   og="/og/meetings.jpg"
   title={{ id: 'Paket Fullboard Meeting dan Outing di Garut | Kampung Sumber Alam', en: 'Fullboard meeting and outing packages in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Tujuh ruang pertemuan di Kampung Sumber Alam Garut, dari 15 sampai 350 orang. Paket fullboard mulai Rp 820.000 per orang sudah termasuk menginap, tiga kali makan, pajak, dan pelayanan.', en: 'Seven meeting rooms at Kampung Sumber Alam Garut, for 15 to 350 people. Fullboard packages from Rp 820,000 per person, including the stay, three meals, tax and service.' }}
+  description={{ id: 'Tujuh ruang pertemuan di Kampung Sumber Alam Garut, dari 15 sampai 350 orang. Fullboard Meeting mulai Rp1.143.000 per orang sudah termasuk menginap, tiga kali makan, pajak, dan pelayanan.', en: 'Seven meeting rooms at Kampung Sumber Alam Garut, for 15 to 350 people. Fullboard Meeting from Rp1,143,000 per person, including the stay, three meals, tax and service.' }}
   penanda={{id: "Rapat dan outing", en: "Meetings and outings"}}
   judul={{id: "Tujuh ruang, sampai 350 orang duduk teater",
       en: "Seven rooms, up to 350 seated theatre style",}}
@@ -55,8 +57,8 @@ const { lang } = Astro.props;
           </p>
           <p>
             <T
-              id="Paket fullboard dan paket outing memakai tabel tarif yang sama. Bedanya cuma isi acara di siang hari: yang satu ruang rapat berikut peralatannya, yang satu lagi live musik dan fun games. Family gathering memakai tarif yang sama dengan outing."
-              en="The fullboard and outing packages share one rate table. The difference sits in the daytime programme: one gives you a meeting room with its equipment, the other live music and fun games. Family gatherings run on the same rates as outings."
+              id="Ada dua paket menginap untuk rombongan. Fullboard Meeting untuk rapat, lengkap dengan ruang pertemuan dan peralatannya. Outing Family Gathering untuk kantor yang mengajak keluarga, dengan fun games dan entertainment malam."
+              en="There are two overnight packages for groups. Fullboard Meeting is for meetings, with the meeting room and its equipment. Outing Family Gathering is for offices bringing families along, with fun games and evening entertainment."
             />
           </p>
         </div>
@@ -83,28 +85,34 @@ const { lang } = Astro.props;
           />
         </h2>
 
-        <table class="mt-9 w-full border-collapse text-left text-[0.9375rem]">
-          <thead>
-            <tr class="border-b border-tinta">
-              <th class="penanda py-3 pr-3 text-tinta"><T id="Isi kamar" en="Occupancy" /></th>
-              <th class="penanda py-3 pr-3 text-tinta"><T id="Hari kerja" en="Weekday" /></th>
-              <th class="penanda py-3 text-tinta"><T id="Akhir pekan" en="Weekend" /></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              TARIF_PAKET.map((t) => (
-                <tr class="border-b border-garis">
-                  <td class="py-3.5 pr-3">
-                    <T id={t.isi.id} en={t.isi.en} />
-                  </td>
-                  <td class="py-3.5 pr-3 tabular-nums">Rp {t.weekday}</td>
-                  <td class="py-3.5 text-tinta-lembut tabular-nums">Rp {t.weekend}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+        <div class="mt-9 grid gap-10 lg:grid-cols-2">
+          {[
+            { nama: "Fullboard Meeting", data: TARIF_FULLBOARD },
+            { nama: "Outing Family Gathering", data: TARIF_OUTING },
+          ].map((tb) => (
+            <div>
+              <h3 class="font-display text-lg font-medium">{tb.nama}</h3>
+              <table class="mt-3 w-full border-collapse text-left text-[0.9375rem]">
+                <thead>
+                  <tr class="border-b border-tinta">
+                    <th class="penanda py-3 pr-3 text-tinta"><T id="Okupansi" en="Occupancy" /></th>
+                    <th class="penanda py-3 pr-3 text-tinta">Weekday</th>
+                    <th class="penanda py-3 text-tinta">Weekend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tb.data.map((t) => (
+                    <tr class="border-b border-garis">
+                      <td class="py-3.5 pr-3"><T id={t.isi.id} en={t.isi.en} /></td>
+                      <td class="py-3.5 pr-3 tabular-nums">Rp{t.weekday}</td>
+                      <td class="py-3.5 text-tinta-lembut tabular-nums">Rp{t.weekend}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
 
         <div class="mt-11 grid gap-8 sm:grid-cols-3 sm:gap-10">
           <div>
@@ -114,13 +122,13 @@ const { lang } = Astro.props;
             </ul>
           </div>
           <div>
-            <p class="penanda"><T id="Tambahan paket rapat" en="Meeting package adds" /></p>
+            <p class="penanda"><T id="Tambahan Fullboard Meeting" en="Fullboard Meeting adds" /></p>
             <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
               {TERMASUK_MEETING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
             </ul>
           </div>
           <div>
-            <p class="penanda"><T id="Tambahan paket outing" en="Outing package adds" /></p>
+            <p class="penanda"><T id="Tambahan Outing Family Gathering" en="Outing Family Gathering adds" /></p>
             <ul class="mt-3 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
               {TERMASUK_OUTING.map((x) => <li><T id={x.id} en={x.en} /></li>)}
             </ul>
@@ -129,8 +137,8 @@ const { lang } = Astro.props;
 
         <p class="mt-9 max-w-[60ch] text-sm text-tinta-lembut">
           <T
-            id="Tarif ini berasal dari materi resmi resort dan dikonfirmasi ulang saat pemesanan. Rincian per jumlah peserta, termasuk kebutuhan kamar dan susunan acara, dikirim lewat WhatsApp."
-            en="These rates come from the resort's own published material and are reconfirmed at booking. A breakdown by group size, covering room needs and the run of the day, is sent over WhatsApp."
+            id="Harga per orang, dari Catalog resmi KSA, dan dikonfirmasi ulang saat pemesanan. Rincian per jumlah peserta, termasuk kebutuhan kamar dan susunan acara, dikirim lewat WhatsApp."
+            en="Rates are per person, from the official KSA catalogue, and reconfirmed at booking. A breakdown by group size, covering room needs and the run of the day, is sent over WhatsApp."
           />
         </p>
       </div>
@@ -168,21 +176,21 @@ const { lang } = Astro.props;
               RUANG_MICE.map((r) => (
                 <tr class="border-b border-garis">
                   <td class="py-3.5 pr-3">{r.nama}</td>
-                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.theater ?? "-"}</td>
-                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.kelas ?? "-"}</td>
+                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.theater === "tanya" ? "*" : (r.theater ?? "-")}</td>
+                  <td class="py-3.5 pr-3 text-tinta-lembut tabular-nums">{r.kelas === "tanya" ? "*" : (r.kelas ?? "-")}</td>
                   <td class="hidden py-3.5 pr-3 text-tinta-lembut tabular-nums sm:table-cell">
-                    {r.uShape ?? "-"}
+                    {r.uShape === "tanya" ? "*" : (r.uShape ?? "-")}
                   </td>
-                  <td class="py-3.5 text-tinta-lembut tabular-nums">{r.bundar}</td>
+                  <td class="py-3.5 text-tinta-lembut tabular-nums">{r.bundar === "tanya" ? "*" : (r.bundar ?? "-")}</td>
                 </tr>
               ))
             }
           </tbody>
         </table>
-        <p class="mt-3 text-sm text-tinta-lembut sm:hidden">
+        <p class="mt-3 text-sm text-tinta-lembut">
           <T
-            id="Tata letak U-shape tampil di layar yang lebih lebar."
-            en="The U-shape layout appears on wider screens."
+            id="Tata letak U-shape tampil di layar yang lebih lebar. Tanda * berarti kapasitasnya ditanyakan ke reservasi, tanda - berarti susunan itu tidak tersedia."
+            en="The U-shape layout appears on wider screens. * means ask reservations for the capacity, - means that layout is not offered."
           />
         </p>
       </div>
@@ -218,6 +226,7 @@ const { lang } = Astro.props;
                       <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
                     </span>
                   </div>
+                  <p class="mt-1 text-[0.9375rem] tabular-nums">Rp{k.harga.weekday} weekday · Rp{k.harga.weekend} weekend</p>
                   <p class="mt-1.5 text-[0.9375rem] text-tinta-lembut">
                     {k.fakta.map((f, j) => (
                       <>
@@ -237,6 +246,25 @@ const { lang } = Astro.props;
             />
           </p>
         </div>
+      </div>
+    </section>
+
+    {/* ============ TANPA MENGINAP ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Tanpa menginap dan kelompok kecil" en="Day packages and small groups" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
+          <T id="Rombongan yang belum mau menginap bisa mulai dari sini." en="Groups not ready to stay the night can start here." />
+        </h2>
+        <ul class="mt-9 grid gap-x-10 border-t border-garis md:grid-cols-3">
+          {PAKET_TANPA_MENGINAP.map((p) => (
+            <li class="border-b border-garis py-5">
+              <h3 class="font-display text-lg font-medium">{p.nama}</h3>
+              <p class="mt-1 text-[0.9375rem] tabular-nums"><T id={p.harga.id} en={p.harga.en} /></p>
+              <p class="mt-2 text-[0.9375rem] text-tinta-lembut"><T id={p.isi.id} en={p.isi.en} /></p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 

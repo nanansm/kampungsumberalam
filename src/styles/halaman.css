@@ -86,3 +86,8 @@
 @media (max-width: 767px) { .hal { padding-bottom: 96px; } .hal td, .hal th { padding-right: 10px; } }
 .hal .break-all { word-break: normal; overflow-wrap: anywhere; }
 .hal .judul-seksi + .seksi, .hal h2 + div.columns-2 { margin-top: 24px; }
+/* Ditambah 19 Nov 2026 (perbaikan data Data Master): harga, Thermal Reset, paket tanpa menginap. */
+.mt-1 { margin-top: 4px; } .italic { font-style: italic; } .gap-x-10 { column-gap: 40px; }
+@media (min-width: 768px) { .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hal ul.border-t { list-style: none; padding-left: 0; }

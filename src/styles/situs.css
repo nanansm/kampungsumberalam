@@ -277,3 +277,13 @@ a[href^="tel"] { white-space: nowrap; }
 .menginap .aksi .panah { display: inline-block; margin-top: 14px; }
 @media (max-width: 767px) { .wa-float { width: 52px; height: 52px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); } }
 .catatan .panah { color: var(--tinta); }
+
+/* Datang tanpa menginap (beranda, blok Berendam) — 19 Nov 2026 */
+.dv { max-width: 1440px; margin: 0 auto; padding: 0 var(--pad) clamp(56px, 8vw, 110px); }
+.dv-judul { font: 600 .72rem/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--alam); }
+.dv ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 28px; }
+.dv li { border-top: 1px solid var(--garis); padding: 16px 0; }
+.dv-nama { font: 400 1.25rem/1.15 var(--serif); }
+.dv-harga { margin-top: 4px; font-variant-numeric: tabular-nums; font-weight: 600; font-size: .9rem; }
+.dv li p:last-child { margin-top: 6px; opacity: .85; font-size: .92rem; max-width: 36ch; }
+.empat:has(+ .dv) { padding-bottom: 28px; }

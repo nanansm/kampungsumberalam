@@ -1,7 +1,7 @@
 ---
 import { Picture, getImage } from "astro:assets";
 import Situs from "../layouts/Situs.astro";
-import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, waLink } from "../data/content";
+import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, KAMAR, DAY_VISIT, waLink } from "../data/content";
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
 
@@ -73,7 +73,7 @@ const waKey = ["wa.berdua", "wa.keluarga", "wa.kantor"];
 const cara = [1, 2, 3].map((n, i) => ({ lbl: t(`cara.${n}.label`), nama: t(`cara.${n}.nama`), isi: t(`cara.${n}.isi`), harga: t(`cara.${n}.harga`).replace("Twin Share", "Twin\u00a0Share").replace(/(\d) (per)/, "$1\u00a0$2"), img: caraImg[i], alt: t(`alt.cara${n}`), wa: t(waKey[i]) }));
 const kampungCap = [1, 2, 3, 4].map((n) => t(`seharian.foto${n}`));
 const kampungAlt = [1, 2, 3, 4].map((n) => t(`alt.seharian${n}`));
-const tipe = ["Bungalow", "Bungalow Siceeh", "Kawung", "Pondok Kalapa", "Junior Suite", "Deluxe Suite", "Babakan Siluhur"];
+const tipe = KAMAR.map((k) => k.nama);
 const telHref = `tel:${TELEPON}`;
 const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 ---
@@ -173,6 +173,18 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
         </li>
       ))}
     </ol>
+    <div class="dv">
+      <h3 class="dv-judul">{lang === "en" ? "Coming for the day, without staying" : "Datang tanpa menginap"}</h3>
+      <ul>
+        {DAY_VISIT.map((d) => (
+          <li>
+            <p class="dv-nama">{d.nama}</p>
+            <p class="dv-harga">{d.harga[lang]}</p>
+            <p>{d.isi[lang]}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 
   <!-- Empat kata -->
