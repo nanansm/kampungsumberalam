@@ -68,7 +68,7 @@ const dataSkrip = {
   babak: BABAK,
   plat: PLAT.map((p) => ({ lebar: p.lebar, tinggi: p.tinggi, foto: p.foto, ubin: p.ubin, kolom: p.kolom, baris: p.baris, tajam: p.tajam })),
   awal: PANDANG_AWAL,
-  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0, sisi: h.sisi ?? "kiri" })),
+  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0, sisi: h.sisi ?? "kiri", ...(h.hp ? { hp: h.hp } : {}) })),
   teksTutup: L(TX.tutupNav),
 };
 /* gambar dasar tiap plat: HP selalu versi HP/1600 (tidak ikut DPR), desktop 2560 */
@@ -170,7 +170,7 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
               <span class="pin-garis" aria-hidden="true"></span>
               <span class="pin-isi">
                 <span class="pin-kepala">{zn.no}</span>
-                <span class="pin-label">{zn.label}</span>
+                <span class="pin-label"><svg class="label-panah" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5" /></svg><b class="label-no" aria-hidden="true">{zn.no}</b>{zn.label}</span>
               </span>
             </button>
           </>

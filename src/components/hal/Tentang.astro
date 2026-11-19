@@ -5,7 +5,7 @@ import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
 import { NAMA, RESTORAN, SPA, MUSIK, ULASAN } from "../../data/content";
-import { lekat } from "../../data/rag";
+import { lekat, rapiIsi } from "../../data/rag";
 
 /* Halaman tentang. Ragam formal, sapaan "Anda".
    Sumber satu-satunya: Data Master KSA FINAL (9 Nov 2026).
@@ -86,8 +86,8 @@ const { lang } = Astro.props;
           </p>
           <p>
             <T
-              id={lekat(`Air panas di ${NAMA} datang dari Gunung Guntur. Di kaki gunung itu, mata air panas sudah mengalir dari generasi ke generasi. Keran khusus di setiap kamar mandi mengalirkan air tersebut ke bak rendam, dan air panas yang sama mengisi Kolam Renang Tasik Madu di belakang Lobby serta bilik-bilik Kamar Rendam.`)}
-              en={lekat(`The natural hot water at ${NAMA} comes from Mount Guntur, where thermal springs have flowed at the foothills for generations. A dedicated tap in every bathroom runs it into the soaking tub, and the same hot water fills Kolam Renang Tasik Madu behind the Lobby and the private soaking rooms of Kamar Rendam.`)}
+              id={rapiIsi(`Air panas di ${NAMA} berasal dari Gunung Guntur. Di kaki gunung itu, mata air panas sudah mengalir dari generasi ke generasi. Keran khusus di setiap kamar mandi mengalirkan air tersebut ke bak rendam, dan air panas yang sama mengisi Kolam Renang Tasik Madu di belakang Lobby serta bilik-bilik Kamar Rendam.`)}
+              en={rapiIsi(`The natural hot water at ${NAMA} comes from Mount Guntur, where thermal springs have flowed at the foothills for generations. A dedicated tap in every bathroom runs it into the soaking tub, and the same hot water fills Kolam Renang Tasik Madu behind the Lobby and the private soaking rooms of Kamar Rendam.`)}
             />
           </p>
           <p>

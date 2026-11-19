@@ -15,7 +15,7 @@
  */
 import { Picture } from "astro:assets";
 import { KLIP_ZONA } from "../data/drone";
-import { rapi as lekat, rapiIsi } from "../data/rag";
+import { rapi as lekat, rapiIsi, lekatJudul } from "../data/rag";
 import fotoDatang from "../assets/cerita/cerita-datang.jpg";
 import fotoBerendam from "../assets/cerita/cerita-berendam.jpg";
 /* malam & pagi: foto malam dan pagi berkabut milik situs resmi lama Kampung Sumber Alam
@@ -41,7 +41,7 @@ const BABAK: Babak[] = [
   { n: 2, bidang: "kertas", klip: KLIP_ZONA["19"], cadangan: cadangan2 },
   { n: 3, bidang: "alam", foto: fotoBerendam, goresan: "teratai" },
   { n: 4, bidang: "petang", foto: fotoMalam, goresan: "bunga" },
-  { n: 5, bidang: "udara", foto: fotoPagi, goresan: "kelapa" },
+  { n: 5, bidang: "udara", klip: KLIP_ZONA["08"], cadangan: fotoPagi },
   { n: 6, bidang: "kertas", foto: fotoPulang },
 ];
 const no = (n: number) => String(n).padStart(2, "0");
@@ -78,7 +78,7 @@ const no = (n: number) => String(n).padStart(2, "0");
           )}
           <div class="babak-teks">
             <p class="babak-waktu" data-muncul><span class="babak-no">{no(b.n)}</span><span class="babak-garis" aria-hidden="true"></span><span>{t(`cerita.${b.n}.waktu`)}</span></p>
-            <h3 id={`h-babak-${b.n}`} data-judul>{lekat(t(`cerita.${b.n}.judul`))}</h3>
+            <h3 id={`h-babak-${b.n}`} data-judul>{lekatJudul(t(`cerita.${b.n}.judul`))}</h3>
             <p class="babak-isi" data-muncul>{rapiIsi(t(`cerita.${b.n}.isi`))}</p>
           </div>
           {/* goresan di pojok bidang, menjauhi teks dan terpotong tepi bidang (CD 2027) */}

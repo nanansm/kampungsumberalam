@@ -357,7 +357,7 @@ export const TERMASUK_MEETING = [
 
 export const TERMASUK_OUTING = [
   { id: "1 kali coffee break", en: "One coffee break" },
-  { id: "Entertainment oleh 1 singer dan 1 player, pukul 18.30–22.00", en: "Entertainment by 1 singer and 1 player, 18.30–22.00" },
+  { id: "Entertainment oleh 1 singer dan 1 player, pukul 18.30–22.00", en: "Entertainment by 1 singer and 1 player, 6:30–10 pm" },
   { id: "Fun games", en: "Fun games" },
 ] as const;
 

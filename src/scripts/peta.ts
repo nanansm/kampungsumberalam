@@ -20,7 +20,7 @@ type Data = {
   babak: { buka: number; henti: number; tutup: number };
   plat: PlatData[];
   awal: { cx: number; cy: number; vw: number; vh: number };
-  henti: { id: string; cx: number; cy: number; vw: number; vh: number; plat: number; sisi: "kiri" | "kanan" }[];
+  henti: { id: string; cx: number; cy: number; vw: number; vh: number; plat: number; sisi: "kiri" | "kanan"; hp?: { cx: number; cy: number; vw: number; vh: number } }[];
   teksTutup: string;
 };
 type Kotak = { l: number; t: number; r: number; b: number };
@@ -60,7 +60,9 @@ export function mulaiPeta(akar: HTMLElement) {
   }));
   const lain = [...akar.querySelectorAll<HTMLElement>(".titik-lain, .pintu, .tepi-arah")].map((el) => {
     const induk = el.dataset.induk ? pins.find((p) => p.el.dataset.zona === el.dataset.induk) : undefined;
-    return { el, x: +el.dataset.x!, y: +el.dataset.y!, plat: +(el.dataset.plat || 0), henti: induk ? induk.henti : el.dataset.henti ? +el.dataset.henti : 0 };
+    const tepi = el.classList.contains("tepi-arah");
+    const arah = (el.className.match(/tepi-(atas|bawah|kiri|kanan)/) || [])[1] || "kanan";
+    return { el, x: +el.dataset.x!, y: +el.dataset.y!, plat: +(el.dataset.plat || 0), henti: induk ? induk.henti : el.dataset.henti ? +el.dataset.henti : 0, tepi, arah, w: 0 };
   });
   const kotak = [...akar.querySelectorAll<HTMLElement>("[data-henti-kotak]")];
   const kotakLapis = akar.querySelector<HTMLElement>(".peta-kotak-lapis")!;
@@ -87,7 +89,7 @@ export function mulaiPeta(akar: HTMLElement) {
   const TOTAL = B.buka + B.henti * N + B.tutup;
 
   /* ---------- ukuran layar & kamera tujuan ---------- */
-  let W = 0, H = 0, hp = false;
+  let W = 0, H = 0, hp = false, lanskap = false;
   let fokus = { x: 0, y: 0, w: 0, h: 0 };
   let aktif = -1;
   let platAktif = 0;
@@ -95,10 +97,13 @@ export function mulaiPeta(akar: HTMLElement) {
     W = panggung.clientWidth;
     H = Math.min(panggung.clientHeight, window.innerHeight);
     hp = W < 900;
-    if (!hp) {
-      const kolom = jepit(W * 0.3, 380, 470) + 24;
+    // HP miring (mis. 844x390): kotak keterangan pindah ke samping seperti desktop, peta di sisi lain
+    lanskap = hp && W > H * 1.3 && H < 560;
+    if (!hp || lanskap) {
+      const kolom = lanskap ? Math.min(340, W * 0.42) + 16 : jepit(W * 0.3, 380, 470) + 24;
+      const atas = lanskap ? 64 : 84, bawah = lanskap ? 14 : 52, sisiTepi = lanskap ? 16 : 40;
       const kanan = D.henti[Math.max(0, Math.min(N - 1, aktif))]?.sisi === "kanan" && aktif >= 0 && aktif < N;
-      fokus = kanan ? { x: 40, y: 84, w: W - kolom - 40, h: H - 84 - 52 } : { x: kolom, y: 84, w: W - kolom - 40, h: H - 84 - 52 };
+      fokus = kanan ? { x: sisiTepi, y: atas, w: W - kolom - sisiTepi, h: H - atas - bawah } : { x: kolom, y: atas, w: W - kolom - sisiTepi, h: H - atas - bawah };
     } else {
       const k = kotak[Math.max(0, Math.min(N - 1, aktif))];
       const kh = k ? k.offsetHeight : 220;
@@ -118,14 +123,24 @@ export function mulaiPeta(akar: HTMLElement) {
     return { ...k, s, cx: (k.ax - tx) / s, cy: (k.ay - ty) / s };
   };
   const kamHenti = (i: number): Kam => {
-    const h = D.henti[i];
+    const h0 = D.henti[i];
+    const h = hp && h0.hp ? { ...h0, ...h0.hp } : h0;
     const foto = !!D.plat[h.plat]?.foto;
     // foto miring: di HP kotak pandang dipersempit supaya titik yang rapat tetap berjarak;
     // skala maksimum dijaga supaya foto tidak terlihat lunak di layar retina
-    const rapat = foto && hp ? 0.62 : 1;
+    const rapat = foto && hp && !lanskap ? (H < 700 || W < 380 ? 0.5 : 0.62) : 1;
     const maks = foto ? (hp ? 1.25 : 1.35) : hp ? 1.05 : 1.5;
-    const s = Math.min(fokus.w / (h.vw * rapat), fokus.h / (h.vh * rapat), maks);
-    return jepitKam({ cx: h.cx, cy: h.cy, s, ax: fokus.x + fokus.w / 2, ay: fokus.y + fokus.h / 2 }, h.plat);
+    let s = Math.min(fokus.w / (h.vw * rapat), fokus.h / (h.vh * rapat), maks);
+    const ax = fokus.x + fokus.w / 2, ay = fokus.y + fokus.h / 2;
+    if (foto) {
+      // skala minimum supaya pusat pemberhentian BISA diletakkan di tengah area pandang tanpa
+      // kamera mentok di tepi foto (di HP tegak, skala penutup layar mengunci posisi tegak foto
+      // sehingga zona di bagian bawah foto jatuh di bawah kotak keterangan)
+      const P = D.plat[h.plat];
+      const sPusat = Math.max(ay / Math.max(1, h.cy), (H - ay) / Math.max(1, P.tinggi - h.cy), ax / Math.max(1, h.cx), (W - ax) / Math.max(1, P.lebar - h.cx));
+      s = Math.min(Math.max(s, sPusat), maks);
+    }
+    return jepitKam({ cx: h.cx, cy: h.cy, s, ax, ay }, h.plat);
   };
   const kamAwal = (): Kam => {
     const a = D.awal;
@@ -168,9 +183,11 @@ export function mulaiPeta(akar: HTMLElement) {
   let areaCache: (Kotak & { kotak?: Kotak }) | null = null;
   const areaLihat = () => (areaCache ??= ukurAreaLihat());
   function ukurAreaLihat(): Kotak & { kotak?: Kotak } {
-    const atas = hp ? 70 : 24, bawahHp = H - (kotak[aktif]?.offsetHeight ?? 220) - 26;
-    const area: Kotak & { kotak?: Kotak } = { l: 22, t: atas + 30, r: W - 22, b: hp ? bawahHp : H - 20 };
-    if (!hp && aktif >= 0 && aktif < N) {
+    // HP: di bawah pil nomor pemberhentian dan "Lewati peta", juga saat header ikut turun
+    const atas = hp && !lanskap ? 122 : lanskap ? 64 : 54;
+    const bawahHp = H - (kotak[aktif]?.offsetHeight ?? 220) - 26;
+    const area: Kotak & { kotak?: Kotak } = { l: 16, t: atas, r: W - 16, b: hp && !lanskap ? Math.max(atas + 48, bawahHp) : H - 14 };
+    if ((!hp || lanskap) && aktif >= 0 && aktif < N) {
       const k = kotak[aktif];
       const lp = kotakLapis.getBoundingClientRect();
       const st = panggung.getBoundingClientRect();
@@ -178,15 +195,22 @@ export function mulaiPeta(akar: HTMLElement) {
     }
     return area;
   }
-  function jepitKeLihat(x: number, y: number, a: Kotak & { kotak?: Kotak }) {
-    let nx = Math.min(a.r, Math.max(a.l, x)), ny = Math.min(a.b, Math.max(a.t, y));
+  const dalamArea = (x: number, y: number, a: Kotak & { kotak?: Kotak }) =>
+    x >= a.l && x <= a.r && y >= a.t && y <= a.b && !(a.kotak && x > a.kotak.l && x < a.kotak.r && y > a.kotak.t);
+  /* chip (titik di luar bingkai / penanda tepi) diletakkan utuh di dalam area terlihat */
+  function jepitChip(x: number, y: number, w: number, h: number, a: Kotak & { kotak?: Kotak }) {
+    let nx = Math.min(a.r - w / 2, Math.max(a.l + w / 2, x));
+    let ny = Math.min(a.b - h / 2, Math.max(a.t + h / 2, y));
     const k = a.kotak;
-    if (k && nx > k.l && nx < k.r && ny > k.t) {
-      // di bawah kotak keterangan desktop: geser ke sisi kotak yang terdekat
-      nx = nx - k.l < k.r - nx ? k.l : k.r;
-      nx = Math.min(a.r, Math.max(a.l, nx));
-    }
+    if (k && nx + w / 2 > k.l && nx - w / 2 < k.r && ny + h / 2 > k.t) ny = Math.max(a.t + h / 2, k.t - h / 2 - 8);
     return { x: nx, y: ny };
+  }
+  const lebarChip = new WeakMap<HTMLElement, number>();
+  function ukurChip(el: HTMLElement, sel: string, cadangan: number) {
+    const c = el.querySelector<HTMLElement>(sel);
+    const w = c?.offsetWidth || 0;
+    if (w) lebarChip.set(el, w);
+    return lebarChip.get(el) || cadangan;
   }
   function gambar() {
     const { cx, cy, s, ax, ay } = cur;
@@ -198,18 +222,46 @@ export function mulaiPeta(akar: HTMLElement) {
     const d = duniaEl[platAktif];
     if (d) d.style.transform = `translate3d(${tx}px,${ty}px,0) scale(${s})`;
     const batasLihat = jepitAktif ? areaLihat() : null;
+    // kepala titik pemberhentian yang terlihat: chip titik luar bingkai tidak boleh menutupinya
+    const kepalaTerlihat: { x: number; y: number }[] = [];
+    if (batasLihat) for (const p of pins) {
+      if (p.plat !== platAktif || p.henti !== aktif) continue;
+      const x = p.x * s + tx, y = p.y * s + ty;
+      if (dalamArea(x, y, batasLihat)) kepalaTerlihat.push({ x, y: y - 26 });
+    }
     for (const p of pins) {
       if (p.plat !== platAktif) continue;
       let x = p.x * s + tx, y = p.y * s + ty, tepi = false;
-      if (batasLihat && p.henti === aktif) {
-        const j = jepitKeLihat(x, y, batasLihat);
-        tepi = j.x !== x || j.y !== y;
+      if (batasLihat && p.henti === aktif && !dalamArea(x, y, batasLihat)) {
+        // titik di luar bingkai: bukan pin palsu di tempat salah, tetapi chip berpanah ke arah letaknya
+        tepi = true;
+        const w = ukurChip(p.el, ".pin-label", 150);
+        let j = jepitChip(x, y, w, 32, batasLihat);
+        for (const dy of [0, -40, 40, -80, 80]) {
+          const c = jepitChip(x, y + dy, w, 32, batasLihat);
+          const kena = kepalaTerlihat.some((k) => Math.abs(k.x - c.x) < w / 2 + 18 && Math.abs(k.y - c.y) < 34);
+          if (!kena) { j = c; break; }
+        }
+        p.el.style.setProperty("--sudut", `${Math.atan2(y - j.y, x - j.x).toFixed(3)}rad`);
         x = j.x; y = j.y;
       }
       p.el.classList.toggle("di-tepi", tepi);
+      if (tepi) p.el.classList.add("berlabel");
       p.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
     }
-    for (const p of lain) if (p.plat === platAktif) p.el.style.transform = `translate3d(${(p.x * s + tx).toFixed(1)}px,${(p.y * s + ty).toFixed(1)}px,0)`;
+    for (const p of lain) {
+      if (p.plat !== platAktif) continue;
+      let x = p.x * s + tx, y = p.y * s + ty;
+      if (batasLihat && p.tepi && p.henti === aktif) {
+        const w = ukurChip(p.el, ".tepi-isi", 280), h = 44;
+        const cxC = p.arah === "kanan" ? x - w / 2 : p.arah === "kiri" ? x + w / 2 : x;
+        const cyC = p.arah === "atas" ? y + h / 2 : p.arah === "bawah" ? y - h / 2 : y;
+        const j = jepitChip(cxC, cyC, w, h, batasLihat);
+        x = p.arah === "kanan" ? j.x + w / 2 : p.arah === "kiri" ? j.x - w / 2 : j.x;
+        y = p.arah === "atas" ? j.y - h / 2 : p.arah === "bawah" ? j.y + h / 2 : j.y;
+      }
+      p.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+    }
   }
   pins.forEach((p) => p.el.classList.toggle("plat-lain", p.plat !== 0));
   lain.forEach((p) => p.el.classList.toggle("plat-lain", p.plat !== 0));
@@ -279,11 +331,10 @@ export function mulaiPeta(akar: HTMLElement) {
      tidak mengacaukan ukuran. Kalau keempat arah bertabrakan, label tetap tampil:
      arah dengan tabrakan paling kecil dipilih lalu labelnya dijepit ke dalam layar. */
   const ARAH = ["kanan", "kiri", "atas", "bawah"];
-  const diLayar = (px: number, py: number, aktifkan = false) => {
+  const diLayar = (px: number, py: number, _aktifkan = false) => {
     const tx = cur.ax - cur.cx * cur.s;
     const ty = cur.ay - cur.cy * cur.s;
-    const t = { x: px * cur.s + tx, y: py * cur.s + ty };
-    return aktifkan && jepitAktif ? jepitKeLihat(t.x, t.y, areaLihat()) : t;
+    return { x: px * cur.s + tx, y: py * cur.s + ty };
   };
   // geometri sama dengan peta.css: kotak titik 30x41, kepala 30x30, label di kanan/kiri/atas/bawah kepala
   const kotakLabel = (arah: string, x: number, y: number, lw: number, lh: number): Kotak => {
@@ -294,7 +345,8 @@ export function mulaiPeta(akar: HTMLElement) {
   };
   function aturLabel() {
     pins.forEach((p) => {
-      p.el.classList.remove("berlabel", "bergaris");
+      p.el.classList.remove("bergaris");
+      if (!p.el.classList.contains("di-tepi")) p.el.classList.remove("berlabel");
       p.el.style.removeProperty("--lx");
       p.el.style.removeProperty("--ly");
     });
@@ -313,14 +365,30 @@ export function mulaiPeta(akar: HTMLElement) {
       const r = el.getBoundingClientRect();
       if (r.width) halangan.push(rel(r));
     }
-    const kepala = pins.filter((p) => p.plat === platAktif).map((p) => {
+    // chip titik luar bingkai dan penanda tepi ikut jadi halangan label
+    const chipRect: Kotak[] = [];
+    for (const el of akar.querySelectorAll<HTMLElement>(".pin.di-tepi .pin-label, .tepi-arah.di-henti .tepi-isi")) {
+      const r = el.getBoundingClientRect();
+      if (r.width) chipRect.push(rel(r));
+    }
+    const kepala = pins.filter((p) => p.plat === platAktif && !p.el.classList.contains("di-tepi")).map((p) => {
       const { x, y } = diLayar(p.x, p.y, p.henti === aktif);
       const sk = p.henti === aktif ? 1 : 0.74;
       return { p, k: { l: x - 15 * sk, t: y - 41 * sk, r: x + 15 * sk, b: y - 11 * sk } as Kotak };
     });
     const dipasang: Kotak[] = [];
-    for (const p of pins.filter((q) => q.henti === aktif && q.plat === platAktif)) {
-      const { x, y } = diLayar(p.x, p.y, true);
+    // urutan: titik yang paling berdesakan dipasang lebih dulu; arah pertama = menjauhi pusat kelompok,
+    // jadi label menyebar keluar dan tidak saling tumpang di tengah
+    const aktifPins = pins.filter((q) => q.henti === aktif && q.plat === platAktif && !q.el.classList.contains("di-tepi"));
+    const posAktif = aktifPins.map((q) => diLayar(q.x, q.y));
+    const pusatX = posAktif.reduce((a, t) => a + t.x, 0) / Math.max(1, posAktif.length);
+    const pusatY = posAktif.reduce((a, t) => a + t.y, 0) / Math.max(1, posAktif.length);
+    const jarakTerdekat = (i: number) => Math.min(...posAktif.map((t, j) => (j === i ? Infinity : Math.hypot(t.x - posAktif[i].x, t.y - posAktif[i].y))));
+    const urutan = aktifPins.map((q, i) => ({ q, i, d: jarakTerdekat(i) })).sort((a, b) => a.d - b.d);
+    for (const { q: p, i: ip } of urutan) {
+      const { x, y } = posAktif[ip];
+      const dxp = x - pusatX, dyp = y - pusatY;
+      const keluar = posAktif.length < 2 || Math.hypot(dxp, dyp) < 6 ? p.arahAsli : Math.abs(dxp) > Math.abs(dyp) * 0.8 ? (dxp > 0 ? "kanan" : "kiri") : dyp < 0 ? "atas" : "bawah";
       if (x < 0 || x > W || y < 0 || y > H) continue;
       const lbl = p.el.querySelector<HTMLElement>(".pin-label")!;
       const lw = lbl.offsetWidth, lh = lbl.offsetHeight;
@@ -329,16 +397,29 @@ export function mulaiPeta(akar: HTMLElement) {
       const nilai = (r: Kotak) => {
         let v = luasTimpa(r, sendiri) * 8;
         for (const o of halangan) v += luasTimpa(r, o) * 3;
-        for (const o of lainKepala) v += luasTimpa(r, o) * 4;
-        for (const o of dipasang) v += luasTimpa(r, o) * 5;
+        // chip titik luar bingkai: label tidak boleh menimpanya (termasuk titik kepala tersembunyinya)
+        for (const o of chipRect) {
+          v += luasTimpa(r, o) * 9;
+          const kx = (o.l + o.r) / 2, ky = (o.t + o.b) / 2;
+          for (const ty of [ky, ky - 26]) if (kx > r.l - 2 && kx < r.r + 2 && ty > r.t - 2 && ty < r.b + 2) v += 1e5;
+        }
+        for (const o of lainKepala) {
+          v += luasTimpa(r, o) * 9;
+          // label tidak boleh menutup titik pusat kepala titik lain (nomornya harus terbaca)
+          const kx = (o.l + o.r) / 2, ky = (o.t + o.b) / 2;
+          if (kx > r.l - 2 && kx < r.r + 2 && ky > r.t - 2 && ky < r.b + 2) v += 1e5;
+        }
+        for (const o of dipasang) v += luasTimpa(r, o) * 7;
         return v;
       };
-      let pilih = { a: p.arahAsli, dx: 0, dy: 0, v: Infinity, k: kotakLabel(p.arahAsli, x, y, lw, lh) };
+      let pilih = { a: keluar, dx: 0, dy: 0, v: Infinity, k: kotakLabel(keluar, x, y, lw, lh) };
       // kandidat: empat arah, masing-masing dengan geseran (diagonal); label yang bergeser jauh
       // dari kepalanya diberi garis penunjuk tipis
-      for (const a of [p.arahAsli, ...ARAH.filter((q) => q !== p.arahAsli)]) {
+      for (const a of [keluar, ...ARAH.filter((q) => q !== keluar)]) {
         const r0 = kotakLabel(a, x, y, lw, lh);
-        const geser = a === "kanan" || a === "kiri" ? [[0, 0], [0, -30], [0, 30], [0, -58], [0, 58]] : [[0, 0], [-(lw / 2 + 18), 0], [lw / 2 + 18, 0]];
+        const geser = a === "kanan" || a === "kiri"
+          ? [[0, 0], [0, -30], [0, 30], [0, -58], [0, 58], [0, -86], [0, 86], [a === "kanan" ? 24 : -24, 0]]
+          : [[0, 0], [-(lw / 2 + 18), 0], [lw / 2 + 18, 0], [0, a === "atas" ? -28 : 28], [-(lw / 2 + 18), a === "atas" ? -28 : 28], [lw / 2 + 18, a === "atas" ? -28 : 28]];
         for (const [gx, gy] of geser) {
           const rg = { l: r0.l + gx, r: r0.r + gx, t: r0.t + gy, b: r0.b + gy };
           const dx = gx + (rg.l < aman.l ? aman.l - rg.l : rg.r > aman.r ? aman.r - rg.r : 0);
@@ -464,6 +545,8 @@ export function mulaiPeta(akar: HTMLElement) {
         const e = o.t;
         cur = campur(dari, tujuan, e);
         cur.s = Math.exp(lerp(Math.log(dari.s), Math.log(tujuan.s), e) - lekuk * Math.sin(Math.PI * e));
+        // lekuk mundur tidak boleh memperlihatkan tepi foto: dijepit di setiap frame
+        cur = jepitKam(cur, platAktif);
         gambar();
       },
       onComplete() {
@@ -475,7 +558,8 @@ export function mulaiPeta(akar: HTMLElement) {
   /* pindah plat: kabut uap menutup, plat berganti di balik kabut, lalu kabut tersibak sambil
      kamera turun pelan ke pemberhentian. Tanpa kabut (satu plat) langsung berganti. */
   function pindahPlat(tujuan: Kam, pl: number) {
-    const mulai = { ...tujuan, s: tujuan.s * 0.84 };
+    // kamera turun ke pemberhentian dari sedikit lebih DEKAT, jadi tepi foto tidak pernah terlihat
+    const mulai = jepitKam({ ...tujuan, s: tujuan.s * 1.12 }, pl);
     if (!kabut) {
       gantiPlat(pl);
       cur = { ...tujuan };
@@ -499,7 +583,7 @@ export function mulaiPeta(akar: HTMLElement) {
         duration: 1.3,
         ease: "ksa",
         onUpdate() {
-          cur = campur(mulai, tujuan, o.t);
+          cur = jepitKam(campur(mulai, tujuan, o.t), pl);
           gambar();
         },
         onComplete() {
@@ -563,7 +647,9 @@ export function mulaiPeta(akar: HTMLElement) {
         const dulu = aktif;
         aktif = i;
         setAktif(i);
-        if (hp) ukur();
+        // area pandang bergantung pada pemberhentian (sisi kotak keterangan, tinggi kotak di HP)
+        ukur();
+        areaCache = null;
         sasaran = kamHenti(i);
         terbangKe(sasaran, dulu === -1 ? 0.7 : 1.4, D.henti[i].plat);
       }
@@ -592,7 +678,7 @@ export function mulaiPeta(akar: HTMLElement) {
     const k = 1 - Math.exp(-(dt / 1000) * 9);
     const baru = campur(cur, sasaran, k);
     baru.s = Math.exp(lerp(Math.log(cur.s), Math.log(sasaran.s), k));
-    cur = baru;
+    cur = jepitKam(baru, platAktif);
     gambar();
   });
 

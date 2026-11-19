@@ -74,6 +74,8 @@ export type Henti = {
   plat?: number;
   /** sisi kotak keterangan di desktop: zona di sisi kiri foto → kotak pindah ke kanan */
   sisi?: "kiri" | "kanan";
+  /** bingkai khusus HP (foto udara): pusat & luas pandang sendiri bila bingkai umum terlalu lebar */
+  hp?: { cx: number; cy: number; vw: number; vh: number };
 };
 
 type Titik = { no: string; x: number; y: number };
@@ -152,7 +154,7 @@ export const ZONA: Zona[] = [
       en: "The Lobby sits a little above the car park, so guests walk up the central steps or the ramp on the west side. Its lower floor is red brick, its upper floor timber boards, and its roof tiered ijuk (palm-fibre thatch). The Lobby reception is open 24 hours.",
     },
     fakta: [
-      { id: "Check-in 14.00 WIB · check-out 12.00 WIB", en: "Check-in 14.00 WIB · check-out 12.00 WIB" },
+      { id: "Check-in 14.00 WIB · check-out 12.00 WIB", en: "Check-in 2 pm · check-out 12 noon" },
       { id: "24 Hour Concierge", en: "24 Hour Concierge" },
     ],
     cta: "wa",
@@ -167,7 +169,7 @@ export const ZONA: Zona[] = [
     cta: "wa",
   }),
   z("07", 0, {
-    slug: "villa-kawung", nama: "Villa Kawung 1–5 · 6–10", label: "Villa Kawung", kelompok: "penginapan", henti: 0, arah: "atas",
+    slug: "villa-kawung", nama: "Villa Kawung 1–5 · 6–10", label: "Kawung", kelompok: "penginapan", henti: 0, arah: "atas",
     isi: {
       id: "Kawung punya dua lantai: tempat tidur di atas dan ruang duduk lesehan di bawah. Dari Kawung, kolam renang dan Kamar Rendam cukup ditempuh dengan berjalan kaki.",
       en: "Kawung has two floors: the bed upstairs, a floor-seating lounge (lesehan) downstairs. From Kawung, the swimming pool and Kamar Rendam are a short walk away.",
@@ -216,7 +218,7 @@ export const ZONA: Zona[] = [
       en: "Restoran Tunjung Balebat stands on the edge of the swimming pool. Swim & Grill also happens at Restoran Tunjung Balebat: a swim first, then a Suki & Grill set.",
     },
     fakta: [
-      { id: "Resto & Room Service 06.30–21.30", en: "Resto & Room Service 06.30–21.30" },
+      { id: "Resto & Room Service 06.30–21.30", en: "Resto & Room Service 6:30 am–9:30 pm" },
       { id: "Swim & Grill: Rp100.000 per orang, minimal 4 orang, weekday, 3 jam", en: "Swim & Grill: Rp100,000 per person, minimum 4, weekdays, 3 hours" },
     ],
     cta: "wa", foto: "restoran-tunjung",
@@ -389,7 +391,7 @@ export const ZONA: Zona[] = [
     fotoAlt: { id: "Bungalow kayu Babakan Siluhur 1 di tepi balong", en: "Babakan Siluhur 1 timber bungalows at the edge of the balong" },
   }),
   z("20", 0, {
-    slug: "jr-suite", nama: "Jr Suite 1 & 2", label: "Jr Suite", kelompok: "penginapan", henti: 5, arah: "atas",
+    slug: "jr-suite", nama: "Jr Suite 1 & 2", label: "Junior Suite", kelompok: "penginapan", henti: 5, arah: "atas",
     isi: {
       id: "Jr Suite terdiri dari dua Junior Suite yang bersebelahan di area belakang. Tiap suite punya kamar privat di bawah, kamar terbuka di atas, ruang duduk lesehan, dan private whirlpool.",
       en: "Jr Suite is two Junior Suites side by side at the back. Each suite has a private room downstairs, an open room upstairs, a lesehan lounge and a private whirlpool.",
@@ -555,6 +557,7 @@ export const BATAS = PLAT[0].batas;
 /* geseran bingkai per pemberhentian (pecahan lebar/tinggi plat): Sibentang digeser menjauhi
    gedung beton tetangga di sisi kanan-atas foto */
 const GESER: Record<string, { x: number; y: number }> = { sibentang: { x: -0.05, y: 0.075 } };
+const PUSAT_HP: Record<string, string> = { kumpul: "16" };
 
 /* Foto udara: pusat dan luas pandang tiap pemberhentian dihitung dari titik zonanya. Foto
    miring (oblique), jadi zona di kejauhan lebih rapat: kotak pandang diberi ruang tambahan
@@ -574,6 +577,22 @@ if (FOTO_UDARA) {
     h.vw = Math.max(minW, (x1 - x0) * 1.45 + 120);
     h.vh = Math.max(minW * 0.68, (y1 - y0) * 1.45 + 110);
     h.sisi = h.cx / p.lebar < 0.36 ? "kanan" : "kiri";
+    // HP: pemberhentian Kumpul dipusatkan di Purba Dewata (16) supaya gedung hotel tetangga keluar
+    // bingkai; Tegal Pangulinan (15) ditunjuk chip berpanah di tepi layar
+    const pusatHp = PUSAT_HP[h.id] ? ZONA.find((zn) => zn.no === PUSAT_HP[h.id] && !zn.hilang && zn.plat === (h.plat ?? 0)) : undefined;
+    if (pusatHp) h.hp = { cx: pusatHp.x, cy: pusatHp.y, vw: p.lebar * 0.2, vh: p.lebar * 0.2 };
+    else if (pts.length > 2) {
+      // HP: bingkai mengikuti kelompok inti; titik yang jauh menyendiri (mis. Suite Arileu di tepi
+      // kiri foto) cukup ditunjuk chip berpanah di tepi layar
+      const med = (v: number[]) => [...v].sort((m, n) => m - n)[Math.floor(v.length / 2)];
+      const mx = med(xs), my = med(ys);
+      const inti = pts.filter((t) => Math.abs(t.x - mx) < p.lebar * 0.18 && Math.abs(t.y - my) < p.tinggi * 0.22);
+      if (inti.length && inti.length < pts.length) {
+        const ix = inti.map((t) => t.x), iy = inti.map((t) => t.y);
+        const [a0, a1, b0, b1] = [Math.min(...ix), Math.max(...ix), Math.min(...iy), Math.max(...iy)];
+        h.hp = { cx: (a0 + a1) / 2, cy: (b0 + b1) / 2 - p.tinggi * 0.012, vw: Math.max(p.lebar * 0.14, (a1 - a0) * 1.45 + 120), vh: Math.max(p.lebar * 0.1, (b1 - b0) * 1.45 + 110) };
+      }
+    }
   });
 }
 
