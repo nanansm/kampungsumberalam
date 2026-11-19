@@ -95,7 +95,7 @@ a[href^="tel"] { white-space: nowrap; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .layar1 { min-height: 100svh; display: flex; flex-direction: column; background: #fff; }
 .hero { position: relative; aspect-ratio: 4 / 5; background: #c9cfc9; overflow: hidden; flex: none; }
-.sl { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.2s ease; }
+.sl { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity .8s ease; }
 .sl.on, .sl.tampil { opacity: 1; }
 .sl picture, .sl img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .sl .kata { display: none; }
@@ -107,7 +107,6 @@ a[href^="tel"] { white-space: nowrap; }
   .sl.hp-saja { display: none; }
   .sl.on { opacity: 0; }
   .sl.on-dk, .sl.tampil { opacity: 1; }
-  .sl::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .26); background: radial-gradient(ellipse 45% 40% at 50% 50%, rgba(0,0,0,.42), rgba(0,0,0,.24)); }
   .sl .kata { display: block; position: absolute; inset: 0; z-index: 1; margin: 0; display: flex; align-items: center; justify-content: center; font: 400 clamp(2.2rem, 3.3vw, 3.4rem)/1.05 var(--sans); letter-spacing: .03em; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.35), 0 2px 24px rgba(0,0,0,.45); }
   .layar1-logo { gap: 16px; padding: 24px var(--pad) 32px; }
   .layar1-logo img { width: clamp(170px, 13vw, 220px); }
