@@ -139,7 +139,7 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
       {fotoKamar.map((img, i) => (
         <figure class="kartu-foto">
           <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={48} alt={capKamar[i]} loading="lazy" draggable="false" />
-          <figcaption><span class="n">{String(i + 1).padStart(2, "0")}</span><span class="cap">{capKamar[i]}</span></figcaption>
+          <figcaption><span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><p class="cap">{capKamar[i]}</p></figcaption>
         </figure>
       ))}
     </div>

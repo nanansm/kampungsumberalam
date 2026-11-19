@@ -28,7 +28,8 @@ export function lekatAngka(t: string): string {
 }
 
 export function lekat(t: string): string {
-  return lekatAngka(t.replace(pola, (m) => m.replace(/ /g, NBSP)));
+  // nama tidak dipatah, angka + satuan tidak dipatah, dan baris terakhir tidak berisi satu kata
+  return ekor(lekatAngka(t.replace(pola, (m) => m.replace(/ /g, NBSP))));
 }
 
 /**
@@ -38,7 +39,7 @@ export function lekat(t: string): string {
  */
 export function ekor(t: string): string {
   const i = t.lastIndexOf(" ");
-  if (i < 0) return t;
+  if (i < 0 || t.lastIndexOf(NBSP) > i) return t; // sudah tersambung: jangan menyambung kata ketiga
   const akhir = t.slice(i + 1);
   if (akhir.length > 14) return t;
   return t.slice(0, i) + NBSP + akhir;

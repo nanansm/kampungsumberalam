@@ -491,7 +491,8 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .coda-arti { list-style: none; margin: 0; padding: 0 var(--pad) clamp(24px, 4vw, 56px); display: grid; gap: 22px; max-width: 1100px; text-align: left; }
 .coda-arti li { display: grid; gap: 6px; border-top: 1px solid var(--garis); padding-top: 14px; }
 .coda-kunci { font: 400 1.5rem/1.1 var(--serif); color: var(--alam); }
-.coda-arti li > span:last-child { color: var(--tinta-2); max-width: 34ch; }
+.coda-arti li > p:last-child { color: var(--tinta-2); max-width: 34ch; margin: 0; }
+.coda-kunci { margin: 0; }
 @media (min-width: 900px) { .coda-arti { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; } }
 
 /* beranda: prolog tanpa tombol, cara menginap, penutup bergoresan */
@@ -504,8 +505,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .penutup { position: relative; }
 .penutup .goresan { width: clamp(84px, 9vw, 130px); margin: 0 auto 26px; }
 .penutup-ket { max-width: 48ch; margin: -12px auto 0; color: var(--tinta-2); text-wrap: balance; }
-.kartu-foto figcaption .cap { max-width: 34ch; text-wrap: pretty; }
+.kartu-foto figcaption .cap { max-width: 34ch; text-wrap: pretty; margin: 0; }
 .geser--lebar .kartu-foto img { aspect-ratio: 4 / 3; }
 
 /* rag: paragraf dan butir daftar tanpa kata yatim di peramban yang mendukung */
 p, li, figcaption, dd { text-wrap: pretty; }
+.babak-waktu > span:last-child { white-space: nowrap; }
