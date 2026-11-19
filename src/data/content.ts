@@ -20,9 +20,11 @@ export const WA = "6281110557838";
 export const TELEPON = "+62262238000";
 export const TELEPON_TAMPIL = "(0262) 238000";
 export const TELEPON_ALT_TAMPIL = "(0262) 237700";
-export const EMAIL = "reservation@resort-kampungsumberalam.com";
+export const EMAIL = "sumberalamresort@gmail.com";
 export const TRAVELOKA_URL = "https://trv.lk/7f628e23";
 export const IG_URL = "https://www.instagram.com/kampungsumberalam/";
+export const FB_URL = "https://www.facebook.com/profile.php?id=362576157243377";
+export const TIKTOK_URL = "https://www.tiktok.com/@kampungsumberalamresort";
 export const IG_HANDLE = "@kampungsumberalam";
 
 /** Villa Sibentang punya situsnya sendiri — ditautkan, bukan dijual di sini. */

@@ -256,6 +256,10 @@ a[href^="tel"] { white-space: nowrap; }
 .ftr ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
 .ftr a { text-decoration: none; opacity: .9; overflow-wrap: anywhere; display: inline-block; padding: 4px 0; }
 .ftr a:hover { opacity: 1; text-decoration: underline; }
+@media (max-width: 899px) { .ftr .bawah { padding-right: 72px; } }
+.ftr .sosmed { display: flex; gap: 10px; margin-bottom: 4px; }
+.ftr .sosmed a { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--garis); border-radius: 50%; padding: 0; opacity: 1; color: var(--tinta); }
+.ftr .sosmed a:hover { background: var(--alam); border-color: var(--alam); color: #fff; text-decoration: none; }
 .ftr .bawah { border-top: 1px solid var(--garis); padding-top: 20px; font-size: .8rem; opacity: .75; }
 @media (min-width: 900px) { .ftr { padding-bottom: 32px; } .ftr-in { grid-template-columns: 1.3fr repeat(4, 1fr); } .ftr .bawah { grid-column: 1 / -1; } }
 
