@@ -1,0 +1,182 @@
+---
+import Halaman from "../../layouts/Halaman.astro";
+import Gbr from "../Gbr.astro";
+
+import T from "../T.astro";
+import {
+  ALAMAT,
+  ALAMAT_SATU_BARIS,
+  GEO,
+  MAPS_URL,
+  TELEPON,
+  TELEPON_TAMPIL,
+  TELEPON_ALT_TAMPIL,
+  EMAIL,
+  SEKITAR,
+  waLink,
+} from "../../data/content";
+
+/* Halaman lokasi.
+   ⚠️ Jarak dan waktu tempuh dari Bandung atau Jakarta SENGAJA TIDAK ditulis.
+   Belum ada sumber yang mengukurnya, dan menaksir sendiri berarti mengarang
+   angka yang dipakai orang untuk merencanakan perjalanan. Isi begitu sudah
+   diukur, jangan sebelum itu.
+
+   Peta tidak disematkan sebagai iframe. Satu sematan Google Maps menarik
+   ratusan kilobita skrip pihak ketiga demi gambar yang berakhir diketuk
+   sekali lalu ditinggalkan. Tautan langsung ke aplikasi peta lebih cepat
+   dan itu memang yang dilakukan tamu. */
+
+const judulSeksi = "judul-seksi";
+const seksi = "seksi";
+interface Props { lang: "id" | "en" }
+const { lang } = Astro.props;
+---
+
+<Halaman
+  lang={lang}
+  path="/location/"
+  og="/og/location.jpg"
+  title={{ id: 'Lokasi dan Kontak di Cipanas Tarogong Kaler | Kampung Sumber Alam', en: 'Location and contact in Cipanas, Tarogong Kaler | Kampung Sumber Alam' }}
+  description={{ id: 'Kampung Sumber Alam berada di Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, di kawasan air panas kaki Gunung Guntur. Telepon (0262) 238000, WhatsApp, dan tautan peta.', en: 'Kampung Sumber Alam is at Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, in the hot spring area at the foot of Mount Guntur. Phone (0262) 238000, WhatsApp and a map link.' }}
+  penanda={{id: "Lokasi", en: "Location"}}
+  judul={{id: "Di kawasan air panas Cipanas, kaki Gunung Guntur",
+      en: "In the Cipanas hot spring district",}}
+  foto="/images/kampung-pagi-berkabut.webp"
+  w={1080}
+  h={810}
+  alt="Kabut pagi di atas kolam teratai dan deretan bungalow beratap ijuk"
+>
+    {/* ============ ALAMAT DAN KONTAK ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid gap-10 md:grid-cols-2 md:gap-14`}>
+        <div>
+          <p class="penanda"><T id="Alamat" en="Address" /></p>
+          <p class="font-display mt-4 max-w-[18ch] text-[clamp(1.35rem,4vw,2rem)] leading-tight font-medium">
+            {ALAMAT.jalan}
+          </p>
+          <p class="mt-3 text-tinta-lembut">
+            {ALAMAT.kecamatan}, {ALAMAT.kota}<br />
+            {ALAMAT.provinsi} {ALAMAT.kodePos}
+          </p>
+          <p class="penanda mt-5 tabular-nums">{GEO.lat}, {GEO.lng}</p>
+          <a
+            href={MAPS_URL}
+            rel="noopener"
+            target="_blank"
+            class="penanda mt-7 inline-block bg-hutan px-8 py-4 text-white transition-colors duration-200 hover:bg-hutan-dalam"
+          >
+            <T id="Buka di Google Maps" en="Open in Google Maps" />
+          </a>
+        </div>
+
+        <div>
+          <p class="penanda"><T id="Kontak" en="Contact" /></p>
+          <dl class="mt-4 border-t border-garis">
+            <div class="flex items-baseline justify-between gap-6 border-b border-garis py-4">
+              <dt class="text-tinta-lembut"><T id="Telepon" en="Telephone" /></dt>
+              <dd class="text-right">
+                <a href={`tel:${TELEPON}`}>{TELEPON_TAMPIL}</a><br />
+                <span class="text-tinta-lembut">{TELEPON_ALT_TAMPIL}</span>
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-6 border-b border-garis py-4">
+              <dt class="text-tinta-lembut">WhatsApp</dt>
+              <dd class="text-right">
+                <a
+                  href={waLink("Halo, saya mau tanya lokasi dan ketersediaan kamar di Kampung Sumber Alam.")}
+                  rel="noopener"
+                  target="_blank"
+                  class="border-b border-hutan pb-0.5 text-hutan"
+                >
+                  <T id="Kirim pesan" en="Send a message" />
+                </a>
+              </dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-6 border-b border-garis py-4">
+              <dt class="text-tinta-lembut">Email</dt>
+              <dd class="text-right break-all">
+                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              </dd>
+            </div>
+          </dl>
+          <p class="mt-6 max-w-[46ch] text-sm text-tinta-lembut">
+            <T
+              id="Sebutkan tanggal menginap di pesan pertama supaya tim reservasi bisa langsung mengecek kamarnya."
+              en="Put your dates in the first message so the reservations team can check availability straight away."
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ SAMPAI DI SINI ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-14`}>
+        <Gbr
+          src="/images/taman-gunung.webp"
+          width="819"
+          height="544"
+          alt="Taman dan kolam Kampung Sumber Alam dengan latar pegunungan Garut"
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full"
+        />
+        <div>
+          <p class="penanda"><T id="Sampai di sini" en="Getting here" /></p>
+          <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
+            <T
+              id="Satu jalur, Jalan Raya Cipanas, dan gerbangnya di nomor 122."
+              en="One road, Jalan Raya Cipanas, and the gate sits at number 122."
+            />
+          </h2>
+          <div class="mt-5 max-w-[52ch] space-y-4 text-tinta-lembut">
+            <p>
+              <T
+                id="Cipanas adalah kawasan pemandian air panas di Tarogong Kaler, sebelah Gunung Guntur. Deretan hotel dan pemandian berjajar di satu jalan yang sama, jadi nomor rumahnya yang menentukan, bukan nama kawasannya."
+                en="Cipanas is the hot spring district in Tarogong Kaler, beside Mount Guntur. Hotels and bathing places line the same road, so it is the street number that matters, not the district name."
+              />
+            </p>
+            <p>
+              <T
+                id="Parkir ada di dalam area dan tidak dipungut biaya. Tamu yang datang dengan bus rombongan sebaiknya memberi tahu jam tiba lebih dulu."
+                en="Parking sits inside the grounds and carries no charge. Groups arriving by coach are better off giving the reservations team an arrival time in advance."
+              />
+            </p>
+          </div>
+          <p class="penanda mt-7">{ALAMAT_SATU_BARIS}</p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ DI SEKITARNYA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Di sekitarnya" en="Nearby" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
+          <T
+            id="Yang biasa didatangi tamu sebelum atau sesudah menginap."
+            en="Where guests tend to go before or after a stay."
+          />
+        </h2>
+        <div class="mt-9 grid gap-x-8 gap-y-9 sm:grid-cols-3">
+          {
+            SEKITAR.map((s) => (
+              <div class="border-t border-hutan pt-5">
+                <h3 class="font-display text-lg font-medium">{s.nama}</h3>
+                <p class="mt-3 text-[0.9375rem] text-tinta-lembut">
+                  <T id={s.teks.id} en={s.teks.en} />
+                </p>
+              </div>
+            ))
+          }
+        </div>
+        <p class="mt-9 max-w-[56ch] text-sm text-tinta-lembut">
+          <T
+            id="Ketiganya dikelola pihak lain dan punya tiket masuk sendiri. Tim reservasi bisa menyebutkan jarak tempuhnya dari resort saat ditanya."
+            en="All three are run by other operators and charge their own entry. The reservations team can give driving times from the resort on request."
+          />
+        </p>
+      </div>
+    </section>
+  </Halaman>

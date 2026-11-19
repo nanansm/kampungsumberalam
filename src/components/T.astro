@@ -1,9 +1,7 @@
 ---
 /**
- * Teks dwibahasa tanpa reload dan tanpa duplikasi rute.
- * Kedua bahasa dirender ke HTML; CSS yang menyembunyikan salah satunya
- * berdasarkan atribut data-lang di <html>. Toggle cuma mengganti atribut itu.
- *
+ * Teks dwibahasa. Halaman ID ada di "/", EN di "/en/".
+ * Komponen ini cuma merender satu bahasa, ditentukan dari URL halaman.
  * Pemakaian: <T id="Kolam air panas alami" en="Natural hot spring pool" />
  */
 interface Props {
@@ -11,5 +9,6 @@ interface Props {
   en: string;
 }
 const { id, en } = Astro.props;
+const isEn = Astro.url.pathname === "/en" || Astro.url.pathname.startsWith("/en/");
 ---
-<span class="t-id">{id}</span><span class="t-en">{en}</span>
+{isEn ? en : id}

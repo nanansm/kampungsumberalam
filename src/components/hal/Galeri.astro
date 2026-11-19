@@ -1,0 +1,168 @@
+---
+import Halaman from "../../layouts/Halaman.astro";
+import Gbr from "../Gbr.astro";
+
+import T from "../T.astro";
+import { RESTORAN, SPA, IG_URL, IG_HANDLE } from "../../data/content";
+
+/* Galeri.
+   Fotonya ditampilkan UTUH, tidak dipotong ke kotak seragam. Bentuk bangunan
+   panggung dan bak rendam hilang begitu fotonya dipaksa masuk bingkai persegi,
+   dan di halaman yang isinya cuma foto itu kerugian terbesar.
+
+   Tata letaknya kolom CSS, bukan kisi. Kolom membiarkan tiap foto memakai
+   tingginya sendiri tanpa satu baris pun JavaScript. */
+
+const kelompok = [
+  {
+    penanda: { id: "Kampung", en: "The village" },
+    judul: {
+      id: "Kabut pagi, lentera malam, dan gerbang batu",
+      en: "Morning mist, lanterns at night, a stone gate",
+    },
+    foto: [
+      { src: "/images/kampung-kolam-lotus.webp", w: 1200, h: 675, alt: "Bungalow beratap ijuk berdiri di seberang kolam teratai yang sedang berbunga" },
+      { src: "/images/malam-lentera-tegak.webp", w: 1000, h: 1250, alt: "Lentera besar menyala di tepi kolam teratai pada malam hari" },
+      { src: "/images/kampung-pagi-berkabut.webp", w: 1080, h: 810, alt: "Kabut pagi di atas kolam teratai dan deretan bungalow beratap ijuk" },
+      { src: "/images/kampung-teratai.webp", w: 999, h: 756, alt: "Kolam teratai berbunga dengan bungalow beratap ijuk di belakangnya" },
+      { src: "/images/pandang-kolam.webp", w: 1000, h: 1250, alt: "Tamu memandang kolam teratai dari dalam pavilyun kayu" },
+      { src: "/images/kampung-palem.webp", w: 819, h: 461, alt: "Bungalow beratap ijuk di antara pohon palem" },
+      { src: "/images/taman-gunung.webp", w: 819, h: 544, alt: "Taman dan kolam Kampung Sumber Alam dengan latar pegunungan" },
+      { src: "/images/gerbang-batu.webp", w: 819, h: 462, alt: "Gerbang batu menuju area bungalow Babakan Siluhur" },
+      { src: "/images/taman-kampung.webp", w: 1200, h: 501, alt: "Taman terbuka dengan deretan pohon dan bangunan beratap ijuk" },
+    ],
+  },
+  {
+    penanda: { id: "Air panas", en: "Hot spring" },
+    judul: {
+      id: "Bak rendam di kamar, kolam batu di halaman",
+      en: "A tub in the room, a stone pool in the yard",
+    },
+    foto: [
+      { src: "/images/air-panas-grotto.webp", w: 1600, h: 768, alt: "Kolam air panas berdinding batu menyerupai gua" },
+      { src: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar, ditemani lilin" },
+      { src: "/images/grotto-privat.webp", w: 819, h: 546, alt: "Kolam air panas pribadi berdinding batu" },
+      { src: "/images/kolam-privat-putih.webp", w: 1200, h: 675, alt: "Kolam pribadi berdinding putih di halaman villa" },
+      { src: "/images/kolam-utama-tegak.webp", w: 675, h: 900, alt: "Kolam renang utama dilihat dari tepi" },
+      { src: "/images/kolam-renang-utama.webp", w: 840, h: 460, alt: "Kolam renang utama beratap kanopi" },
+      { src: "/images/kolam-utama.webp", w: 1100, h: 825, alt: "Kolam renang utama Kampung Sumber Alam pada siang hari" },
+      { src: "/images/kolam-teratai-duduk.webp", w: 819, h: 544, alt: "Tamu duduk di tepi kolam teratai yang rimbun" },
+      { src: "/images/halaman-kolam.webp", w: 1200, h: 560, alt: "Halaman berumput di tepi kolam dengan bungalow di kejauhan" },
+    ],
+  },
+  {
+    penanda: { id: "Kamar", en: "Rooms" },
+    judul: {
+      id: "Dinding kayu, jendela menghadap air",
+      en: "Timber walls, windows onto the water",
+    },
+    foto: [
+      { src: "/images/bungalow-interior.webp", w: 900, h: 675, alt: "Interior bungalow kayu dengan tempat tidur dan jendela menghadap kolam" },
+      { src: "/images/kamar-twin.webp", w: 1200, h: 675, alt: "Kamar dengan dua tempat tidur menghadap taman" },
+      { src: "/images/suite-ranjang.webp", w: 900, h: 600, alt: "Kamar suite dengan tempat tidur besar dan dinding kayu" },
+      { src: "/images/suite-gazebo.webp", w: 900, h: 600, alt: "Gazebo kayu di samping kolam pribadi suite" },
+      { src: "/images/suite-kolam-senja.webp", w: 960, h: 640, alt: "Suite dengan kolam pribadi pada sore hari" },
+    ],
+  },
+  {
+    penanda: { id: "Makan", en: "Dining" },
+    judul: {
+      id: `${RESTORAN} dan yang keluar dari dapurnya`,
+      en: `${RESTORAN} and what comes out of its kitchen`,
+    },
+    foto: [
+      { src: "/images/restoran-tunjung.webp", w: 819, h: 544, alt: `Ruang makan ${RESTORAN} berdinding kayu menghadap kolam` },
+      { src: "/images/restoran-tegak.webp", w: 675, h: 900, alt: "Sudut restoran dengan meja kayu dan bukaan ke arah taman" },
+      { src: "/images/hidangan-nasi.webp", w: 800, h: 531, alt: "Hidangan nasi lengkap dengan lauk dan kopi" },
+      { src: "/images/hidangan-sayur.webp", w: 800, h: 531, alt: "Semangkuk sayur berkuah" },
+      { src: "/images/hidangan-bakso.webp", w: 800, h: 531, alt: "Bakso dengan pelengkapnya" },
+      { src: "/images/hidangan-soto.webp", w: 800, h: 532, alt: "Soto berkuah dengan kerupuk" },
+    ],
+  },
+  {
+    penanda: { id: "Di dalam area", en: "On the grounds" },
+    judul: {
+      id: `Kacapi suling, ${SPA}, dan tempat anak bermain`,
+      en: `Kacapi suling, ${SPA}, and somewhere for the children`,
+    },
+    foto: [
+      { src: "/images/kacapi-suling.webp", w: 819, h: 544, alt: "Pemain kacapi dan suling berpakaian Sunda tampil di Kampung Sumber Alam" },
+      { src: "/images/pitaloka-spa.webp", w: 819, h: 546, alt: `Terapis memijat tamu di ${SPA}` },
+      { src: "/images/spa-benda.webp", w: 800, h: 533, alt: "Perlengkapan pijat tertata di meja spa" },
+      { src: "/images/bermain-anak.webp", w: 819, h: 544, alt: "Anak anak bermain di area bermain Kampung Sumber Alam" },
+      { src: "/images/keluarga-taman.webp", w: 819, h: 546, alt: "Keluarga duduk di bangku taman Kampung Sumber Alam" },
+      { src: "/images/purba-dewata.webp", w: 819, h: 544, alt: "Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain" },
+    ],
+  },
+];
+
+const judulSeksi = "judul-seksi";
+const seksi = "seksi";
+interface Props { lang: "id" | "en" }
+const { lang } = Astro.props;
+---
+
+<Halaman
+  lang={lang}
+  path="/gallery/"
+  og="/og/gallery.jpg"
+  title={{ id: 'Galeri Foto Kampung Sumber Alam Garut | Kampung Sumber Alam', en: 'Photo gallery of Kampung Sumber Alam, Garut | Kampung Sumber Alam' }}
+  description={{ id: 'Foto Kampung Sumber Alam Garut: bungalow beratap ijuk di atas kolam teratai, bak rendam air panas alami, kolam renang, restoran Tunjung Balebat, dan Pitaloka Spa.', en: 'Photos of Kampung Sumber Alam Garut: thatched bungalows over lotus ponds, natural hot spring tubs, the swimming pool, Tunjung Balebat restaurant and Pitaloka Spa.' }}
+  penanda={{id: "Galeri", en: "Gallery"}}
+  judul={{id: "Fotonya diambil di dalam area, bukan di studio",
+      en: "Every photograph was taken on the grounds",}}
+  foto="/images/kampung-kolam-lotus.webp"
+  w={1200}
+  h={675}
+  alt="Bungalow beratap ijuk berdiri di seberang kolam teratai yang sedang berbunga"
+>
+    {
+      kelompok.map((g) => (
+        <section class="pt-16 sm:pt-24 cv">
+          <div class={seksi}>
+            <p class="penanda">
+              <T id={g.penanda.id} en={g.penanda.en} />
+            </p>
+            <h2 class={`${judulSeksi} mt-4 max-w-[24ch]`}>
+              <T id={g.judul.id} en={g.judul.en} />
+            </h2>
+          </div>
+          <div class={`${seksi} mt-8 columns-2 gap-3 lg:columns-3`}>
+            {g.foto.map((f) => (
+              <Gbr
+                sizes="(min-width: 1024px) 33vw, 50vw"
+                src={f.src}
+                width={f.w}
+                height={f.h}
+                alt={f.alt}
+                loading="lazy"
+                decoding="async"
+                class="mb-3 h-auto w-full break-inside-avoid"
+              />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="max-w-[56ch] border-t border-garis pt-7">
+          <p class="text-sm text-tinta-lembut">
+            <T
+              id="Foto terbaru terbit lebih dulu di Instagram resort."
+              en="The newest photographs go up on the resort's Instagram first."
+            />
+          </p>
+          <a
+            href={IG_URL}
+            rel="noopener"
+            target="_blank"
+            class="mt-3 inline-block border-b border-hutan pb-0.5 text-hutan"
+          >
+            {IG_HANDLE}
+          </a>
+        </div>
+      </div>
+    </section>
+  </Halaman>

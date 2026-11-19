@@ -96,5 +96,12 @@
  "ui.ikuti": "Follow",
  "ui.bar.cek": "Check Rooms",
  "video.label": "Kampung Sumber Alam from above",
- "video.cap": "Wooden houses, thatched roofs and fish ponds at the foot of Mount Guntur"
+ "video.cap": "Wooden houses, thatched roofs and fish ponds at the foot of Mount Guntur",
+ "nav.tentang": "About",
+ "nav.acara": "Events",
+ "nav.galeri": "Gallery",
+ "nav.beranda": "Home",
+ "nav.rapat": "Meetings & Outings",
+ "menginap.semua": "See all room types",
+ "cara.semua": "See meeting and outing packages"
 }

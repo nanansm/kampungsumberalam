@@ -8,5 +8,8 @@ export default defineConfig({
   site: 'https://kampungsumberalam.com',
   build: { inlineStylesheets: 'always', format: 'directory' },
   compressHTML: true,
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => !page.includes('/404'),
+    i18n: { defaultLocale: 'id', locales: { id: 'id-ID', en: 'en-US' } },
+  })],
 });

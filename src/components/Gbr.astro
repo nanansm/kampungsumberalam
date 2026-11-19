@@ -1,0 +1,24 @@
+---
+/* Gambar halaman dalam. Menerima path lama "/images/x.webp" (dipakai di data & isi),
+   lalu mengeluarkan AVIF/WebP responsif lewat astro:assets supaya HP tidak mengunduh file besar. */
+import { Picture } from "astro:assets";
+const semua = import.meta.glob<{ default: ImageMetadata }>("../assets/images/*.{webp,jpg,png}", { eager: true });
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  loading?: "lazy" | "eager";
+  width?: number | string;
+  height?: number | string;
+  decoding?: string;
+}
+const { src, alt, class: kelas, sizes = "(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw", loading = "lazy" } = Astro.props;
+const nama = src.split("/").pop();
+const m = semua[`../assets/images/${nama}`];
+if (!m) throw new Error(`Gambar tidak ada: ${src}`);
+const img = m.default;
+const widths = [360, 540, 720, 960, 1280].filter((w) => w <= img.width);
+if (!widths.includes(img.width) && img.width < 1280) widths.push(img.width);
+---
+<Picture src={img} formats={["avif", "webp"]} widths={widths} sizes={sizes} quality={50} alt={alt} class={kelas} pictureAttributes={{ class: kelas, style: "display:block" }} loading={loading} fetchpriority={loading === "lazy" ? "low" : undefined} decoding="async" />

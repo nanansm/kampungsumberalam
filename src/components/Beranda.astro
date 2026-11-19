@@ -185,6 +185,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
     </div>
     <div class="aksi">
       <a class="btn" href={BOOKING_URL} rel="noopener">{t("menginap.tombol")}</a>
+      <a class="panah" href={lang === "en" ? "/en/accommodation/" : "/accommodation/"}>{t("menginap.semua")}</a>
       <p class="tipe">{tipe.map((x) => <span>{x}</span>)}</p>
     </div>
   </section>
@@ -206,6 +207,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
         ))}
       </div>
       <p class="catatan">{t("cara.catatan")}</p>
+      <p class="catatan"><a class="panah" href={lang === "en" ? "/en/meetings/" : "/meetings/"}>{t("cara.semua")}</a></p>
     </div>
   </section>
 

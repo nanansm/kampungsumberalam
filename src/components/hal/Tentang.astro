@@ -1,0 +1,190 @@
+---
+import Halaman from "../../layouts/Halaman.astro";
+import Gbr from "../Gbr.astro";
+
+import T from "../T.astro";
+import { NAMA, RESTORAN, SPA, MUSIK, ULASAN } from "../../data/content";
+
+/* Halaman tentang.
+   Sumbernya halaman ABOUT US situs lama (versi Inggris) dan paragraf
+   arsitektur berbahasa Indonesia di halaman yang sama, dibaca 13 Agu 2026.
+
+   Tiga prinsip Rest, Recover, Rejuvenate dan sebutan Sundanese Thermal
+   Sanctuary Village adalah rumusan resort sendiri, bukan karangan halaman
+   ini. Keduanya dikutip apa adanya karena itu posisi merek yang dipilih
+   klien. Prosa jualan di sekelilingnya dipangkas, faktanya dipertahankan. */
+
+const prinsip = [
+  {
+    nama: "Rest",
+    teks: {
+      id: "Berhenti dulu dari yang biasa dikejar tiap hari.",
+      en: "A pause from whatever the week has been demanding.",
+    },
+  },
+  {
+    nama: "Recover",
+    teks: {
+      id: "Air panas alami dan pelayanan yang tidak dibuat-buat mengembalikan badan.",
+      en: "Natural hot water and unforced service to bring the body back.",
+    },
+  },
+  {
+    nama: "Rejuvenate",
+    teks: {
+      id: "Pulang dengan tenaga dan kepala yang lebih terang.",
+      en: "Leaving with energy back and a clearer head.",
+    },
+  },
+];
+
+const tripadvisor = ULASAN[0];
+
+const judulSeksi = "judul-seksi";
+const seksi = "seksi";
+interface Props { lang: "id" | "en" }
+const { lang } = Astro.props;
+---
+
+<Halaman
+  lang={lang}
+  path="/about/"
+  og="/og/about.jpg"
+  title={{ id: 'Tentang Kampung Sumber Alam, Resort Air Panas Sunda di Garut | Kampung Sumber Alam', en: 'About Kampung Sumber Alam, a Sundanese hot spring resort in Garut | Kampung Sumber Alam' }}
+  description={{ id: 'Kampung Sumber Alam menata bungalow beratap ijuk di atas balong dengan gaya kampung Sunda Cipanas tempo dulu, dialiri air panas alami Gunung Guntur di Tarogong Kaler, Garut.', en: 'Thatched bungalows over fish ponds, laid out like the old Cipanas village and fed by natural hot spring water from Mount Guntur in Tarogong Kaler, Garut.' }}
+  penanda={{id: "Tentang", en: "About"}}
+  judul={{id: "Bentuk kampungnya lebih dulu ada, kamarnya menyesuaikan",
+      en: "The village came first, the rooms followed",}}
+  foto="/images/pandang-kolam.webp"
+  w={1000}
+  h={1250}
+  alt="Tamu memandang kolam teratai dari dalam pavilyun kayu"
+>
+    {/* ============ CERITA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Cerita" en="Our story" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[24ch]`}>
+          <T
+            id="Bangunan panggung di atas balong, beratap ijuk, dengan teras ngapung."
+            en="Stilt houses over the fish ponds, thatched in palm fibre, with terraces hanging over the water."
+          />
+        </h2>
+        <div class="mt-7 max-w-[58ch] space-y-4 text-tinta-lembut">
+          <p>
+            <T
+              id={`${NAMA} menata bangunannya mengikuti bentuk Kampung Cipanas tempo dulu. Rumah panggung berdiri di atas kolam ikan, atapnya ijuk, terasnya menggantung di atas air, dan jalan setapaknya batu. Susunan itu yang dipilih lebih dulu, dan kamar tamu menyesuaikan bentuknya.`}
+              en={`${NAMA} lays out its buildings after the shape of the old Cipanas village. Stilt houses stand over the fish ponds, roofed in palm fibre, their terraces hanging over the water, the paths laid in stone. That arrangement came first, and the guest rooms were fitted into it.`}
+            />
+          </p>
+          <p>
+            <T
+              id="Mata air panasnya sendiri sudah mengalir jauh sebelum ada resort di sini. Air itu turun dari kawasan vulkanik Gunung Guntur, dan sampai sekarang dia yang menentukan bentuk hampir semua yang ditawarkan di sini, dari bak rendam di kamar sampai kolam batu di halaman."
+              en="The springs themselves ran here long before any resort did. The water comes down off the volcanic ground of Mount Guntur, and it still decides the shape of nearly everything on offer, from the tub in the room to the stone pool in the yard."
+            />
+          </p>
+          <p>
+            <T
+              id={`Resort ini menyebut dirinya Sundanese Thermal Sanctuary Village. Yang dimaksud bukan tempat yang terpencil, melainkan tempat yang enak ditinggali bersama orang lain: ${MUSIK} main langsung, ${RESTORAN} menghadap kolam, dan ${SPA} buka di dalam area yang sama.`}
+              en={`The resort calls itself a Sundanese Thermal Sanctuary Village. What it means by sanctuary is not seclusion but somewhere comfortable to be among other people: ${MUSIK} played live, ${RESTORAN} facing the pond, and ${SPA} open on the same grounds.`}
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ TIGA PRINSIP ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <div class="grid items-start gap-9 md:grid-cols-2 md:gap-14">
+          <Gbr
+            src="/images/kolam-teratai-duduk.webp"
+            width="819"
+            height="544"
+            alt="Tamu duduk di tepi kolam teratai yang rimbun"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full"
+          />
+          <div>
+            <p class="penanda"><T id="Yang dipegang" en="What guides us" /></p>
+            <h2 class={`${judulSeksi} mt-4 max-w-[20ch]`}>
+              <T
+                id="Tiga kata yang dipakai resort ini untuk mengukur dirinya sendiri."
+                en="Three words the resort measures itself against."
+              />
+            </h2>
+            <dl class="mt-8 border-t border-garis">
+              {
+                prinsip.map((p) => (
+                  <div class="border-b border-garis py-5">
+                    <dt class="pernyataan text-2xl text-hutan">{p.nama}</dt>
+                    <dd class="mt-2 max-w-[46ch] text-tinta-lembut">
+                      <T id={p.teks.id} en={p.teks.en} />
+                    </dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ KERAMAHAN SUNDA ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={seksi}>
+        <p class="penanda"><T id="Cara melayani" en="How we host" /></p>
+        <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
+          <T
+            id="Keramahan Sunda diukur dari ketulusan, bukan dari seragam dan naskah sambutan."
+            en="Sundanese hospitality is measured by sincerity, not by uniforms and a welcome script."
+          />
+        </h2>
+        <div class="mt-7 max-w-[58ch] space-y-4 text-tinta-lembut">
+          <p>
+            <T
+              id="Sopan santun dalam budaya Sunda berangkat dari rendah hati dan perhatian pada orang lain. Itu yang dipakai sebagai patokan melayani tamu di sini, dan itu juga yang paling sering disebut tamu di ulasan mereka."
+              en="Courtesy in Sundanese culture starts from humility and attention to other people. That is the benchmark for looking after guests here, and it is what guests bring up most often in their reviews."
+            />
+          </p>
+          <p>
+            <T
+              id={`Di Tripadvisor nilainya ${tripadvisor.nilai} dari ${tripadvisor.dari} sepanjang ${tripadvisor.jumlah} ulasan. ${tripadvisor.catatan.id}.`}
+              en={`On Tripadvisor it holds ${tripadvisor.nilai} out of ${tripadvisor.dari} across ${tripadvisor.jumlah} reviews. ${tripadvisor.catatan.en}.`}
+            />
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ KE DEPAN ============ */}
+    <section class="pt-16 sm:pt-24">
+      <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-14`}>
+        <div>
+          <p class="penanda"><T id="Ke depan" en="Looking ahead" /></p>
+          <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
+            <T
+              id="Yang ditambah boleh banyak, yang dijaga tetap tiga."
+              en="Plenty may be added, but three things stay protected."
+            />
+          </h2>
+          <p class="mt-6 max-w-[52ch] text-tinta-lembut">
+            <T
+              id="Arah yang dituju resort ini adalah jadi tujuan wisata air panas bergaya Sunda yang paling dikenal di Indonesia. Sambil menambah fasilitas, tiga hal tidak diutak-atik: sumber air panasnya, bentuk kampung Sundanya, dan cara menyambut tamunya."
+              en="The direction is to become the best known Sundanese thermal destination in Indonesia. While facilities get added, three things are left alone: the springs, the Sundanese village form, and the way guests are welcomed."
+            />
+          </p>
+        </div>
+        <Gbr
+          src="/images/kacapi-suling.webp"
+          width="819"
+          height="544"
+          alt={`Pemain ${MUSIK} berpakaian Sunda tampil di Kampung Sumber Alam`}
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full md:order-first"
+        />
+      </div>
+    </section>
+  </Halaman>

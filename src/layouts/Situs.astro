@@ -9,15 +9,22 @@ interface Props {
   description: string;
   waPesan: string;
   preload?: { srcset: string; sizes: string; media?: string; type?: string }[];
+  /** path halaman versi ID tanpa awalan bahasa, mis. "/about/". Beranda = "/" */
+  path?: string;
+  /** gambar share link (1200x630), path di /public */
+  og?: string;
+  noindex?: boolean;
 }
-const { lang, T, title, description, waPesan, preload = [] } = Astro.props;
+const { lang, T, title, description, waPesan, preload = [], path = "/", og = "/og/beranda.jpg", noindex = false } = Astro.props;
 const t = (k: string) => {
   if (T[k] === undefined) throw new Error(`Teks hilang: ${lang}.${k}`);
   return T[k];
 };
 const akar = lang === "en" ? "/en/" : "/";
-const urlId = new URL("/", SITE).href;
-const urlEn = new URL("/en/", SITE).href;
+const pathEn = path === "/" ? "/en/" : `/en${path}`;
+const urlId = new URL(path, SITE).href;
+const urlEn = new URL(pathEn, SITE).href;
+const ogUrl = new URL(og, SITE).href;
 const kanonik = lang === "en" ? urlEn : urlId;
 const tahun = new Date().getFullYear();
 const tel = `tel:${TELEPON}`;
@@ -41,18 +48,31 @@ const schema = {
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {!noindex && <>
   <link rel="canonical" href={kanonik} />
   <link rel="alternate" hreflang="id" href={urlId} />
   <link rel="alternate" hreflang="en" href={urlEn} />
   <link rel="alternate" hreflang="x-default" href={urlId} />
+  </>}
   <meta name="theme-color" content="#FFFFFF" />
+  {noindex && <meta name="robots" content="noindex" />}
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={NAMA_PANJANG} />
+  <meta property="og:image" content={ogUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={NAMA_PANJANG} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogUrl} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={kanonik} />
   <meta property="og:locale" content={lang === "en" ? "en_US" : "id_ID"} />
   <meta property="og:locale:alternate" content={lang === "en" ? "id_ID" : "en_US"} />
   <link rel="icon" href="/logo/logogram-color.svg" type="image/svg+xml" />
+  <slot name="head" />
   {preload.map((p) => <link rel="preload" as="image" imagesrcset={p.srcset} imagesizes={p.sizes} media={p.media} type={p.type} fetchpriority="high" />)}
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
@@ -64,8 +84,8 @@ const schema = {
       <div class="kiri">
       <button class="burger" type="button" popovertarget="menu" aria-label={t("ui.menu")}><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span class="burger-tx">{t("ui.menu")}</span></button>
         <nav class="bahasa" aria-label="Bahasa / Language">
-          <a href="/" hreflang="id" lang="id" aria-current={lang === "id" ? "true" : undefined}>ID</a>
-          <a href="/en/" hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
+          <a href={path} hreflang="id" lang="id" aria-current={lang === "id" ? "true" : undefined}>ID</a>
+          <a href={pathEn} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
         </nav>
       </div>
       <a class="logo" href={akar} aria-label={NAMA_PANJANG}><img src="/logo/logotype-color.svg" alt={NAMA_PANJANG} width="113" height="36" /></a>
@@ -83,16 +103,19 @@ const schema = {
         <a class="lbl" href={BOOKING_URL} style="text-decoration:none">{t("ui.pesan")}</a>
       </div>
       <nav aria-label={t("ui.menu")}>
+        <a href={akar}>{t("nav.beranda")}</a>
         <a href={`${akar}#berendam`}>{t("nav.berendam")}</a>
-        <a href={`${akar}#menginap`}>{t("nav.menginap")}</a>
-        <a href={`${akar}#datang`}>{t("nav.rombongan")}</a>
-        <a href={`${akar}#seharian`}>{t("nav.seharian")}</a>
-        <a href={`${akar}#lokasi`}>{t("nav.lokasi")}</a>
+        <a href={`${akar}accommodation/`}>{t("nav.menginap")}</a>
+        <a href={`${akar}meetings/`}>{t("nav.rapat")}</a>
+        <a href={`${akar}events/`}>{t("nav.acara")}</a>
+        <a href={`${akar}gallery/`}>{t("nav.galeri")}</a>
+        <a href={`${akar}about/`}>{t("nav.tentang")}</a>
+        <a href={`${akar}location/`}>{t("nav.lokasi")}</a>
         <a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a>
       </nav>
       <div class="kecil lbl">
-        <a href="/" hreflang="id" lang="id">Bahasa Indonesia</a>
-        <a href="/en/" hreflang="en" lang="en">English</a>
+        <a href={path} hreflang="id" lang="id">Bahasa Indonesia</a>
+        <a href={pathEn} hreflang="en" lang="en">English</a>
         <a href={waLink(waPesan)} rel="noopener">WhatsApp</a>
         <a href={tel}>{TELEPON_TAMPIL}</a>
         <a href={IG_URL} rel="noopener">Instagram</a>
@@ -125,11 +148,22 @@ const schema = {
         </ul>
       </div>
       <div>
+        <p class="lbl">{t("ui.menu")}</p>
+        <ul>
+          <li><a href={`${akar}accommodation/`}>{t("nav.menginap")}</a></li>
+          <li><a href={`${akar}meetings/`}>{t("nav.rapat")}</a></li>
+          <li><a href={`${akar}events/`}>{t("nav.acara")}</a></li>
+          <li><a href={`${akar}gallery/`}>{t("nav.galeri")}</a></li>
+          <li><a href={`${akar}about/`}>{t("nav.tentang")}</a></li>
+          <li><a href={`${akar}location/`}>{t("nav.lokasi")}</a></li>
+        </ul>
+      </div>
+      <div>
         <p class="lbl">{t("ui.ikuti")}</p>
         <ul>
           <li><a href={IG_URL} rel="noopener">Instagram {IG_HANDLE}</a></li>
           <li><a href={MAPS_URL} rel="noopener">Google Maps</a></li>
-          <li><a href={lang === "en" ? "/" : "/en/"} hreflang={lang === "en" ? "id" : "en"}>{lang === "en" ? "Bahasa Indonesia" : "English"}</a></li>
+          <li><a href={lang === "en" ? path : pathEn} hreflang={lang === "en" ? "id" : "en"}>{lang === "en" ? "Bahasa Indonesia" : "English"}</a></li>
         </ul>
       </div>
       <p class="bawah">© {tahun} {NAMA_PANJANG} · Cipanas, Garut</p>

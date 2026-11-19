@@ -246,7 +246,7 @@ a[href^="tel"] { white-space: nowrap; }
 .ftr a { text-decoration: none; opacity: .9; overflow-wrap: anywhere; display: inline-block; padding: 4px 0; }
 .ftr a:hover { opacity: 1; text-decoration: underline; }
 .ftr .bawah { border-top: 1px solid var(--garis); padding-top: 20px; font-size: .8rem; opacity: .75; }
-@media (min-width: 900px) { .ftr { padding-bottom: 32px; } .ftr-in { grid-template-columns: 1.4fr 1fr 1fr 1fr; } .ftr .bawah { grid-column: 1 / -1; } }
+@media (min-width: 900px) { .ftr { padding-bottom: 32px; } .ftr-in { grid-template-columns: 1.3fr repeat(4, 1fr); } .ftr .bawah { grid-column: 1 / -1; } }
 
 /* ---------- Bar CTA bawah (HP) ---------- */
 .wa-float { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 30; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--alam); color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
@@ -258,3 +258,7 @@ a[href^="tel"] { white-space: nowrap; }
 @media (max-width: 767px) { .logo img { height: 30px; } }
 @media (max-width: 374px) { .logo img { height: 24px; } }
 .hero { border-bottom: 1px solid var(--garis); }
+@media (min-width: 560px) and (max-width: 899px) { .ftr-in { grid-template-columns: 1fr 1fr; } .ftr-in > div:first-child, .ftr .bawah { grid-column: 1 / -1; } }
+.panah { color: var(--alam); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+.panah::after { content: " \2192"; }
+.menginap .aksi .panah { display: inline-block; margin-top: 14px; }

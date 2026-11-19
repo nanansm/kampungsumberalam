@@ -1,0 +1,89 @@
+/* Halaman dalam. Hanya dimuat di halaman dalam, bukan beranda.
+   Isi halaman dipindah dari versi lama; kelas utilitasnya didefinisikan di sini
+   dengan warna, huruf, dan jarak sistem baru (situs.css). */
+
+/* ---------- Hero halaman dalam (gaya beranda: foto dulu, header di bawahnya) ---------- */
+.hal-hero { position: relative; height: clamp(360px, 62svh, 640px); overflow: hidden; background: #b9c2bd; border-bottom: 1px solid var(--garis); }
+.hal-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hal-hero::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .3); }
+.hal-hero-tx { position: relative; z-index: 1; height: 100%; max-width: 1440px; margin: 0 auto; padding: 0 var(--pad) clamp(28px, 5vw, 56px); display: flex; flex-direction: column; justify-content: flex-end; color: #fff; }
+.hal-hero-tx .lbl { color: rgba(255,255,255,.85); }
+.hal-hero h1 { margin-top: 12px; max-width: 20ch; font-size: clamp(2.1rem, 6vw, 4.4rem); line-height: 1.02; color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.3); }
+
+/* ---------- Isi ---------- */
+.hal { padding-bottom: clamp(64px, 9vw, 120px); background: var(--putih); }
+.hal .seksi { max-width: 1440px; margin: 0 auto; padding: 0 var(--pad); }
+.hal .judul-seksi { font-family: var(--serif); font-size: clamp(1.75rem, 4.4vw, 2.8rem); line-height: 1.08; }
+.hal .penanda { font: 600 .72rem/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--alam); }
+.hal .pernyataan { font-family: var(--serif); line-height: 1.05; }
+.hal .font-display { font-family: var(--serif); }
+.hal .font-medium { font-weight: 400; }
+.hal h3.font-display { font-size: 1.35rem; }
+.hal table { font-variant-numeric: tabular-nums; }
+.hal th { font-weight: 600; }
+.hal a.bg-hutan { text-decoration: none; }
+.hal a.border-b { text-decoration: none; }
+.hal img { background: #e7e5dc; }
+
+/* ---------- Utilitas (nama kelas dipertahankan dari versi lama) ---------- */
+.text-tinta-lembut { color: var(--tinta-2); }
+.text-tinta { color: var(--tinta); }
+.text-hutan { color: var(--alam); }
+.text-white { color: #fff; }
+.bg-hutan { background: var(--alam); }
+.hover\:bg-hutan-dalam:hover { background: var(--tinta); }
+.transition-colors { transition: background-color .2s, color .2s; }
+.border-t { border-top: 1px solid var(--garis); }
+.border-b { border-bottom: 1px solid var(--garis); }
+.border-garis { border-color: var(--garis); }
+.border-hutan { border-color: var(--alam); }
+.border-tinta { border-color: var(--tinta); }
+.border-collapse { border-collapse: collapse; }
+.text-left { text-align: left; } .text-right { text-align: right; }
+.text-sm { font-size: .875rem; } .text-lg { font-size: 1.15rem; } .text-xl { font-size: 1.3rem; } .text-2xl { font-size: 1.6rem; } .text-3xl { font-size: 2rem; }
+.text-\[0\.9375rem\] { font-size: .9375rem; }
+.text-\[clamp\(1\.35rem\,4vw\,2rem\)\] { font-size: clamp(1.35rem, 4vw, 2rem); }
+.leading-tight { line-height: 1.2; }
+.tabular-nums { font-variant-numeric: tabular-nums; }
+.break-all { word-break: break-all; }
+.flex { display: flex; } .grid { display: grid; } .hidden { display: none; } .inline-block { display: inline-block; }
+.flex-col { flex-direction: column; } .flex-wrap { flex-wrap: wrap; }
+.items-baseline { align-items: baseline; } .items-center { align-items: center; } .items-start { align-items: start; }
+.justify-between { justify-content: space-between; } .self-start { align-self: start; } .shrink-0 { flex-shrink: 0; }
+.w-full { width: 100%; } .h-auto { height: auto; } .object-cover { object-fit: cover; }
+.aspect-\[4\/3\] { aspect-ratio: 4 / 3; } .aspect-\[3\/4\] { aspect-ratio: 3 / 4; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.columns-2 { columns: 2; } .break-inside-avoid { break-inside: avoid; }
+.gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-6 { gap: 24px; } .gap-8 { gap: 32px; } .gap-9 { gap: 36px; } .gap-10 { gap: 40px; }
+.gap-x-7 { column-gap: 28px; } .gap-x-8 { column-gap: 32px; } .gap-y-4 { row-gap: 16px; } .gap-y-9 { row-gap: 36px; } .gap-y-12 { row-gap: 48px; }
+.space-y-1\.5 > * + * { margin-top: 6px; } .space-y-4 > * + * { margin-top: 16px; }
+.mt-auto { margin-top: auto; }
+.mt-1\.5 { margin-top: 6px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; } .mt-5 { margin-top: 20px; } .mt-6 { margin-top: 24px; } .mt-7 { margin-top: 28px; } .mt-8 { margin-top: 32px; } .mt-9 { margin-top: 36px; } .mt-11 { margin-top: 44px; }
+.mb-3 { margin-bottom: 12px; }
+.pt-5 { padding-top: 20px; } .pt-6 { padding-top: 24px; } .pt-7 { padding-top: 28px; } .pt-12 { padding-top: 48px; } .pt-16 { padding-top: 64px; }
+.pb-0\.5 { padding-bottom: 2px; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; } .py-3\.5 { padding-top: 14px; padding-bottom: 14px; } .py-4 { padding-top: 16px; padding-bottom: 16px; } .py-5 { padding-top: 20px; padding-bottom: 20px; }
+.px-8 { padding-left: 32px; padding-right: 32px; } .pr-3 { padding-right: 12px; }
+.bg-hutan.px-8 { padding-top: 16px; padding-bottom: 16px; border-radius: 999px; font-size: .78rem; }
+.max-w-\[18ch\] { max-width: 18ch; } .max-w-\[20ch\] { max-width: 20ch; } .max-w-\[22ch\] { max-width: 22ch; } .max-w-\[24ch\] { max-width: 24ch; } .max-w-\[26ch\] { max-width: 26ch; }
+.max-w-\[46ch\] { max-width: 46ch; } .max-w-\[52ch\] { max-width: 52ch; } .max-w-\[54ch\] { max-width: 54ch; } .max-w-\[56ch\] { max-width: 56ch; } .max-w-\[58ch\] { max-width: 58ch; } .max-w-\[60ch\] { max-width: 60ch; } .max-w-\[64ch\] { max-width: 64ch; }
+@media (min-width: 640px) {
+  .sm\:pt-16 { padding-top: 64px; } .sm\:pt-24 { padding-top: 96px; }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:gap-10 { gap: 40px; } .sm\:hidden { display: none; } .sm\:table-cell { display: table-cell; }
+  .sm\:aspect-\[4\/5\] { aspect-ratio: 4 / 5; }
+}
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .md\:gap-14 { gap: 56px; }
+  .md\:order-first { order: -1; } .md\:order-2 { order: 2; }
+}
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .lg\:columns-3 { columns: 3; }
+}
+.hal .bg-hutan, .hal .bg-hutan.penanda { color: #fff; }
+.hal .seksi > .seksi { padding: 0; }
+.hal h3.font-display { font-size: 1.45rem; line-height: 1.15; }
+@media (max-width: 767px) { .wa-float { width: 52px; height: 52px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); } }
+@media (max-width: 767px) { .hal { padding-bottom: 96px; } .hal td, .hal th { padding-right: 10px; } }
+.hal .break-all { word-break: normal; overflow-wrap: anywhere; }
+.hal .judul-seksi + .seksi, .hal h2 + div.columns-2 { margin-top: 24px; }
