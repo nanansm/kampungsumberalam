@@ -31,7 +31,7 @@ Koordinat: -7.1785, 107.8736. Kaki Gunung Guntur sekitar 15 menit dari resort.
 - Tersedia juga di Traveloka: https://trv.lk/7f628e23
 
 ## Kamar (Publish Rate per kamar per malam, weekday / weekend, sudah termasuk pajak dan pelayanan)
-Weekday = check-in Minggu sampai Jumat. Weekend = check-in Sabtu dan hari libur.
+Weekday = check-in Minggu sampai Jumat. Weekend = check-in Sabtu.
 Kampung Sumber Alam memakai dynamic pricing: harga di booking engine bisa berbeda per tanggal.
 - Kawung (Thermal Studio), 10 unit, 2 dewasa: Rp1.189.000 / Rp1.989.000
 - Pondok Kalapa (Thermal Bungalow), 4 unit, 2 dewasa: Rp1.489.000 / Rp2.239.000
@@ -42,9 +42,9 @@ Kampung Sumber Alam memakai dynamic pricing: harga di booking engine bisa berbed
 - Deluxe Suite (Grand Thermal Pool Suite), 6 dewasa: Rp4.969.000 / Rp8.649.000
 - Babakan Siluhur 1 (Signature Estate 1), 18 dewasa: Rp11.519.000 / Rp16.629.000
 - Babakan Siluhur 2 (Signature Estate 2), 12 dewasa: Rp8.659.000 / Rp12.399.000
-Weekday termasuk sarapan, tiket kolam renang dan Kamar Rendam. Weekend menambah makan malam, live music, dan paket pancingan.
+Weekday termasuk sarapan, tiket kolam renang dan Kamar Rendam. Check-in Sabtu yang dipesan lewat WhatsApp reservasi juga termasuk makan malam, live music, dan paket pancingan.
 
-Villa Sibentang (9 private villa dengan private pool air panas alami) punya situs sendiri: https://sibentang.kampungsumberalam.com
+Villa Sibentang (9 private villa dengan private pool air panas alami) ada di dalam kawasan. Harga dan pemesanan lewat WhatsApp Sibentang; informasi di https://sibentang.kampungsumberalam.com
 
 ## Datang tanpa menginap
 - Tiket Kolam Renang (Kolam Renang Tasik Madu): Rp40.000 weekday, Rp50.000 weekend per orang

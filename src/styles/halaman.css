@@ -102,9 +102,10 @@ html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
 /* pola kampung di halaman dalam: pita bilik di bawah foto pembuka, satu goresan di pojok isi */
 .hal { position: relative; }
 .hal-bilik { height: 14px; background-size: 14px 14px; }
-.hal-goresan { position: absolute; right: var(--pad, 24px); top: clamp(28px, 5vw, 64px); width: clamp(40px, 5vw, 72px); z-index: 1; }
-.hal-goresan.goresan--kelapa { width: clamp(28px, 3.2vw, 44px); }
-@media (max-width: 767px) { .hal-goresan { width: 40px; } .hal-goresan.goresan--kelapa { width: 26px; } }
+.hal { overflow-x: clip; isolation: isolate; }
+.hal-goresan { position: absolute; right: -2vw; top: clamp(20px, 4vw, 56px); width: clamp(110px, 14vw, 220px); z-index: -1; opacity: .9; }
+.hal-goresan.goresan--kelapa { width: clamp(64px, 7vw, 110px); right: var(--pad, 24px); }
+@media (max-width: 767px) { .hal-goresan { width: 96px; right: -18px; } .hal-goresan.goresan--kelapa { width: 52px; right: 16px; } }
 /* judul seksi halaman dalam: ukuran display, ±24–28 karakter per baris (rapihkan-rag) */
 :where(.hal .judul-seksi) { max-width: 26ch; text-wrap: balance; }
 /* galeri: kelompok dua foto memenuhi lebar halaman (tidak menyisakan kolom kosong) */
@@ -114,3 +115,5 @@ html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
   .galeri-dua { grid-template-columns: 3fr 2fr; aspect-ratio: 5 / 2; }
   .galeri-dua .galeri-dua-foto { height: 100%; object-fit: cover; }
 }
+/* harga paket acara: angka dan satuan sejajar di garis tengah yang sama */
+.harga-acara { display: flex; align-items: center; flex-wrap: wrap; gap: 0 2px; line-height: 1.1; margin-top: 4px; }

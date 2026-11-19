@@ -18,10 +18,12 @@ import { KLIP_ZONA } from "../data/drone";
 import { rapi as lekat, rapiIsi } from "../data/rag";
 import fotoDatang from "../assets/cerita/cerita-datang.jpg";
 import fotoBerendam from "../assets/cerita/cerita-berendam.jpg";
-import fotoSaung from "../assets/cerita/cerita-saung.jpg";
+/* malam & pagi: foto malam dan pagi berkabut milik situs resmi lama Kampung Sumber Alam
+   (src/assets/images); belum ada foto saung petang atau makan bersama yang jujur */
+import fotoMalam from "../assets/images/hero-2-malam.webp";
+import fotoPagi from "../assets/images/kampung-pagi-berkabut.webp";
 import fotoPulang from "../assets/cerita/cerita-pulang.jpg";
 import cadangan2 from "../assets/peta/henti-kumpul.jpg";
-import cadangan5 from "../assets/peta/henti-balong.jpg";
 
 interface Props { t: (k: string) => string }
 const { t } = Astro.props;
@@ -38,9 +40,9 @@ const BABAK: Babak[] = [
   { n: 1, bidang: "kertas", foto: fotoDatang, goresan: "rumah" },
   { n: 2, bidang: "kertas", klip: KLIP_ZONA["19"], cadangan: cadangan2 },
   { n: 3, bidang: "alam", foto: fotoBerendam, goresan: "teratai" },
-  { n: 4, bidang: "petang", foto: fotoSaung, goresan: "bunga" },
-  { n: 5, bidang: "udara", klip: KLIP_ZONA["08"], cadangan: cadangan5 },
-  { n: 6, bidang: "kertas", foto: fotoPulang, goresan: "kelapa" },
+  { n: 4, bidang: "petang", foto: fotoMalam, goresan: "bunga" },
+  { n: 5, bidang: "udara", foto: fotoPagi, goresan: "kelapa" },
+  { n: 6, bidang: "kertas", foto: fotoPulang },
 ];
 const no = (n: number) => String(n).padStart(2, "0");
 ---
@@ -78,16 +80,23 @@ const no = (n: number) => String(n).padStart(2, "0");
             <p class="babak-waktu" data-muncul><span class="babak-no">{no(b.n)}</span><span class="babak-garis" aria-hidden="true"></span><span>{t(`cerita.${b.n}.waktu`)}</span></p>
             <h3 id={`h-babak-${b.n}`} data-judul>{lekat(t(`cerita.${b.n}.judul`))}</h3>
             <p class="babak-isi" data-muncul>{rapiIsi(t(`cerita.${b.n}.isi`))}</p>
-            {b.goresan && <span class:list={["goresan", `goresan--${b.goresan}`]} aria-hidden="true"></span>}
           </div>
+          {/* goresan di pojok bidang, menjauhi teks dan terpotong tepi bidang (CD 2027) */}
+          {b.goresan && <span class:list={["goresan", "goresan-babak", `goresan--${b.goresan}`]} aria-hidden="true"></span>}
         </li>
       );
     })}
   </ol>
 
   <div class="cerita-coda">
+    <div class="bilik bilik-lebar" role="presentation"></div>
     <p class="coda-kata" data-judul lang="en">{t("cerita.coda")}</p>
-    <p class="coda-ket" data-muncul>{rapiIsi(t("cerita.coda.ket"))}</p>
+    <ol class="coda-arti">
+      {["Rest", "Recover", "Rejuvenate"].map((k, i) => (
+        <li data-muncul><span class="coda-kunci" lang="en">{k}</span><span>{rapiIsi(t(`cerita.coda.${i + 1}`))}</span></li>
+      ))}
+    </ol>
+    <div class="bilik bilik-lebar" role="presentation"></div>
   </div>
 </section>
 

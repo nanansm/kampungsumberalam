@@ -72,6 +72,8 @@ export type Henti = {
   fotoAlt: Dua;
   /** indeks plat tempat pemberhentian ini (dihitung dari zonanya) */
   plat?: number;
+  /** sisi kotak keterangan di desktop: zona di sisi kiri foto → kotak pindah ke kanan */
+  sisi?: "kiri" | "kanan";
 };
 
 type Titik = { no: string; x: number; y: number };
@@ -318,8 +320,8 @@ export const ZONA: Zona[] = [
   z("21", 0, {
     slug: "villa-sibentang", nama: "Villa Sibentang", label: "Villa Sibentang", kelompok: "penginapan", henti: 3, arah: "kanan",
     isi: {
-      id: "Villa Sibentang terdiri dari sembilan private villa di dalam kawasan Kampung Sumber Alam, masing-masing dengan private pool berair panas alami di halamannya. Paket dan reservasinya dilayani lewat situs dan WhatsApp Villa Sibentang sendiri.",
-      en: "Villa Sibentang is nine private villas within the grounds of Kampung Sumber Alam, each with a private pool of natural hot spring water in its yard. Its packages and reservations are handled through the Villa Sibentang website and WhatsApp line.",
+      id: "Villa Sibentang terdiri dari sembilan private villa di dalam kawasan Kampung Sumber Alam, masing-masing dengan private pool berair panas alami di halamannya. Harga dan pemesanannya dilayani lewat WhatsApp Sibentang.",
+      en: "Villa Sibentang is nine private villas within the grounds of Kampung Sumber Alam, each with a private pool of natural hot spring water in its yard. Its rates and bookings are handled through the Villa Sibentang WhatsApp line.",
     },
     fakta: [
       { id: "4 villa One Bedroom · 5 villa Two Bedroom", en: "4 One Bedroom villas · 5 Two Bedroom villas" },
@@ -335,10 +337,10 @@ export const ZONA: Zona[] = [
     slug: "tegal-pangulinan", nama: "Tegal Pangulinan Mini Outbond", label: "Tegal Pangulinan", kelompok: "fasilitas", henti: 4, arah: "kanan",
     isi: {
       id: "Tegal Pangulinan adalah lapangan luas di antara area depan dan area belakang. Rombongan bermain fun games dan mini outbond di lapangan ini, lalu makan bersama di Saung Tegal Pangulinan.",
-      en: "Tegal Pangulinan is a wide field between the front and back of the grounds. Groups play fun games and mini outbound on Tegal Pangulinan, then eat at Saung Tegal Pangulinan.",
+      en: "Tegal Pangulinan is a wide field between the front and back of the grounds. Groups play fun games and mini outbond on Tegal Pangulinan, then eat at Saung Tegal Pangulinan.",
     },
     fakta: [
-      { id: "Fun games dan mini outbond termasuk paket rombongan", en: "Fun games and mini outbound come with the group packages" },
+      { id: "Fun games dan mini outbond termasuk paket rombongan", en: "Fun games and mini outbond come with the group packages" },
       { id: "Saung Tegal Pangulinan", en: "Saung Tegal Pangulinan" },
     ],
     cta: "rapat",
@@ -419,7 +421,7 @@ const SEMUA_HENTI: Henti[] = [
   {
     id: "datang",
     label: { id: "Datang", en: "Arrive" },
-    judul: { id: "Wilujeng sumping di Kampung Sumber Alam", en: "Wilujeng sumping, welcome to Kampung Sumber Alam" },
+    judul: { id: "Wilujeng Sumping di Kampung Sumber Alam", en: "Wilujeng Sumping, welcome to Kampung Sumber Alam" },
     teks: {
       id: "Anda masuk dari Jl. Raya Cipanas, parkir di depan Lobby, lalu naik ke teras Lobby. Kawung dan Pondok Kalapa hanya ±60–70 m dari Lobby.",
       en: "You turn in from Jl. Raya Cipanas, park in front of the Lobby and walk up to its terrace. Kawung and Pondok Kalapa are only ±60–70 m from the Lobby.",
@@ -457,8 +459,8 @@ const SEMUA_HENTI: Henti[] = [
     label: { id: "Villa Sibentang", en: "Villa Sibentang" },
     judul: { id: "Tiap villa punya private pool di halamannya sendiri", en: "Every villa has a private pool in its own yard" },
     teks: {
-      id: "Villa Sibentang terdiri dari sembilan private villa dengan private pool berair panas alami. Paket menginapnya, termasuk Thermal Reset 2D1N, dipesan lewat situs Villa Sibentang.",
-      en: "Villa Sibentang is nine private villas, each with a private pool of natural hot spring water. Its stay packages, including Thermal Reset 2D1N, are booked through the Villa Sibentang website.",
+      id: "Villa Sibentang terdiri dari sembilan private villa dengan private pool berair panas alami. Harga dan pemesanan paketnya, termasuk Thermal Reset 2D1N, dilayani lewat WhatsApp Sibentang.",
+      en: "Villa Sibentang is nine private villas, each with a private pool of natural hot spring water. Rates and bookings for its packages, including Thermal Reset 2D1N, are handled through the Villa Sibentang WhatsApp line.",
     },
     cx: 889, cy: 1010, vw: 380, vh: 260,
     foto: "henti-sibentang",
@@ -481,8 +483,8 @@ const SEMUA_HENTI: Henti[] = [
     label: { id: "Area belakang", en: "The back" },
     judul: { id: "Area belakang berjarak ±250 m dari Lobby", en: "The back of the grounds is ±250 m from the Lobby" },
     teks: {
-      id: "Area belakang berisi 26 bungalow (Bungalow 15–40), Jr Suite, serta Babakan Siluhur 1 dan 2 untuk keluarga besar atau tim kantor.",
-      en: "The back holds 26 bungalows (Bungalow 15–40), Jr Suite, and Babakan Siluhur 1 and 2 for extended families or office teams.",
+      id: "Area belakang berisi 26 bungalow (Bungalow 15–40), Junior Suite, serta Babakan Siluhur 1 dan 2 untuk keluarga besar atau tim kantor.",
+      en: "The back holds 26 bungalows (Bungalow 15–40), Junior Suite, and Babakan Siluhur 1 and 2 for extended families or office teams.",
     },
     cx: 1455, cy: 876, vw: 700, vh: 430,
     foto: "henti-belakang",
@@ -550,22 +552,28 @@ export const TEPI: Tepi[] = (() => {
 /** garis batas kawasan plat utama (sorotan halus di atas foto) */
 export const BATAS = PLAT[0].batas;
 
+/* geseran bingkai per pemberhentian (pecahan lebar/tinggi plat): Sibentang digeser menjauhi
+   gedung beton tetangga di sisi kanan-atas foto */
+const GESER: Record<string, { x: number; y: number }> = { sibentang: { x: -0.05, y: 0.075 } };
+
 /* Foto udara: pusat dan luas pandang tiap pemberhentian dihitung dari titik zonanya. Foto
    miring (oblique), jadi zona di kejauhan lebih rapat: kotak pandang diberi ruang tambahan
    untuk label, dan skrip memperbesar lebih banyak di HP. */
 if (FOTO_UDARA) {
   HENTI.forEach((h, i) => {
     const p = PLAT[h.plat ?? 0];
-    const minW = p.lebar * 0.14;
+    // pemberhentian bertitik tunggal tidak diperbesar terlalu dekat (lunak di retina)
+    const minW = p.lebar * 0.29;
     const pts = ZONA.filter((zn) => zn.henti === i && !zn.hilang && zn.plat === (h.plat ?? 0)).flatMap((zn) => [{ x: zn.x, y: zn.y }, ...(zn.titikLain ?? [])]);
     for (const t of TEPI) if (t.henti === i && t.plat === (h.plat ?? 0)) pts.push({ x: t.arah === "kanan" ? t.x - p.lebar * 0.06 : t.x, y: t.arah === "atas" ? t.y + p.tinggi * 0.02 : t.y });
     if (!pts.length) return;
     const xs = pts.map((t) => t.x), ys = pts.map((t) => t.y);
     const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
-    h.cx = (x0 + x1) / 2;
-    h.cy = (y0 + y1) / 2 - p.tinggi * 0.012;
+    h.cx = (x0 + x1) / 2 + (GESER[h.id]?.x ?? 0) * p.lebar;
+    h.cy = (y0 + y1) / 2 - p.tinggi * 0.012 + (GESER[h.id]?.y ?? 0) * p.tinggi;
     h.vw = Math.max(minW, (x1 - x0) * 1.45 + 120);
     h.vh = Math.max(minW * 0.68, (y1 - y0) * 1.45 + 110);
+    h.sisi = h.cx / p.lebar < 0.36 ? "kanan" : "kiri";
   });
 }
 
@@ -599,9 +607,9 @@ export const TEKS_PETA = {
   dinamis: { id: "Harga mengikuti tanggal menginap. Angka pastinya tampil setelah Anda memilih tanggal.", en: "Rates follow your dates. The exact figure appears once you choose them." },
   tanyaWa: { id: "Tanya lewat WhatsApp", en: "Ask on WhatsApp" },
   cekKamar: { id: "Cek kamar kosong", en: "Check available rooms" },
-  keSibentang: { id: "Buka situs Villa Sibentang", en: "Visit the Villa Sibentang site" },
+  keSibentang: { id: "Lihat Villa Sibentang", en: "See Villa Sibentang" },
   keRapat: { id: "Lihat paket rapat dan outing", en: "See meeting and outing packages" },
-  noSibentang: { id: "Harga dan paket Villa Sibentang ada di situsnya sendiri.", en: "Villa Sibentang rates and packages are on its own site." },
+  noSibentang: { id: "Harga dan pemesanan Villa Sibentang dilayani lewat WhatsApp Sibentang.", en: "Villa Sibentang rates and bookings are handled through the Villa Sibentang WhatsApp line." },
   penutup: { id: "Kamar terjauh hanya ±250 m berjalan kaki dari Lobby", en: "The farthest room is only a ±250 m walk from the Lobby" },
   kelompok: {
     kedatangan: { id: "Kedatangan", en: "Arrival" },

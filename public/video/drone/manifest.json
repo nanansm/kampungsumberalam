@@ -1,7 +1,7 @@
 {
- "status": "FINAL v2 SEDANG DIKERJAKAN (20 Nov 01.55): hero v2 sudah final dan terpasang; klip zona masih versi 1 sampai perbaikan QA selesai. Nama dan jalur berkas tetap.",
- "diperbarui": "2026-11-20T01:55+07:00",
- "catatan_pemakaian": "Semua video tanpa audio: <video muted loop playsinline autoplay preload='metadata' poster=...>. Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; sudah diuji terbaca dan terdekode oleh AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280), pas untuk wadah .udara-vid lama yang 9:16. Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi.",
+ "status": "FINAL v2 (03.27): hero dan 6 klip zona sudah diperbaiki sesuai QA Fable 5.2. Nama dan jalur berkas tetap.",
+ "diperbarui": "2026-11-20T03:27+07:00",
+ "catatan_pemakaian": "Semua video tanpa audio. Hero: <video muted loop playsinline autoplay preload='metadata' poster=...>. Klip zona: <video muted playsinline autoplay preload='metadata' poster=...> TANPA loop; video diputar sekali lalu berhenti di frame terakhir, dan frame terakhir tiap klip sudah dicek layak ditahan (gerak rata, tidak sedang mengerem atau berbelok). Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; diuji terbaca AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280). Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi.",
  "hero": {
   "desktop": {
    "mp4": "/video/drone/hero-dk-1920.mp4",
@@ -65,7 +65,8 @@
    "poster": "/video/drone/zona-02-kolam-tasik-madu-dk.jpg",
    "isi": "Kolam renang air panas bertenda putih di antara atap ijuk dan pohon kelapa, diputari pelan dari udara pada pagi cerah.",
    "yakin": true,
-   "sumber": "DJI_20261117085245_0005_D 00:08.00-00:14.00"
+   "sumber": "DJI_20261117085245_0005_D 00:08.00-00:14.00",
+   "catatan_v2": "Grade A2 (hitam lebih dalam, hijau sedikit lebih hidup). Segmen tetap; frame akhir orbit rata."
   },
   {
    "id": "restoran-tunjung-balebat",
@@ -92,7 +93,8 @@
    "poster": "/video/drone/zona-03-restoran-tunjung-balebat-dk.jpg",
    "isi": "Restoran Tunjung Balebat dengan papan nama dan pelataran mosaik bunga; kamera mundur pelan sampai balong dan tenda kolam terlihat.",
    "yakin": true,
-   "sumber": "DJI_20261117133616_0063_D 00:17.50-00:23.50"
+   "sumber": "DJI_20261117133616_0063_D 00:17.50-00:23.50",
+   "catatan_v2": "Grade A2. Segmen tetap; frame akhir gerak mundur-naik yang rata."
   },
   {
    "id": "balong-pondok-kalapa",
@@ -117,10 +119,11 @@
     "durasi": 6.006
    },
    "poster": "/video/drone/zona-08-balong-pondok-kalapa-dk.jpg",
-   "isi": "Balong berteratai dengan setapak putih di antara deret bungalow beratap ijuk, dilihat tegak lurus dari atas sambil naik pelan.",
+   "isi": "Deret empat Pondok Kalapa beratap ijuk di tepi balong berteratai, dilihat tegak lurus dari atas sambil naik pelan pada pagi cerah.",
    "yakin": true,
-   "sumber": "DJI_20261117085421_0006_D 00:08.00-00:14.00",
-   "catatan": "Zona dari GPS drone terhadap peta bangunan Data Master; frame juga memuat atap di sekitarnya."
+   "sumber": "DJI_20261117085421_0006_D 00:25.00-00:31.00",
+   "catatan": "Zona dari GPS drone terhadap peta bangunan Data Master; frame juga memuat atap di sekitarnya.",
+   "catatan_v2": "Segmen dipindah dan dipotong ke deret Pondok Kalapa dan bagian bawah balong, jadi pipa kuning di tengah balong dan sampah di kolam kecil tidak masuk bingkai desktop maupun HP. Hitam dan warna bayangan dinetralkan (tidak pudar, tidak toska)."
   },
   {
    "id": "bungalow-balong-belakang",
@@ -133,7 +136,7 @@
     "poster_avif": "/video/drone/zona-19-bungalow-balong-belakang-dk.avif",
     "w": 1280,
     "h": 720,
-    "durasi": 5.505
+    "durasi": 4.238
    },
    "hp": {
     "mp4": "/video/drone/zona-19-bungalow-balong-belakang-hp.mp4",
@@ -142,13 +145,14 @@
     "poster_avif": "/video/drone/zona-19-bungalow-balong-belakang-hp.avif",
     "w": 720,
     "h": 900,
-    "durasi": 5.505
+    "durasi": 4.238
    },
    "poster": "/video/drone/zona-19-bungalow-balong-belakang-dk.jpg",
    "isi": "Titian kayu zig-zag di atas balong berteratai yang memantulkan awan, lalu deret bungalow panggung area belakang muncul.",
    "yakin": true,
-   "sumber": "DJI_20261117142325_0089_D 00:01.50-00:07.00",
-   "catatan": "Zona 19 dipastikan dari GPS; unit bungalownya belum pasti."
+   "sumber": "DJI_20261117142325_0089_D 00:01.25-00:05.50",
+   "catatan": "Zona 19 dipastikan dari GPS; unit bungalownya belum pasti.",
+   "catatan_v2": "Dipotong sebelum gerak melambat di detik terakhir segmen lama."
   },
   {
    "id": "villa-sibentang",
@@ -176,7 +180,8 @@
    "isi": "Kamera maju pelan di atas kolam privat Villa Sibentang menuju dinding relief batu putih berpancuran, dengan puring dan bunga di tepinya.",
    "yakin": true,
    "sumber": "DJI_20261117101820_0039_D 00:11.00-00:16.00",
-   "catatan": "Letak zona 21 di Data Master berkeyakinan sedang–tinggi dan belum dikonfirmasi KSA; GPS drone jatuh tepat di klaster itu."
+   "catatan": "Letak zona 21 di Data Master berkeyakinan sedang–tinggi dan belum dikonfirmasi KSA; GPS drone jatuh tepat di klaster itu.",
+   "catatan_v2": "Hitam diperdalam (tidak pudar lagi) dengan grade A2 dan setelan per shot."
   },
   {
    "id": "babakan-siluhur",
@@ -193,7 +198,7 @@
     "poster_avif": "/video/drone/zona-17-18-babakan-siluhur-dk.avif",
     "w": 1280,
     "h": 720,
-    "durasi": 5.005
+    "durasi": 4.004
    },
    "hp": {
     "mp4": "/video/drone/zona-17-18-babakan-siluhur-hp.mp4",
@@ -202,13 +207,14 @@
     "poster_avif": "/video/drone/zona-17-18-babakan-siluhur-hp.avif",
     "w": 720,
     "h": 900,
-    "durasi": 5.005
+    "durasi": 4.004
    },
    "poster": "/video/drone/zona-17-18-babakan-siluhur-dk.jpg",
-   "isi": "Emperan atap ijuk dan beranda kayu rumah Babakan Siluhur di atas kolam biru berubin pola; versi HP memperlihatkan juga kolam bundar dengan arca batu di bawahnya.",
+   "isi": "Rumah dua lantai beratap ijuk dengan jendela kayu dan kolam renang privat berubin pola biru, dilihat miring dari ketinggian 16 m.",
    "yakin": false,
-   "sumber": "DJI_20261117140624_0075_D 00:15.50-00:20.50 (klip tegak 9:16)",
-   "catatan": "Kompleksnya pasti Babakan Siluhur (GPS jatuh di antara Babakan Siluhur 1 dan 2, area belakang), tetapi belum pasti zona 17 (Babakan Siluhur 1) atau 18 (Babakan Siluhur 2): letak kedua kompleks di peta Data Master berkeyakinan rendah-sedang. Konfirmasi ke KSA sebelum dikaitkan ke satu nomor."
+   "sumber": "DJI_20261117140624_0075_D 00:11.00-00:15.00 (klip tegak 9:16)",
+   "catatan": "Kompleksnya pasti Babakan Siluhur (GPS jatuh di antara Babakan Siluhur 1 dan 2, area belakang), tetapi belum pasti zona 17 (Babakan Siluhur 1) atau 18 (Babakan Siluhur 2): letak kedua kompleks di peta Data Master berkeyakinan rendah-sedang. Konfirmasi ke KSA sebelum dikaitkan ke satu nomor.",
+   "catatan_v2": "Segmen dipindah ke bagian yang geraknya rata (tanpa percepatan di awal). Desktop dan HP dipotong dari bingkai yang sama, digeser ke kanan supaya unit AC di sisi rumah tidak masuk."
   }
  ]
 }

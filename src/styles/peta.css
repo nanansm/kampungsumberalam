@@ -62,7 +62,9 @@
 .titik-lain::before { content: ""; position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--alam); border: 2px solid var(--krem); opacity: .9; }
 .pintu { pointer-events: none; }
 /* foto udara: garis batas kawasan (perkiraan dari data satelit) dan panah ke area di luar bingkai */
-.peta-batas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.peta-batas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.peta-selubung { fill: var(--petang); fill-opacity: .42; stroke: none; }
+html:not(.gerak) .peta-selubung { fill-opacity: .2; }
 .peta-batas polygon { fill: none; stroke: var(--krem); stroke-width: 2; stroke-opacity: .9; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 0; }
 html.gerak .peta-batas polygon { stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s var(--ease-io) .3s; }
 html.gerak .peta[data-fase="henti"] .peta-batas polygon, html.gerak .peta[data-fase="tutup"] .peta-batas polygon { stroke-dashoffset: 0; }
@@ -200,7 +202,6 @@ html.gerak .peta-bingkai { position: absolute; inset: 0; aspect-ratio: auto; z-i
 /* foto udara: di balik foto ada salinannya yang diburamkan, jadi tepi foto yang masuk ke bawah
    kolom keterangan menyambung lembut, bukan berhenti di kertas kosong */
 html.gerak .peta-bingkai--foto { background: var(--petang); }
-html.gerak .peta-bingkai--foto::before { content: ""; position: absolute; inset: -6%; background: var(--latar) center / cover no-repeat; filter: blur(28px) saturate(.85) brightness(.82); transform: scale(1.08); }
 html.gerak .peta-dunia { left: 0; top: 0; width: calc(var(--dw) * 1px); height: calc(var(--dh) * 1px); transform-origin: 0 0; will-change: transform; display: block; visibility: hidden; }
 html.gerak .peta-dunia.plat-aktif { visibility: visible; }
 html.gerak .pin, html.gerak .titik-lain { display: block; }
@@ -225,8 +226,10 @@ html.gerak .peta[data-fase="henti"] .titik-lain.di-henti, html.gerak .peta[data-
 html.gerak .peta-uap { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 html.gerak .uap-dasar { position: absolute; inset: 0; background: var(--krem); will-change: opacity; }
 html.gerak .uap { position: absolute; top: -6%; height: 112%; width: 96%; object-fit: cover; will-change: transform, opacity; }
-html.gerak .uap-kiri { left: -22%; }
-html.gerak .uap-kanan { right: -22%; }
+html.gerak .uap-kiri { left: -22%; -webkit-mask-image: linear-gradient(to right, #000 55%, transparent 98%); mask-image: linear-gradient(to right, #000 55%, transparent 98%); }
+html.gerak .uap-kanan { right: -22%; -webkit-mask-image: linear-gradient(to left, #000 55%, transparent 98%); mask-image: linear-gradient(to left, #000 55%, transparent 98%); }
+@media (max-width: 899px) { html.gerak .uap-kiri, html.gerak .uap-kanan { width: 150%; } html.gerak .uap-kiri { left: -70%; } html.gerak .uap-kanan { right: -70%; } }
+html.gerak .uap { -webkit-mask-composite: source-over; }
 html.gerak .uap-tengah { left: 50%; width: 86%; margin-left: -43%; }
 html.gerak .peta-pembuka { position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; justify-items: center; padding: 0 var(--pad); pointer-events: none; will-change: transform, opacity, filter; }
 html.gerak .peta-pembuka .lbl { color: var(--alam); }
@@ -254,8 +257,9 @@ html.hdr-tampil.gerak .peta-nav { transform: translateY(60px); }
 .peta-lewati:active { transform: scale(.97); }
 
 /* kotak keterangan */
-html.gerak .peta-kotak-lapis { display: block; position: absolute; left: var(--tepi); bottom: var(--tepi); width: var(--kotak-w); z-index: 5; }
-html.gerak .peta-kotak { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--krem); box-shadow: 0 10px 40px rgba(4, 40, 33, .16); opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }
+html.gerak .peta-kotak-lapis { display: block; position: absolute; left: var(--tepi); right: var(--tepi); bottom: var(--tepi); z-index: 5; }
+html.gerak .peta-kotak { position: absolute; left: 0; bottom: 0; width: var(--kotak-w); background: var(--krem); box-shadow: 0 10px 40px rgba(4, 40, 33, .16); opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }
+@media (min-width: 900px) { html.gerak .peta-kotak.kotak-kanan { left: auto; right: 0; } }
 html.gerak .peta-kotak.aktif { opacity: 1; visibility: visible; transform: none; transition: opacity .55s var(--ease-out) .3s, transform .8s var(--ease-out) .3s, visibility 0s; }
 html.gerak .kotak-foto { aspect-ratio: 2 / 1; }
 html.gerak .kotak-teks { padding: 18px 22px 20px; gap: 9px; }
@@ -281,6 +285,7 @@ html.gerak .peta-wadah { overflow-anchor: none; }
 @media (max-width: 899px) {
   .peta { --kotak-w: auto; --tepi: 12px; }
   html.gerak .peta-kotak-lapis { left: var(--tepi); right: var(--tepi); width: auto; bottom: calc(var(--tepi) + 100lvh - 100svh); }
+  html.gerak .peta-kotak { width: 100%; }
   html.gerak .kotak-foto { display: none; }
   html.gerak .kotak-teks { padding: 16px 16px 18px; gap: 8px; }
   html.gerak .peta-kotak h3 { font-size: 1.36rem; }
@@ -306,3 +311,8 @@ html.gerak .peta-wadah { overflow-anchor: none; }
   .ubin, .pin-isi, .pin-label, .pin-kepala, .kotak-chip button, .zona-dekat a, .dekat-no, .panel-tutup svg { transition: none; }
 }
 .peta-wadah { background: var(--krem); }
+
+/* titik pemberhentian yang tidak muat di layar dijepit ke tepi area terlihat */
+html.gerak .pin.di-tepi .pin-kepala { box-shadow: 0 0 0 2px var(--pohon), 0 2px 8px rgba(4, 40, 33, .22); }
+.pin-garis { position: absolute; left: 15px; top: 15px; width: var(--gl, 0px); height: 1.5px; margin-top: -.75px; background: var(--krem); box-shadow: 0 0 0 .5px rgba(4, 40, 33, .25); transform-origin: 0 50%; transform: rotate(var(--ga, 0rad)); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease-ui); }
+html.gerak .pin.berlabel.bergaris .pin-garis { opacity: .95; }

@@ -68,7 +68,7 @@ const dataSkrip = {
   babak: BABAK,
   plat: PLAT.map((p) => ({ lebar: p.lebar, tinggi: p.tinggi, foto: p.foto, ubin: p.ubin, kolom: p.kolom, baris: p.baris, tajam: p.tajam })),
   awal: PANDANG_AWAL,
-  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0 })),
+  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0, sisi: h.sisi ?? "kiri" })),
   teksTutup: L(TX.tutupNav),
 };
 /* gambar dasar tiap plat: HP selalu versi HP/1600 (tidak ikut DPR), desktop 2560 */
@@ -108,7 +108,7 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
       {HENTI.map((h, i) => {
         const zh = ZONA.filter((zn) => zn.henti === i);
         return (
-          <article class="peta-kotak" data-henti-kotak={i} aria-labelledby={`h-henti-${h.id}`}>
+          <article class:list={["peta-kotak", { "kotak-kanan": h.sisi === "kanan" }]} data-henti-kotak={i} aria-labelledby={`h-henti-${h.id}`}>
             <figure class="kotak-foto">
               <Picture src={foto(h.foto)} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 380px, 40vw" quality={52} alt={L(h.fotoAlt)} loading="lazy" decoding="async" />
             </figure>
@@ -137,7 +137,7 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
       </div>
     </div>
     <!-- Dunia peta: satu gambar ilustrasi + ubin tajam yang dimuat saat dibutuhkan -->
-    <div class:list={["peta-bingkai", { "peta-bingkai--foto": !!FOTO_UDARA }]} style={`--sx:${STATIS.x};--sy:${STATIS.y};--sw:${STATIS.w};--sh:${STATIS.h};--dw:${DUNIA.lebar};--dh:${DUNIA.tinggi}${FOTO_UDARA && (DUNIA.hp.avif || DUNIA.hp.webp) ? `;--latar:url(${DUNIA.hp.avif ?? DUNIA.hp.webp})` : ""}`}>
+    <div class:list={["peta-bingkai", { "peta-bingkai--foto": !!FOTO_UDARA }]} style={`--sx:${STATIS.x};--sy:${STATIS.y};--sw:${STATIS.w};--sh:${STATIS.h};--dw:${DUNIA.lebar};--dh:${DUNIA.tinggi}`}>
       {PLAT.map((pl, i) => (
         <div class:list={["peta-dunia", { "plat-aktif": i === 0 }]} data-plat={i} aria-hidden="true" style={`--dw:${pl.lebar};--dh:${pl.tinggi}`}>
           <picture>
@@ -146,12 +146,14 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
             {pl.dk.avif && <source type="image/avif" srcset={pl.dk.avif} />}
             <img class="peta-dasar" src={imgDasar(pl)} width={pl.lebar} height={pl.tinggi} alt="" loading="lazy" decoding="async" />
           </picture>
+          <div class="peta-ubin"></div>
           {pl.batas.length > 0 && (
             <svg class="peta-batas" viewBox={`0 0 ${pl.lebar} ${pl.tinggi}`} preserveAspectRatio="none" aria-hidden="true">
+              {/* luar kawasan diredupkan supaya atap tetangga tidak menarik mata; batas dijepit ke foto */}
+              <path class="peta-selubung" fill-rule="evenodd" d={`M0 0H${pl.lebar}V${pl.tinggi}H0Z ` + pl.batas.map((pg) => "M" + pg.map((t) => `${t.x.toFixed(1)} ${t.y.toFixed(1)}`).join("L") + "Z").join(" ")} />
               {pl.batas.map((pg) => <polygon points={pg.map((t) => `${t.x.toFixed(1)},${t.y.toFixed(1)}`).join(" ")} pathLength="1" />)}
             </svg>
           )}
-          <div class="peta-ubin"></div>
         </div>
       ))}
 
@@ -165,6 +167,7 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
             <button type="button" class="pin" data-zona={zn.no} data-henti={zn.henti} data-plat={zn.plat} data-arah={zn.arah} data-x={zn.x} data-y={zn.y}
               style={`--x:${pct(zn.x, STATIS.x, STATIS.w)};--y:${pct(zn.y, STATIS.y, STATIS.h)}`}
               aria-label={`${L(TX.zona)} ${zn.no}: ${zn.nama}`} aria-haspopup="dialog">
+              <span class="pin-garis" aria-hidden="true"></span>
               <span class="pin-isi">
                 <span class="pin-kepala">{zn.no}</span>
                 <span class="pin-label">{zn.label}</span>

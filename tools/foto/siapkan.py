@@ -52,16 +52,10 @@ DAFTAR = {
 KELUAR_BERANDA = REPO / "src/assets/cerita"
 BERANDA = {
     "cerita-datang": (DRIVE / "MOTE6790.JPG", 2 / 3, 0.6),
-    "cerita-berendam": (DRIVE / "MOTE6889.JPG", 2 / 3, 0.5),
-    "cerita-saung": (DRIVE / "MOTE6834.JPG", 2 / 3, 0.6),
+    # Kolam Renang Tasik Madu dengan tamu berendam dan Gunung Guntur (Drive Ryan, 17 Nov 2026).
+    # Belum ada foto bak rendam kamar yang beruap dengan tamu: masuk daftar kebutuhan pemotretan.
+    "cerita-berendam": (DRIVE / "MOTE6732.JPG", 2 / 3, 0.5),
     "cerita-pulang": (DRIVE / "MOTE6776.JPG", 2 / 3, 0.6),
-    "kamar-1": (DRIVE / "MOTE6725.JPG", 4 / 5, 0.6),
-    "kamar-2": (DRIVE / "MOTE6801.JPG", 4 / 5, 0.6),
-    "kamar-3": (DRIVE / "MOTE6819.JPG", 4 / 5, 0.6),
-    "kamar-4": (DRIVE / "MOTE6840.JPG", 4 / 5, 0.6),
-    "kamar-5": (DRIVE / "MOTE6868.JPG", 4 / 5, 0.6),
-    "kamar-6": (DRIVE / "MOTE6855.JPG", 4 / 5, 0.6),
-    "kamar-7": (DRIVE / "MOTE6732.JPG", 4 / 5, 0.6),
     "menu-foto": (DRIVE / "MOTE6884.JPG", 2 / 3, 0.6),
 }
 

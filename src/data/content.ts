@@ -206,8 +206,8 @@ export const TERMASUK_KAMAR = {
     en: "The weekday rate, for check-in from Sunday to Friday, includes breakfast, swimming pool and Kamar Rendam access, tax and service.",
   },
   weekend: {
-    id: "Harga weekend untuk check-in Sabtu dan hari libur sudah termasuk sarapan, makan malam, live music, paket pancingan, tiket kolam renang dan Kamar Rendam, serta pajak dan pelayanan.",
-    en: "The weekend rate, for check-in on Saturdays and public holidays, includes breakfast, dinner, live music, a fishing package, swimming pool and Kamar Rendam access, tax and service.",
+    id: "Harga check-in Sabtu yang dipesan lewat WhatsApp reservasi sudah termasuk sarapan, makan malam, live music, paket pancingan, tiket kolam renang dan Kamar Rendam, serta pajak dan pelayanan.",
+    en: "The Saturday check-in rate, booked through WhatsApp reservations, includes breakfast, dinner, live music, a fishing package, swimming pool and Kamar Rendam tickets, tax and service.",
   },
 } as const;
 
@@ -289,7 +289,7 @@ export const ULASAN = [
     nilai: "4,5",
     dari: "5",
     jumlah: "9.902",
-    catatan: { id: "Ulasan terbanyak dari semua platform", en: "The most reviews of any platform" },
+    catatan: { id: "Platform dengan ulasan terbanyak", en: "The platform with the most reviews" },
   },
   {
     sumber: "Tripadvisor",
@@ -368,7 +368,7 @@ export const PAKET_TANPA_MENGINAP = [
   { nama: "Fullday Gathering", harga: { id: "Rp1.023.000", en: "Rp1,023,000" },
     isi: { id: "Fullday Gathering sudah termasuk buffet lunch, coffee break, venue resto, fun games, entertainment, kolam renang, Kamar Rendam, pajak, dan pelayanan.", en: "Fullday Gathering includes a buffet lunch, a coffee break, the restaurant venue, fun games, entertainment, the swimming pool, Kamar Rendam, tax and service." } },
   { nama: "Siluhur Private Meeting · Siluhur Private Gathering", harga: { id: "mulai Rp8.659.000 per kompleks", en: "from Rp8,659,000 per compound" },
-    isi: { id: "Tim kecil berisi 12 atau 18 orang dapat rapat, menginap, dan berkumpul di satu kompleks Babakan Siluhur.", en: "A small team of 12 or 18 can meet, stay and gather in its own Babakan Siluhur compound." } },
+    isi: { id: "Tim kecil dapat rapat dan menginap di kompleks Babakan Siluhur sendiri.", en: "A small team can meet and stay in its own Babakan Siluhur compound." } },
 ] as const;
 
 /* ---------- Paket acara ----------

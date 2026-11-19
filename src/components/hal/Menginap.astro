@@ -94,8 +94,8 @@ const { lang } = Astro.props;
   title={{ id: 'Bungalow dan Suite Air Panas Alami di Garut | Kampung Sumber Alam', en: 'Bungalows and suites with natural hot spring water in Garut | Kampung Sumber Alam' }}
   description={{ id: 'Kampung Sumber Alam memiliki 14 tipe kamar untuk dua sampai 18 orang. Setiap kamar dilengkapi bak rendam berisi air panas alami Gunung Guntur.', en: 'Kampung Sumber Alam offers 14 room types for two to 18 guests. Every room has a soaking tub filled with natural hot spring water from Mount Guntur.' }}
   penanda={{id: "Menginap", en: "Stay"}}
-  judul={{id: lekat("Anda dapat berendam air panas alami Gunung Guntur tanpa keluar kamar"),
-      en: lekat("Soak in Mount Guntur's natural hot spring water without leaving your room"),}}
+  judul={{id: lekat("Delapan puluh kamar tersebar di antara balong dan taman"),
+      en: lekat("Eighty rooms spread between the fish ponds and the gardens"),}}
   foto="/images/menginap-balong.jpg"
   w={1600}
   h={1200}
@@ -227,7 +227,7 @@ const { lang } = Astro.props;
                       <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
                     </span>
                   </div>
-                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · <T id={`${k.unit}\u00a0villa`} en={`${k.unit}\u00a0villas`} /> · </span><T id={lekat("harga tersedia di situs Villa Sibentang")} en={lekat("rates on the Villa Sibentang website")} /></p>
+                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · <T id={`${k.unit}\u00a0villa`} en={`${k.unit}\u00a0villas`} /> · </span><T id={lekat("harga dan pemesanan lewat WhatsApp Sibentang")} en={lekat("rates and bookings through the Villa Sibentang WhatsApp")} /></p>
                 </li>
               ))
             }
@@ -246,7 +246,7 @@ const { lang } = Astro.props;
               </li>
             ))}
           </ul>
-          <a href={SIBENTANG_URL} rel="noopener" class="btn btn-sibentang mt-7"><span class="btn-tx"><T id="Buka situs Villa Sibentang" en="Open the Villa Sibentang site" /></span></a>
+          <a href={SIBENTANG_URL} rel="noopener" class="btn btn-sibentang mt-7"><span class="btn-tx"><T id="Lihat Villa Sibentang" en="See Villa Sibentang" /></span></a>
         </div>
         <Gbr
           src="/images/kolam-privat-putih.webp"

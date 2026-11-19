@@ -35,8 +35,8 @@ const { lang } = Astro.props;
   title={{ id: 'Paket Pernikahan, Ulang Tahun, dan Acara di Garut | Kampung Sumber Alam', en: 'Weddings, birthdays and event packages in Garut | Kampung Sumber Alam' }}
   description={{ id: 'Kampung Sumber Alam di Garut menawarkan sembilan pilihan paket acara, termasuk Engagement Package mulai Rp180.000 per orang, Akad Package mulai Rp205.000 per orang, dan Pre Wedding Package Rp800.000 per paket.', en: 'Kampung Sumber Alam in Garut offers nine event package options, including Engagement Package from Rp180,000 per person, Akad Package from Rp205,000 per person and Pre Wedding Package at Rp800,000 per package.' }}
   penanda={{id: "Acara dan perayaan", en: "Events"}}
-  judul={{id: lekat("Keluarga Anda berkumpul untuk lamaran, akad, dan ulang tahun"),
-      en: lekat("Your family gathers for engagements, weddings and birthdays"),}}
+  judul={{id: lekat("Keluarga berkumpul untuk lamaran, akad, dan ulang tahun"),
+      en: lekat("Families gather for engagements, weddings and birthdays"),}}
   foto="/images/taman-kampung.webp"
   w={1200}
   h={501}
@@ -85,19 +85,12 @@ const { lang } = Astro.props;
                 <T id={a.nama.id} en={a.nama.en} />
               </h2>
 
-              <p class="mt-3">
-                <span class="penanda">
-                  {a.satuan === "orang" ? (
-                    <T id="Mulai" en="From" />
-                  ) : (
-                    <T id="Harga paket" en="Package price" />
-                  )}
-                </span>
-                <br />
-                {/* Harga dan satuannya ditulis satu baris kode tanpa spasi biasa,
-                    supaya "Rp180.000 per orang" tidak terpotong di akhir baris. */}
-                <span class="font-display text-3xl font-medium text-hutan"><T id={`Rp${a.harga}`} en={`Rp${rpEn(a.harga)}`} /></span>{a.satuan === "orang" && (<span class="text-tinta-lembut">{"\u00a0"}<T id={"per\u00a0orang"} en={"per\u00a0person"} /></span>)}
+              {/* label harga di barisnya sendiri; harga dan satuannya satu baris dengan ukuran sejajar,
+                  supaya tidak terbaca sebagai baris timpang (rag putaran 2) */}
+              <p class="penanda mt-3">
+                {a.satuan === "orang" ? <T id="Mulai" en="From" /> : <T id="Harga paket" en="Package price" />}
               </p>
+              <p class="harga-acara"><span class="font-display text-3xl font-medium text-hutan"><T id={`Rp${a.harga}`} en={`Rp${rpEn(a.harga)}`} /></span>{a.satuan === "orang" && (<span class="text-tinta-lembut">{"\u00a0"}<T id={"per\u00a0orang"} en={"per\u00a0person"} /></span>)}</p>
 
               {a.minimal !== null && (
                 <p class="penanda mt-2">
@@ -155,8 +148,8 @@ const { lang } = Astro.props;
           <p class="penanda"><T id="Sebelum menghitung anggaran" en="Before you budget" /></p>
           <p class="mt-4 max-w-[46ch] text-tinta-lembut">
             <T
-              id={lekat("Harga di atas mengikuti flyer resmi Kampung Sumber Alam tahun 2026 dan akan dikonfirmasi ulang saat pemesanan. Syarat dan ketentuan berlaku. Total biaya dapat berubah mengikuti tanggal acara, jumlah tamu, dan tambahan berbayar seperti dekorasi, MC, atau foto yang belum termasuk dalam paket. Rincian menu prasmanan dapat ditanyakan langsung kepada tim Kampung Sumber Alam melalui WhatsApp.")}
-              en={lekat("Prices above follow the official 2026 Kampung Sumber Alam flyers and are reconfirmed at booking. Terms and conditions apply. The total can change with the event date, the number of guests and paid extras not covered by the package, such as decoration, an MC or photography. Buffet menu details can be requested directly from the Kampung Sumber Alam team on WhatsApp.")}
+              id={lekat("Harga di atas dikonfirmasi ulang saat pemesanan. Syarat dan ketentuan berlaku. Total biaya dapat berubah mengikuti tanggal acara, jumlah tamu, dan tambahan berbayar seperti dekorasi, MC, atau foto yang belum termasuk dalam paket. Rincian menu prasmanan dapat ditanyakan langsung kepada tim Kampung Sumber Alam melalui WhatsApp.")}
+              en={lekat("Prices above are reconfirmed at booking. Terms and conditions apply. The total can change with the event date, the number of guests and paid extras not covered by the package, such as decoration, an MC or photography. Buffet menu details can be requested directly from the Kampung Sumber Alam team on WhatsApp.")}
             />
           </p>
           <a

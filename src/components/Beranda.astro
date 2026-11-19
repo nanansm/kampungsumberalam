@@ -19,10 +19,20 @@ import en from "../i18n/en.json";
 
 import caraBerdua from "../assets/foto/cara-berdua.jpg";
 import caraKeluarga from "../assets/foto/cara-keluarga.jpg";
-import caraKantor from "../assets/foto/cara-kantor.jpg";
+/* kartu kantor: ruang makan kayu Restoran Tunjung Balebat, lebih dekat ke suasana kampung
+   daripada foto ballroom (QA putaran 2) */
+import caraKantor from "../assets/images/restoran-tunjung.webp";
 import lokasiDesk from "../assets/foto/lokasi-desk.jpg";
 import lokasiHp from "../assets/foto/lokasi-hp.jpg";
-import menginapImg from "../assets/foto/menginap.jpg";
+/* galeri kamar: satu foto Catalog per tipe kamar (src/assets/peta), keterangannya tipe + satu fakta */
+import fKawung from "../assets/peta/kawung.jpg";
+import fPondok from "../assets/peta/pondok-kalapa.jpg";
+import fB114 from "../assets/peta/bungalow-1-14.jpg";
+import fSiceeh from "../assets/peta/henti-belakang.jpg";
+import fArileu from "../assets/peta/bungalow-arileu.jpg";
+import fCouple from "../assets/peta/suite-couple.jpg";
+import fJunior from "../assets/peta/jr-suite.jpg";
+import fSiluhur from "../assets/peta/babakan-siluhur-1.jpg";
 import vHp from "../assets/foto/video-hp.jpg";
 import vDk from "../assets/foto/video-dk.jpg";
 
@@ -37,7 +47,6 @@ const t = (k: string) => {
 const L = (k: string) => rapi(t(k));
 const I = (k: string) => rapiIsi(t(k));
 
-const kamarImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/cerita/kamar-*.jpg", { eager: true })).map((m) => m.default);
 
 /* Poster hero = gambar LCP. Poster manifest drone kalau sudah ada, kalau belum poster video udara lama. */
 const MQ_HP = "(max-width: 767px)";
@@ -51,7 +60,7 @@ const posterSrc = HERO_VIDEO.desktop.poster ?? lamaDkWebp.src;
 
 const pesanWa = t("wa.umum");
 const berendam = [1, 2, 3, 4].map((n) => ({ nama: t(`berendam.${n}.nama`), isi: I(`berendam.${n}.isi`), url: n === 4 ? SIBENTANG_URL : undefined }));
-const fotoKamar = [menginapImg, ...kamarImg];
+const fotoKamar = [fKawung, fPondok, fB114, fSiceeh, fArileu, fCouple, fJunior, fSiluhur];
 const capKamar = fotoKamar.map((_, i) => L(`menginap.foto${i + 1}`));
 const caraImg = [caraBerdua, caraKeluarga, caraKantor];
 const waKey = ["wa.berdua", "wa.keluarga", "wa.kantor"];
@@ -61,6 +70,9 @@ const telHref = `tel:${TELEPON}`;
 const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 const geser = lang === "en" ? "Drag" : "Geser";
 const rapat = lang === "en" ? "/en/meetings/" : "/meetings/";
+/* format angka Inggris di halaman EN: 4.5 dan 9,902 */
+const angka = (v: string) => (lang === "en" ? v.replace(",", ".") : v);
+const ribuan = (v: string) => (lang === "en" ? v.replace(/\./g, ",") : v);
 const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
 ---
 <Situs
@@ -123,7 +135,7 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
       <p data-muncul>{I("menginap.p")}</p>
     </div>
     <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / {String(fotoKamar.length).padStart(2, "0")}</span></div>
-    <div class="geser" tabindex="0" aria-label={t("menginap.judul")} data-kursor={geser}>
+    <div class="geser geser--lebar" tabindex="0" aria-label={t("menginap.judul")} data-kursor={geser}>
       {fotoKamar.map((img, i) => (
         <figure class="kartu-foto">
           <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={48} alt={capKamar[i]} loading="lazy" draggable="false" />
@@ -191,8 +203,8 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
         {ULASAN.map((u) => (
           <div data-muncul>
             <p class="lbl">{u.sumber}</p>
-            <p class="skor"><span data-angka={u.nilai}>{u.nilai}</span><small> / {u.dari}</small></p>
-            <p>{u.jumlah} {t("ulasan.kata")} · {lekat(u.catatan[lang])}</p>
+            <p class="skor"><span data-angka={angka(u.nilai)}>{angka(u.nilai)}</span><small> / {u.dari}</small></p>
+            <p>{ribuan(u.jumlah)} {t("ulasan.kata")} · {lekat(u.catatan[lang])}</p>
           </div>
         ))}
       </div>
@@ -205,6 +217,7 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
   <section class="penutup cv" aria-labelledby="h-tutup">
     <span class="goresan goresan--teratai" aria-hidden="true"></span>
     <h2 id="h-tutup" data-judul>{L("penutup.judul")}</h2>
+    <p class="penutup-ket" data-muncul>{I("penutup.ket")}</p>
     <div class="dua" data-muncul>
       <a class="btn btn-isi btn-wa" href={waLink(pesanWa)} rel="noopener"><span class="btn-tx">{t("penutup.tombol1")}</span></a>
       <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("penutup.tombol2")}</span></a>
