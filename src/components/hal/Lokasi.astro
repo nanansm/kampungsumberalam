@@ -1,4 +1,5 @@
 ---
+import { altTeks } from "../../data/alt-en";
 import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
@@ -119,7 +120,7 @@ const { lang } = Astro.props;
           src="/images/taman-gunung.webp"
           width="819"
           height="544"
-          alt="Taman dan kolam Kampung Sumber Alam dengan latar pegunungan Garut"
+          alt={altTeks("Taman dan kolam Kampung Sumber Alam dengan latar pegunungan Garut", lang)}
           loading="lazy"
           decoding="async"
           class="h-auto w-full"

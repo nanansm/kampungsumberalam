@@ -107,3 +107,10 @@ html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
 @media (max-width: 767px) { .hal-goresan { width: 40px; } .hal-goresan.goresan--kelapa { width: 26px; } }
 /* judul seksi halaman dalam: ukuran display, ±24–28 karakter per baris (rapihkan-rag) */
 :where(.hal .judul-seksi) { max-width: 26ch; text-wrap: balance; }
+/* galeri: kelompok dua foto memenuhi lebar halaman (tidak menyisakan kolom kosong) */
+.galeri-dua { display: grid; gap: 12px; }
+.galeri-dua .galeri-dua-foto { display: block; width: 100%; height: auto; }
+@media (min-width: 640px) {
+  .galeri-dua { grid-template-columns: 3fr 2fr; aspect-ratio: 5 / 2; }
+  .galeri-dua .galeri-dua-foto { height: 100%; object-fit: cover; }
+}

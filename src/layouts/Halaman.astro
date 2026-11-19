@@ -1,6 +1,7 @@
 ---
 /* Kerangka halaman dalam (Tentang, Menginap, Rapat, Acara, Galeri, Lokasi).
    Pola sama dengan beranda: foto paling atas, header putih di bawahnya lalu menempel saat scroll. */
+import { altTeks } from "../data/alt-en";
 import "../styles/halaman.css";
 import Situs from "./Situs.astro";
 import { getImage } from "astro:assets";
@@ -43,7 +44,7 @@ const goresan = GORESAN[path] ?? "teratai";
     <picture class="hal-hero-foto">
       <source type="image/avif" srcset={avif.srcSet.attribute} sizes={ukuran} />
       <source type="image/webp" srcset={webp.srcSet.attribute} sizes={ukuran} />
-      <img src={webp.src} width={w} height={h} alt={alt} fetchpriority="high" decoding="async" />
+      <img src={webp.src} width={w} height={h} alt={altTeks(alt, lang)} fetchpriority="high" decoding="async" />
     </picture>
     <div class="hal-hero-tx">
       <p class="lbl" data-muncul>{penanda[lang]}</p>

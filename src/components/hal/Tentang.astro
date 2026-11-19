@@ -1,4 +1,5 @@
 ---
+import { altTeks } from "../../data/alt-en";
 import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
@@ -107,7 +108,7 @@ const { lang } = Astro.props;
             src="/images/kolam-teratai-duduk.webp"
             width="819"
             height="544"
-            alt="Tamu duduk di tepi kolam teratai yang rimbun"
+            alt={altTeks("Tamu duduk di tepi kolam teratai yang rimbun", lang)}
             loading="lazy"
             decoding="async"
             class="h-auto w-full"
@@ -143,8 +144,8 @@ const { lang } = Astro.props;
         <p class="penanda"><T id="Keramahan Sunda" en="Sundanese hospitality" /></p>
         <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
           <T
-            id={`Tamu disambut dengan ${WS}, ucapan selamat datang dalam bahasa Sunda.`}
-            en={`Guests are welcomed with ${WS}, the Sundanese words of welcome.`}
+            id={`${WS} adalah ucapan selamat datang dalam bahasa Sunda.`}
+            en={`${WS} is how Sundanese people say welcome.`}
           />
         </h2>
         <div class="mt-7 max-w-[46ch] space-y-4 text-tinta-lembut">
@@ -186,7 +187,7 @@ const { lang } = Astro.props;
           src="/images/kacapi-suling.webp"
           width="819"
           height="544"
-          alt={`Pemusik berbusana Sunda membawakan ${MUSIK} di Kampung Sumber Alam`}
+          alt={altTeks(`Pemusik berbusana Sunda membawakan ${MUSIK} di Kampung Sumber Alam`, lang)}
           loading="lazy"
           decoding="async"
           class="h-auto w-full md:order-first"

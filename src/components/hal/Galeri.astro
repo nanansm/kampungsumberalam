@@ -1,4 +1,5 @@
 ---
+import { altTeks } from "../../data/alt-en";
 import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
@@ -128,17 +129,19 @@ const { lang } = Astro.props;
               <T id={lekat(g.judul.id)} en={lekat(g.judul.en)} />
             </h2>
           </div>
-          <div class={`${seksi} mt-8 columns-2 gap-3 lg:columns-3`}>
+          {/* kelompok berfoto sedikit (Makan: dua foto sampai ada foto menu asli) memakai dua kolom
+              selebar halaman, supaya kolom ketiga tidak bolong */}
+          <div class={g.foto.length <= 2 ? `${seksi} mt-8 galeri-dua` : `${seksi} mt-8 columns-2 gap-3 lg:columns-3`}>
             {g.foto.map((f) => (
               <Gbr
-                sizes="(min-width: 1024px) 33vw, 50vw"
+                sizes={g.foto.length <= 2 ? "(min-width: 640px) 60vw, 100vw" : "(min-width: 1024px) 33vw, 50vw"}
                 src={f.src}
                 width={f.w}
                 height={f.h}
-                alt={f.alt}
+                alt={altTeks(f.alt, lang)}
                 loading="lazy"
                 decoding="async"
-                class="mb-3 h-auto w-full break-inside-avoid"
+                class={g.foto.length <= 2 ? "galeri-dua-foto" : "mb-3 h-auto w-full break-inside-avoid"}
               />
             ))}
           </div>

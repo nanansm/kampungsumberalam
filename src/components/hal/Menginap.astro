@@ -1,4 +1,5 @@
 ---
+import { altTeks } from "../../data/alt-en";
 import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
@@ -133,7 +134,7 @@ const { lang } = Astro.props;
                 src={g.foto}
                 width={g.w}
                 height={g.h}
-                alt={g.alt}
+                alt={altTeks(g.alt, lang)}
                 loading="lazy"
                 decoding="async"
                 class={`h-auto w-full ${i % 2 === 1 ? "md:order-2" : ""}`}
@@ -189,7 +190,7 @@ const { lang } = Astro.props;
               src={p.foto}
               width={p.w}
               height={p.h}
-              alt={p.alt}
+              alt={altTeks(p.alt, lang)}
               loading="lazy"
               decoding="async"
               class="aspect-[3/4] w-full object-cover sm:aspect-[4/5]"
@@ -251,7 +252,7 @@ const { lang } = Astro.props;
           src="/images/kolam-privat-putih.webp"
           width="1200"
           height="675"
-          alt="Kolam air panas pribadi berdinding putih di halaman Villa Sibentang"
+          alt={altTeks("Kolam air panas pribadi berdinding putih di halaman Villa Sibentang", lang)}
           loading="lazy"
           decoding="async"
           class="h-auto w-full md:order-first"

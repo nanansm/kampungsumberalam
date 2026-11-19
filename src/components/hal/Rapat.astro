@@ -1,4 +1,5 @@
 ---
+import { altTeks } from "../../data/alt-en";
 import Halaman from "../../layouts/Halaman.astro";
 import Gbr from "../Gbr.astro";
 
@@ -71,7 +72,7 @@ const { lang } = Astro.props;
           src="/images/purba-dewata.webp"
           width="819"
           height="544"
-          alt="Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain"
+          alt={altTeks("Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain", lang)}
           loading="lazy"
           decoding="async"
           class="h-auto w-full"
@@ -208,7 +209,7 @@ const { lang } = Astro.props;
           src="/images/gerbang-batu.webp"
           width="819"
           height="462"
-          alt="Gerbang batu menuju area penginapan Babakan Siluhur"
+          alt={altTeks("Gerbang batu menuju area penginapan Babakan Siluhur", lang)}
           loading="lazy"
           decoding="async"
           class="h-auto w-full"
