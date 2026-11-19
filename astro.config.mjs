@@ -9,7 +9,7 @@ export default defineConfig({
   build: { inlineStylesheets: 'always', format: 'directory' },
   compressHTML: true,
   integrations: [sitemap({
-    filter: (page) => !page.includes('/404'),
+    filter: (page) => !page.includes('/404') && !page.includes('/link'),
     i18n: { defaultLocale: 'id', locales: { id: 'id-ID', en: 'en-US' } },
   })],
 });
