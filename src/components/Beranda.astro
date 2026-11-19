@@ -17,6 +17,8 @@ import caraKeluarga from "../assets/foto/cara-keluarga.jpg";
 import caraKantor from "../assets/foto/cara-kantor.jpg";
 import lokasiDesk from "../assets/foto/lokasi-desk.jpg";
 import lokasiHp from "../assets/foto/lokasi-hp.jpg";
+import vHp from "../assets/foto/video-hp.jpg";
+import vDk from "../assets/foto/video-dk.jpg";
 
 interface Props { lang: "id" | "en" }
 const { lang } = Astro.props;
@@ -33,13 +35,16 @@ const kampungImg = Object.values(import.meta.glob<{ default: ImageMetadata }>(".
 
 /* Hero: dua potongan (HP tegak, desktop lebar). AVIF + preload supaya LCP cepat. */
 const Q = 34;
-const heroHpW = [480, 640, 800];
+const heroHpW = [480, 720, 960];
 const heroDeskW = [1024, 1440, 1920, 2400];
 const hpAvif = await getImage({ src: heroHp, widths: heroHpW, format: "avif", quality: Q });
 const hpWebp = await getImage({ src: heroHp, widths: heroHpW, format: "webp", quality: 70 });
 const dkAvif = await getImage({ src: heroDesk, widths: heroDeskW, format: "avif", quality: Q });
 const dkWebp = await getImage({ src: heroDesk, widths: heroDeskW, format: "webp", quality: 70 });
 const MQ_HP = "(max-width: 767px)";
+const vhpPoster = await getImage({ src: vHp, widths: [480, 720], format: "avif", quality: 40 });
+const vdkPoster = await getImage({ src: vDk, widths: [1024, 1600], format: "avif", quality: 40 });
+const vdkPosterW = await getImage({ src: vDk, width: 1280, format: "webp", quality: 65 });
 const MQ_DK = "(min-width: 768px)";
 
 const pesanWa = t("wa.umum");
@@ -66,7 +71,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
     { srcset: dkAvif.srcSet.attribute, sizes: "100vw", media: MQ_DK, type: "image/avif" },
   ]}
 >
-  <!-- Hero -->
+  <!-- Hero: HP = slide statement utuh (teks sudah di gambar), desktop = foto penuh + judul -->
   <section class="hero" aria-labelledby="h-hero">
     <picture>
       <source media={MQ_HP} type="image/avif" srcset={hpAvif.srcSet.attribute} sizes="100vw" />
@@ -76,9 +81,21 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
       <img src={dkWebp.src} alt={t("hero.alt")} width={heroDesk.width} height={heroDesk.height} fetchpriority="high" decoding="async" />
     </picture>
     <div class="hero-tx">
+      <img class="hero-mark" src="/logo/logogram-putih.svg" alt="" width="56" height="56" />
       <h1 id="h-hero">{t("hero.h1")}</h1>
     </div>
   </section>
+
+  <!-- Video udara: dimuat saat mendekati layar, tanpa suara -->
+  <section class="udara-vid" aria-label={t("video.label")}>
+    <picture>
+      <source media={MQ_HP} type="image/avif" srcset={vhpPoster.srcSet.attribute} sizes="100vw" />
+      <source media={MQ_DK} type="image/avif" srcset={vdkPoster.srcSet.attribute} sizes="100vw" />
+      <img src={vdkPosterW.src} alt={t("video.label")} width="1600" height="900" loading="lazy" decoding="async" />
+    </picture>
+    <video muted loop playsinline preload="none" aria-hidden="true" data-hp="/video/udara-hp" data-dk="/video/udara-dk"></video>
+  </section>
+  <script is:inline>(()=>{const v=document.querySelector('.udara-vid video');if(!v||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const E=['scroll','pointerdown','keydown','touchstart'];const go=()=>{E.forEach(e=>removeEventListener(e,go));const o=new IntersectionObserver(x=>{if(x[0].isIntersecting){o.disconnect();const b=matchMedia('(max-width: 767px)').matches?v.dataset.hp:v.dataset.dk;v.src=b+(v.canPlayType('video/mp4; codecs="avc1.64001f"')?'.mp4':'.webm');v.addEventListener('playing',()=>v.classList.add('on'),{once:true});v.play().catch(()=>{})}},{rootMargin:'300px'});o.observe(v)};E.forEach(e=>addEventListener(e,go,{passive:true}))})()</script>
 
   <!-- Penanda brand -->
   <div class="merek">
@@ -108,7 +125,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   <div class="bilik" role="presentation"></div>
 
   <!-- Berendam -->
-  <section id="berendam" class="berendam on-gelap cv" aria-labelledby="h-berendam">
+  <section id="berendam" class="berendam cv" aria-labelledby="h-berendam">
     <div class="pita-img">
       <picture>
         <source media="(min-width: 768px)" srcset={(await getImage({ src: berendamDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
@@ -149,7 +166,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
   </section>
 
   <!-- Menginap -->
-  <section id="menginap" class="menginap on-gelap cv" aria-labelledby="h-menginap">
+  <section id="menginap" class="menginap cv" aria-labelledby="h-menginap">
     <div class="kepala">
       <div class="judul-garis"><h2 id="h-menginap">{t("menginap.judul")}</h2></div>
       <p>{t("menginap.p")}</p>
@@ -216,7 +233,7 @@ const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
       <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
       <img src={(await getImage({ src: lokasiDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.lokasi")} width={lokasiDesk.width} height={lokasiDesk.height} loading="lazy" decoding="async" />
     </picture>
-    <div class="kotak on-gelap">
+    <div class="kotak">
       <p class="lbl">{t("lokasi.label")}</p>
       <h2 id="h-lokasi">{t("lokasi.judul")}</h2>
       <p>{t("lokasi.p1")}</p>

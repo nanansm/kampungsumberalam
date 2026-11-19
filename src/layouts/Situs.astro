@@ -60,7 +60,7 @@ const schema = {
   <a class="skip" href="#isi">{t("ui.skip")}</a>
   <header class="hdr">
     <div class="hdr-in">
-      <button type="button" popovertarget="menu" aria-label={t("ui.menu")}>{t("ui.menu")}</button>
+      <button class="burger" type="button" popovertarget="menu" aria-label={t("ui.menu")}><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="1.6" fill="none"/></svg><span class="burger-tx">{t("ui.menu")}</span></button>
       <a class="logo" href={akar} aria-label={NAMA_PANJANG}><img src="/logo/logotype-color.svg" alt={NAMA_PANJANG} width="113" height="36" /></a>
       <div class="kanan">
         <nav class="bahasa" aria-label="Bahasa / Language">
@@ -76,7 +76,7 @@ const schema = {
     <div class="menu-in">
       <div class="menu-top">
         <button type="button" popovertarget="menu" popovertargetaction="hide">{t("ui.tutup")}</button>
-        <img src="/logo/logotype-putih.svg" alt="" width="113" height="36" loading="lazy" />
+        <img src="/logo/logotype-color.svg" alt="" width="113" height="36" loading="lazy" />
         <a class="lbl" href={BOOKING_URL} style="text-decoration:none">{t("ui.pesan")}</a>
       </div>
       <nav aria-label={t("ui.menu")}>
@@ -102,7 +102,7 @@ const schema = {
   <footer class="ftr cv">
     <div class="ftr-in">
       <div>
-        <img src="/logo/lockup-putih.svg" alt={NAMA_PANJANG} width="89" height="64" loading="lazy" />
+        <img src="/logo/lockup-color.svg" alt={NAMA_PANJANG} width="89" height="64" loading="lazy" />
         <p style="margin-top:18px;max-width:34ch">{ALAMAT_SATU_BARIS}</p>
       </div>
       <div>
