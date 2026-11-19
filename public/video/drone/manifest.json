@@ -1,0 +1,214 @@
+{
+ "status": "FINAL v2 SEDANG DIKERJAKAN (20 Nov 01.55): hero v2 sudah final dan terpasang; klip zona masih versi 1 sampai perbaikan QA selesai. Nama dan jalur berkas tetap.",
+ "diperbarui": "2026-11-20T01:55+07:00",
+ "catatan_pemakaian": "Semua video tanpa audio: <video muted loop playsinline autoplay preload='metadata' poster=...>. Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; sudah diuji terbaca dan terdekode oleh AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280), pas untuk wadah .udara-vid lama yang 9:16. Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi.",
+ "hero": {
+  "desktop": {
+   "mp4": "/video/drone/hero-dk-1920.mp4",
+   "webm": "/video/drone/hero-dk-1920.webm",
+   "poster": "/video/drone/hero-dk.jpg",
+   "poster_avif": "/video/drone/hero-dk.avif",
+   "w": 1920,
+   "h": 1080,
+   "durasi": 12.012
+  },
+  "desktop_1280": {
+   "mp4": "/video/drone/hero-dk-1280.mp4",
+   "webm": "/video/drone/hero-dk-1280.webm",
+   "poster": "/video/drone/hero-dk.jpg",
+   "poster_avif": "/video/drone/hero-dk.avif",
+   "w": 1280,
+   "h": 720,
+   "durasi": 12.012
+  },
+  "hp": {
+   "mp4": "/video/drone/hero-hp.mp4",
+   "webm": "/video/drone/hero-hp.webm",
+   "poster": "/video/drone/hero-hp.jpg",
+   "poster_avif": "/video/drone/hero-hp.avif",
+   "w": 720,
+   "h": 1280,
+   "durasi": 12.012
+  },
+  "isi": "3 shot x 4 dtk, cut bersih tanpa dissolve: (1) bungalow panggung beratap ijuk di atas balong, titian, batu dan teratai, air tenang di tengah bingkai untuk judul; (2) kolam privat Villa Sibentang dari atas, diapit atap ijuk dan rumpun tanaman; (3) klaster bungalow belakang mengelilingi balong berteratai dengan setapak diagonal, dari atas.",
+  "loop": "Titik loop adalah cut dari shot 3 ke shot 1, sama seperti sambungan antar-shot lain, jadi tidak ada lompatan di tengah gerakan.",
+  "sumber": [
+   "DJI_20261117141815_0084_D 00:02.00-00:06.00",
+   "DJI_20261117101925_0041_D 00:08.00-00:12.00",
+   "DJI_20261117142216_0087_D 00:03.00-00:07.00"
+  ],
+  "catatan_v2": "Shot atap gevel (klip 0002) dibuang: ijuk rusak, rumput di bubungan, tangga bambu dan unit AC terlihat sepanjang klip. Klip 0003 juga dibuang karena tangga putih di atap. Bingkai HP shot 1 digeser ke kanan supaya unit AC dan atap rumah warga keluar dari bingkai."
+ },
+ "zona": [
+  {
+   "id": "kolam-tasik-madu",
+   "nama_zona": "Kolam Renang Tasik Madu",
+   "no_zona": "02",
+   "desktop": {
+    "mp4": "/video/drone/zona-02-kolam-tasik-madu-dk.mp4",
+    "webm": "/video/drone/zona-02-kolam-tasik-madu-dk.webm",
+    "poster": "/video/drone/zona-02-kolam-tasik-madu-dk.jpg",
+    "poster_avif": "/video/drone/zona-02-kolam-tasik-madu-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 6.006
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-02-kolam-tasik-madu-hp.mp4",
+    "webm": "/video/drone/zona-02-kolam-tasik-madu-hp.webm",
+    "poster": "/video/drone/zona-02-kolam-tasik-madu-hp.jpg",
+    "poster_avif": "/video/drone/zona-02-kolam-tasik-madu-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 6.006
+   },
+   "poster": "/video/drone/zona-02-kolam-tasik-madu-dk.jpg",
+   "isi": "Kolam renang air panas bertenda putih di antara atap ijuk dan pohon kelapa, diputari pelan dari udara pada pagi cerah.",
+   "yakin": true,
+   "sumber": "DJI_20261117085245_0005_D 00:08.00-00:14.00"
+  },
+  {
+   "id": "restoran-tunjung-balebat",
+   "nama_zona": "Restoran Tunjung Balebat",
+   "no_zona": "03",
+   "desktop": {
+    "mp4": "/video/drone/zona-03-restoran-tunjung-balebat-dk.mp4",
+    "webm": "/video/drone/zona-03-restoran-tunjung-balebat-dk.webm",
+    "poster": "/video/drone/zona-03-restoran-tunjung-balebat-dk.jpg",
+    "poster_avif": "/video/drone/zona-03-restoran-tunjung-balebat-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 6.006
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-03-restoran-tunjung-balebat-hp.mp4",
+    "webm": "/video/drone/zona-03-restoran-tunjung-balebat-hp.webm",
+    "poster": "/video/drone/zona-03-restoran-tunjung-balebat-hp.jpg",
+    "poster_avif": "/video/drone/zona-03-restoran-tunjung-balebat-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 6.006
+   },
+   "poster": "/video/drone/zona-03-restoran-tunjung-balebat-dk.jpg",
+   "isi": "Restoran Tunjung Balebat dengan papan nama dan pelataran mosaik bunga; kamera mundur pelan sampai balong dan tenda kolam terlihat.",
+   "yakin": true,
+   "sumber": "DJI_20261117133616_0063_D 00:17.50-00:23.50"
+  },
+  {
+   "id": "balong-pondok-kalapa",
+   "nama_zona": "Pondok Kalapa 1–4",
+   "no_zona": "08",
+   "desktop": {
+    "mp4": "/video/drone/zona-08-balong-pondok-kalapa-dk.mp4",
+    "webm": "/video/drone/zona-08-balong-pondok-kalapa-dk.webm",
+    "poster": "/video/drone/zona-08-balong-pondok-kalapa-dk.jpg",
+    "poster_avif": "/video/drone/zona-08-balong-pondok-kalapa-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 6.006
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-08-balong-pondok-kalapa-hp.mp4",
+    "webm": "/video/drone/zona-08-balong-pondok-kalapa-hp.webm",
+    "poster": "/video/drone/zona-08-balong-pondok-kalapa-hp.jpg",
+    "poster_avif": "/video/drone/zona-08-balong-pondok-kalapa-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 6.006
+   },
+   "poster": "/video/drone/zona-08-balong-pondok-kalapa-dk.jpg",
+   "isi": "Balong berteratai dengan setapak putih di antara deret bungalow beratap ijuk, dilihat tegak lurus dari atas sambil naik pelan.",
+   "yakin": true,
+   "sumber": "DJI_20261117085421_0006_D 00:08.00-00:14.00",
+   "catatan": "Zona dari GPS drone terhadap peta bangunan Data Master; frame juga memuat atap di sekitarnya."
+  },
+  {
+   "id": "bungalow-balong-belakang",
+   "nama_zona": "Bungalow 15–40 (Bungalow Siceeh)",
+   "no_zona": "19",
+   "desktop": {
+    "mp4": "/video/drone/zona-19-bungalow-balong-belakang-dk.mp4",
+    "webm": "/video/drone/zona-19-bungalow-balong-belakang-dk.webm",
+    "poster": "/video/drone/zona-19-bungalow-balong-belakang-dk.jpg",
+    "poster_avif": "/video/drone/zona-19-bungalow-balong-belakang-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 5.505
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-19-bungalow-balong-belakang-hp.mp4",
+    "webm": "/video/drone/zona-19-bungalow-balong-belakang-hp.webm",
+    "poster": "/video/drone/zona-19-bungalow-balong-belakang-hp.jpg",
+    "poster_avif": "/video/drone/zona-19-bungalow-balong-belakang-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 5.505
+   },
+   "poster": "/video/drone/zona-19-bungalow-balong-belakang-dk.jpg",
+   "isi": "Titian kayu zig-zag di atas balong berteratai yang memantulkan awan, lalu deret bungalow panggung area belakang muncul.",
+   "yakin": true,
+   "sumber": "DJI_20261117142325_0089_D 00:01.50-00:07.00",
+   "catatan": "Zona 19 dipastikan dari GPS; unit bungalownya belum pasti."
+  },
+  {
+   "id": "villa-sibentang",
+   "nama_zona": "Villa Sibentang",
+   "no_zona": "21",
+   "desktop": {
+    "mp4": "/video/drone/zona-21-villa-sibentang-dk.mp4",
+    "webm": "/video/drone/zona-21-villa-sibentang-dk.webm",
+    "poster": "/video/drone/zona-21-villa-sibentang-dk.jpg",
+    "poster_avif": "/video/drone/zona-21-villa-sibentang-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 5.005
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-21-villa-sibentang-hp.mp4",
+    "webm": "/video/drone/zona-21-villa-sibentang-hp.webm",
+    "poster": "/video/drone/zona-21-villa-sibentang-hp.jpg",
+    "poster_avif": "/video/drone/zona-21-villa-sibentang-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 5.005
+   },
+   "poster": "/video/drone/zona-21-villa-sibentang-dk.jpg",
+   "isi": "Kamera maju pelan di atas kolam privat Villa Sibentang menuju dinding relief batu putih berpancuran, dengan puring dan bunga di tepinya.",
+   "yakin": true,
+   "sumber": "DJI_20261117101820_0039_D 00:11.00-00:16.00",
+   "catatan": "Letak zona 21 di Data Master berkeyakinan sedang–tinggi dan belum dikonfirmasi KSA; GPS drone jatuh tepat di klaster itu."
+  },
+  {
+   "id": "babakan-siluhur",
+   "nama_zona": "Babakan Siluhur",
+   "no_zona": "17/18",
+   "no_zona_kandidat": [
+    "17",
+    "18"
+   ],
+   "desktop": {
+    "mp4": "/video/drone/zona-17-18-babakan-siluhur-dk.mp4",
+    "webm": "/video/drone/zona-17-18-babakan-siluhur-dk.webm",
+    "poster": "/video/drone/zona-17-18-babakan-siluhur-dk.jpg",
+    "poster_avif": "/video/drone/zona-17-18-babakan-siluhur-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 5.005
+   },
+   "hp": {
+    "mp4": "/video/drone/zona-17-18-babakan-siluhur-hp.mp4",
+    "webm": "/video/drone/zona-17-18-babakan-siluhur-hp.webm",
+    "poster": "/video/drone/zona-17-18-babakan-siluhur-hp.jpg",
+    "poster_avif": "/video/drone/zona-17-18-babakan-siluhur-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 5.005
+   },
+   "poster": "/video/drone/zona-17-18-babakan-siluhur-dk.jpg",
+   "isi": "Emperan atap ijuk dan beranda kayu rumah Babakan Siluhur di atas kolam biru berubin pola; versi HP memperlihatkan juga kolam bundar dengan arca batu di bawahnya.",
+   "yakin": false,
+   "sumber": "DJI_20261117140624_0075_D 00:15.50-00:20.50 (klip tegak 9:16)",
+   "catatan": "Kompleksnya pasti Babakan Siluhur (GPS jatuh di antara Babakan Siluhur 1 dan 2, area belakang), tetapi belum pasti zona 17 (Babakan Siluhur 1) atau 18 (Babakan Siluhur 2): letak kedua kompleks di peta Data Master berkeyakinan rendah-sedang. Konfirmasi ke KSA sebelum dikaitkan ke satu nomor."
+  }
+ ]
+}

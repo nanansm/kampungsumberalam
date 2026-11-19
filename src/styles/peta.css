@@ -14,9 +14,13 @@
 .peta-garis { display: none; }
 .peta-uap, .peta-nav, .kotak-progres { display: none; }
 
-.peta-bingkai { position: relative; width: 100%; aspect-ratio: var(--sw) / var(--sh); overflow: hidden; order: 1; }
+/* overflow: clip (bukan hidden): wadah yang hidden masih bisa digulir diam-diam oleh focus() pada titik
+   di tepi layar, lalu seluruh peta bergeser dari kameranya. clip tidak bisa digulir sama sekali. */
+.peta-bingkai { position: relative; width: 100%; aspect-ratio: var(--sw) / var(--sh); overflow: hidden; overflow: clip; order: 1; }
 .peta-dunia { position: absolute; left: calc(var(--sx) / var(--sw) * -100%); top: calc(var(--sy) / var(--sh) * -100%); width: calc(var(--dw) / var(--sw) * 100%); height: calc(var(--dh) / var(--sh) * 100%); }
 .peta-dasar { display: block; width: 100%; height: 100%; }
+.peta-dunia:not([data-plat="0"]) { display: none; }
+.pin:not([data-plat="0"]), .titik-lain:not([data-plat="0"]) { display: none; }
 .peta-ubin { position: absolute; inset: 0; }
 .ubin { position: absolute; display: block; opacity: 0; transition: opacity .5s var(--ease-ui); }
 .ubin.siap { opacity: 1; }
@@ -31,32 +35,71 @@
 .pin-isi::after { content: ""; width: 1.5px; height: 11px; background: var(--petang); }
 .pin-kepala { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--alam); color: #fff; border: 3px solid var(--krem); font: 600 .72rem/1 var(--sans); letter-spacing: .02em; font-variant-numeric: tabular-nums; box-shadow: 0 2px 8px rgba(4, 40, 33, .22); transition: transform .3s var(--ease-ui), background-color .3s var(--ease-ui), color .3s var(--ease-ui); }
 .pin-label { position: absolute; top: 15px; white-space: nowrap; background: var(--krem); color: var(--petang); font: 500 .74rem/1 var(--sans); letter-spacing: .01em; padding: 7px 10px; border-radius: 2px; box-shadow: 0 1px 4px rgba(4, 40, 33, .16); pointer-events: none; opacity: 0; transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), background-color .3s var(--ease-ui), color .3s var(--ease-ui); }
-.pin[data-arah="kanan"] .pin-label { left: calc(50% + 21px); transform: translate(-4px, -50%); }
-.pin[data-arah="kiri"] .pin-label { right: calc(50% + 21px); transform: translate(4px, -50%); }
-.pin[data-arah="atas"] .pin-label { top: auto; bottom: calc(100% + 4px); left: 50%; transform: translate(-50%, 4px); }
-.pin[data-arah="bawah"] .pin-label { top: calc(100% + 8px); left: 50%; transform: translate(-50%, -4px); }
+/* --lx/--ly: geseran dari skrip kalau label harus dijepit ke dalam layar */
+.pin { --lx: 0px; --ly: 0px; }
+.pin[data-arah="kanan"] .pin-label { left: calc(50% + 21px); transform: translate(calc(var(--lx) - 4px), calc(-50% + var(--ly))); }
+.pin[data-arah="kiri"] .pin-label { right: calc(50% + 21px); transform: translate(calc(var(--lx) + 4px), calc(-50% + var(--ly))); }
+.pin[data-arah="atas"] .pin-label { top: auto; bottom: calc(100% + 4px); left: 50%; transform: translate(calc(-50% + var(--lx)), calc(4px + var(--ly))); }
+.pin[data-arah="bawah"] .pin-label { top: calc(100% + 8px); left: 50%; transform: translate(calc(-50% + var(--lx)), calc(-4px + var(--ly))); }
 .pin.berlabel .pin-label, .pin:focus-visible .pin-label { opacity: 1; }
-.pin.berlabel[data-arah="kanan"] .pin-label, .pin.berlabel[data-arah="kiri"] .pin-label, .pin:focus-visible[data-arah="kanan"] .pin-label, .pin:focus-visible[data-arah="kiri"] .pin-label { transform: translate(0, -50%); }
-.pin.berlabel[data-arah="atas"] .pin-label, .pin.berlabel[data-arah="bawah"] .pin-label, .pin:focus-visible[data-arah="atas"] .pin-label, .pin:focus-visible[data-arah="bawah"] .pin-label { transform: translate(-50%, 0); }
+.pin.berlabel[data-arah="kanan"] .pin-label, .pin.berlabel[data-arah="kiri"] .pin-label, .pin:focus-visible[data-arah="kanan"] .pin-label, .pin:focus-visible[data-arah="kiri"] .pin-label { transform: translate(var(--lx), calc(-50% + var(--ly))); }
+.pin.berlabel[data-arah="atas"] .pin-label, .pin.berlabel[data-arah="bawah"] .pin-label, .pin:focus-visible[data-arah="atas"] .pin-label, .pin:focus-visible[data-arah="bawah"] .pin-label { transform: translate(calc(-50% + var(--lx)), var(--ly)); }
+/* titik pemberhentian di atas titik lain, titik berlabel paling atas: label tidak tertutup kepala titik lain */
+.pin.di-henti { z-index: 2; }
+.pin.berlabel, .pin:focus-visible { z-index: 3; }
 .pin:focus-visible { outline: none; }
 .pin:focus-visible .pin-kepala { outline: 2px solid var(--pohon); outline-offset: 2px; }
 .pin.dibuka .pin-kepala { background: var(--pohon); color: var(--petang); }
 @media (hover: hover) and (pointer: fine) {
   .pin:hover .pin-kepala { transform: scale(1.12); }
   .pin:hover .pin-label { opacity: 1; background: var(--petang); color: var(--krem); }
-  .pin:hover[data-arah="kanan"] .pin-label, .pin:hover[data-arah="kiri"] .pin-label { transform: translate(0, -50%); }
-  .pin:hover[data-arah="atas"] .pin-label, .pin:hover[data-arah="bawah"] .pin-label { transform: translate(-50%, 0); }
+  .pin:hover { z-index: 4; }
+  .pin:hover[data-arah="kanan"] .pin-label, .pin:hover[data-arah="kiri"] .pin-label { transform: translate(var(--lx), calc(-50% + var(--ly))); }
+  .pin:hover[data-arah="atas"] .pin-label, .pin:hover[data-arah="bawah"] .pin-label { transform: translate(calc(-50% + var(--lx)), var(--ly)); }
 }
 .pin:active .pin-kepala { transform: scale(.94); }
 .titik-lain { pointer-events: none; }
 .titik-lain::before { content: ""; position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--alam); border: 2px solid var(--krem); opacity: .9; }
 .pintu { pointer-events: none; }
+/* foto udara: garis batas kawasan (perkiraan dari data satelit) dan panah ke area di luar bingkai */
+.peta-batas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.peta-batas polygon { fill: none; stroke: var(--krem); stroke-width: 2; stroke-opacity: .9; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 0; }
+html.gerak .peta-batas polygon { stroke-dashoffset: 1; transition: stroke-dashoffset 2.4s var(--ease-io) .3s; }
+html.gerak .peta[data-fase="henti"] .peta-batas polygon, html.gerak .peta[data-fase="tutup"] .peta-batas polygon { stroke-dashoffset: 0; }
+.tepi-arah { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; z-index: 2; }
+.tepi-arah:not([data-plat="0"]) { display: none; }
+.tepi-isi { position: absolute; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 6px 8px; border-radius: 999px; background: var(--krem); color: var(--petang); box-shadow: 0 1px 4px rgba(4, 40, 33, .16); }
+.tepi-kanan .tepi-isi { right: 0; top: 0; transform: translateY(-50%); }
+.tepi-kiri .tepi-isi { left: 0; top: 0; transform: translateY(-50%); }
+.tepi-atas .tepi-isi { left: 0; top: 0; transform: translateX(-50%); }
+.tepi-bawah .tepi-isi { left: 0; bottom: 0; transform: translateX(-50%); }
+.tepi-kanan .tepi-panah { transform: rotate(90deg); order: 9; }
+.tepi-kiri .tepi-panah { transform: rotate(-90deg); }
+.tepi-bawah .tepi-panah { transform: rotate(180deg); }
+.tepi-teks { font: 600 .68rem/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; padding: 3px 4px; }
+.tepi-tombol { min-height: 30px; padding: 0 12px; border: 1px solid var(--garis); border-radius: 999px; background: transparent; color: var(--petang); font: 500 .76rem/1 var(--sans); cursor: pointer; transition: background-color .3s var(--ease-ui), color .3s var(--ease-ui), border-color .3s var(--ease-ui), transform .16s var(--ease-ui); }
+@media (hover: hover) and (pointer: fine) { .tepi-tombol:hover { background: var(--petang); border-color: var(--petang); color: var(--krem); } }
+.tepi-tombol:active { transform: scale(.97); }
+html.gerak .tepi-arah { left: 0; top: 0; display: block; opacity: 0; visibility: hidden; transition: opacity .4s var(--ease-ui), visibility 0s linear .4s; will-change: transform; }
+html.gerak .peta[data-fase="henti"] .tepi-arah.di-henti { opacity: 1; visibility: visible; transition: opacity .5s var(--ease-ui) .9s, visibility 0s; }
+html.gerak .tepi-panah { animation: tepi-geser 1.8s var(--ease-io) infinite; }
+@keyframes tepi-geser { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@media (prefers-reduced-motion: reduce) { html.gerak .tepi-panah { animation: none; } }
 .pintu-isi { position: absolute; left: 10px; top: 6px; white-space: nowrap; font: 600 .7rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--petang); background: var(--krem); padding: 6px 8px; border-radius: 2px; }
 .pintu::before { content: ""; position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--petang); background: var(--krem); }
 
 /* versi diam: titik kecil, label hanya saat disorot */
 .peta-titik .pin-kepala { width: 26px; height: 26px; font-size: .66rem; flex: none; }
 .peta-titik .pin-isi::after { flex: none; }
+/* versi diam di layar sempit: 21 titik bernomor saling tumpuk dan susah diketuk, jadi titik
+   dibuat kecil tanpa nomor dan tidak bisa diketuk; zona dibuka dari chip kartu dan daftar zona */
+@media (max-width: 699px) {
+  html:not(.gerak) .peta-titik .pin { width: 12px; height: 12px; margin: -6px 0 0 -6px; pointer-events: none; }
+  html:not(.gerak) .peta-titik .pin-isi { display: none; }
+  html:not(.gerak) .peta-titik .pin::before { left: 1px; top: 1px; width: 10px; height: 10px; background: var(--alam); box-shadow: 0 0 0 2px var(--krem); }
+  html:not(.gerak) .peta-titik .pin:focus-visible::before { outline: 2px solid var(--pohon); outline-offset: 2px; }
+  html:not(.gerak) .titik-lain::before { left: -3px; top: -3px; width: 6px; height: 6px; border-width: 1px; }
+}
 
 /* Kotak keterangan: di mode diam jadi kartu berderet */
 .peta-kotak-lapis { display: grid; gap: 16px; order: 2; }
@@ -128,6 +171,8 @@
 .zona-panel { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; overflow: hidden; color: var(--tinta); }
 .zona-panel::backdrop { background: rgba(4, 40, 33, .32); opacity: 0; transition: opacity .5s var(--ease-ui); }
 .zona-panel.terbuka::backdrop { opacity: 1; }
+/* animasi tutup: dialog sudah tidak modal, tetapi kainnya masih terlihat bergerak keluar */
+.zona-panel.menutup { display: block; z-index: 60; pointer-events: none; }
 .panel-kain { position: absolute; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--krem); overflow: hidden; will-change: transform; }
 .panel-isi { position: relative; height: 100%; overflow-y: auto; overscroll-behavior: contain; will-change: transform; }
 .panel-tirai { position: absolute; inset: 0; background: var(--alam); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
@@ -136,6 +181,8 @@
 @media (hover: hover) and (pointer: fine) { .panel-tutup:hover { background: var(--petang); } .panel-tutup:hover svg { transform: rotate(90deg); } }
 .panel-tutup:active svg { transform: scale(.9); }
 .panel-badan { margin: 0; }
+/* tepi panel = kain berpola bilik (anyaman) */
+.panel-kain::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 12px; z-index: 4; background: var(--krem) var(--bilik-svg) repeat-y center / 12px 12px; pointer-events: none; }
 .panel-badan .zona { background: transparent; }
 .panel-badan .zona-media { aspect-ratio: 4 / 3; }
 @media (max-width: 639px) {
@@ -143,13 +190,26 @@
   .panel-kain::before { content: ""; position: absolute; left: 50%; top: 8px; z-index: 4; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: rgba(252, 250, 230, .9); box-shadow: 0 0 0 1px rgba(4, 40, 33, .12); }
   .panel-tutup { width: 48px; height: 48px; }
   .panel-tutup { border-radius: 0 16px 0 0; }
+  .panel-kain::after { right: 0; bottom: auto; width: auto; height: 10px; background-repeat: repeat-x; background-size: 10px 10px; border-radius: 16px 16px 0 0; }
 }
 
 /* ---------- Mode gerak ---------- */
 html.gerak .peta { height: calc(var(--total) * 100svh + 100lvh); }
-html.gerak .peta-panggung { position: sticky; top: 0; height: 100lvh; padding: 0; margin: 0; max-width: none; display: block; overflow: hidden; background: var(--krem); }
+html.gerak .peta-panggung { position: sticky; top: 0; height: 100lvh; padding: 0; margin: 0; max-width: none; display: block; overflow: hidden; overflow: clip; background: var(--krem); }
 html.gerak .peta-bingkai { position: absolute; inset: 0; aspect-ratio: auto; z-index: 1; }
-html.gerak .peta-dunia { left: 0; top: 0; width: calc(var(--dw) * 1px); height: calc(var(--dh) * 1px); transform-origin: 0 0; will-change: transform; }
+/* foto udara: di balik foto ada salinannya yang diburamkan, jadi tepi foto yang masuk ke bawah
+   kolom keterangan menyambung lembut, bukan berhenti di kertas kosong */
+html.gerak .peta-bingkai--foto { background: var(--petang); }
+html.gerak .peta-bingkai--foto::before { content: ""; position: absolute; inset: -6%; background: var(--latar) center / cover no-repeat; filter: blur(28px) saturate(.85) brightness(.82); transform: scale(1.08); }
+html.gerak .peta-dunia { left: 0; top: 0; width: calc(var(--dw) * 1px); height: calc(var(--dh) * 1px); transform-origin: 0 0; will-change: transform; display: block; visibility: hidden; }
+html.gerak .peta-dunia.plat-aktif { visibility: visible; }
+html.gerak .pin, html.gerak .titik-lain { display: block; }
+html.gerak .pin.plat-lain, html.gerak .titik-lain.plat-lain, html.gerak .tepi-arah.plat-lain, html.gerak .pintu.plat-lain { visibility: hidden !important; opacity: 0 !important; }
+/* kabut pindah plat: di atas peta dan titik, di bawah kotak keterangan dan navigasi */
+.peta-kabut { display: none; }
+html.gerak .peta-kabut { display: block; position: absolute; inset: 0; z-index: 2; opacity: 0; pointer-events: none; overflow: hidden; }
+html.gerak .kabut-dasar { position: absolute; inset: 0; background: var(--krem); opacity: .92; }
+html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; }
 html.gerak .ubin { will-change: opacity; }
 html.gerak .pin, html.gerak .titik-lain, html.gerak .pintu { left: 0; top: 0; will-change: transform; }
 html.gerak .peta-titik .pin-kepala { width: 30px; height: 30px; font-size: .72rem; }
@@ -186,7 +246,8 @@ html.hdr-tampil.gerak .peta-nav { transform: translateY(60px); }
 .nav-daftar button[aria-current] { opacity: 1; }
 .nav-no { font: 600 .66rem/1 var(--sans); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
 @media (hover: hover) and (pointer: fine) { .nav-daftar button:hover { opacity: 1; transform: translateX(3px); } }
-.nav-penanda { position: absolute; left: 10px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--alam); box-shadow: 0 0 0 3px var(--krem); transition: transform .6s var(--ease-out); }
+.nav-penanda { position: absolute; left: 10px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--alam); box-shadow: 0 0 0 3px var(--krem); transition: transform .6s var(--ease-out), opacity .3s var(--ease-ui); }
+.nav-penanda.sembunyi { opacity: 0; }
 .peta-lewati { position: absolute; right: var(--tepi); top: 28px; pointer-events: auto; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; background: var(--krem); color: var(--petang); font: 600 .7rem/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; text-decoration: none; box-shadow: 0 1px 4px rgba(4, 40, 33, .14); transition: background-color .3s var(--ease-ui), color .3s var(--ease-ui), transform .16s var(--ease-ui); }
 .peta-lewati svg { transition: transform .3s var(--ease-ui); }
 @media (hover: hover) and (pointer: fine) { .peta-lewati:hover { background: var(--petang); color: var(--krem); } .peta-lewati:hover svg { transform: translateY(2px); } }
@@ -208,6 +269,13 @@ html.gerak .kotak-progres span { display: block; height: 100%; background: var(-
 
 html.gerak .peta-penutup { position: absolute; left: 50%; bottom: var(--tepi); z-index: 5; width: min(560px, calc(100% - 2 * var(--tepi))); padding: 28px 28px 30px; background: var(--krem); box-shadow: 0 10px 40px rgba(4, 40, 33, .16); opacity: 0; visibility: hidden; transform: translate(-50%, 16px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }
 html.gerak .peta[data-fase="tutup"] .peta-penutup { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .6s var(--ease-out) .5s, transform .9s var(--ease-out) .5s, visibility 0s; }
+/* desktop: kartu penutup duduk di kolom kiri seperti kotak keterangan, peta utuh mengisi sisanya */
+@media (min-width: 900px) {
+  html.gerak .peta-penutup { left: var(--tepi); bottom: var(--tepi); width: var(--kotak-w); text-align: left; justify-items: start; padding: 30px 30px 32px; transform: translateY(16px); }
+  html.gerak .peta[data-fase="tutup"] .peta-penutup { transform: none; }
+  html.gerak .peta-penutup h3 { font-size: clamp(2rem, 2.6vw, 2.6rem); max-width: 11em; text-wrap: balance; }
+}
+html.gerak .peta-wadah { overflow-anchor: none; }
 
 /* ---------- Mode gerak di HP / tablet sempit ---------- */
 @media (max-width: 899px) {
@@ -224,6 +292,7 @@ html.gerak .peta[data-fase="tutup"] .peta-penutup { opacity: 1; visibility: visi
   .peta[data-fase="henti"] .nav-ringkas, .peta[data-fase="tutup"] .nav-ringkas { opacity: 1; visibility: visible; transition: opacity .5s var(--ease-out), visibility 0s; }
   .nav-nomor { font: 600 .7rem/1 var(--sans); letter-spacing: .06em; color: var(--alam); font-variant-numeric: tabular-nums; }
   .nav-ringkas svg { transition: transform .3s var(--ease-ui); }
+  .peta[data-fase="tutup"] .nav-nomor { display: none; }
   .nav-ringkas[aria-expanded="true"] svg { transform: rotate(180deg); }
   .nav-daftar { top: 60px; left: var(--tepi); width: min(300px, calc(100% - 2 * var(--tepi))); padding: 16px 18px 12px; background: var(--krem); border-radius: 8px; box-shadow: 0 10px 40px rgba(4, 40, 33, .2); }
   .peta[data-fase="henti"] .nav-daftar, .peta[data-fase="tutup"] .nav-daftar { opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }

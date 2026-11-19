@@ -1,0 +1,778 @@
+{
+ "versi": "2 · 20 Nov 2026 (tambah plat belakang)",
+ "plat": [
+  {
+   "id": "utama",
+   "nama": "Area depan",
+   "rasio": "3:2",
+   "berkas": {
+    "jpg_4800": {
+     "src": "/peta/foto-udara/ksa-foto-udara-4800.jpg",
+     "w": 4800,
+     "h": 3200
+    },
+    "avif_2560": {
+     "src": "/peta/foto-udara/ksa-foto-udara-2560.avif",
+     "w": 2560,
+     "h": 1707
+    },
+    "webp_2560": {
+     "src": "/peta/foto-udara/ksa-foto-udara-2560.webp",
+     "w": 2560,
+     "h": 1707
+    },
+    "avif_1440": {
+     "src": "/peta/foto-udara/ksa-foto-udara-1440.avif",
+     "w": 1440,
+     "h": 960
+    },
+    "webp_1440": {
+     "src": "/peta/foto-udara/ksa-foto-udara-1440.webp",
+     "w": 1440,
+     "h": 960
+    },
+    "avif_hp": {
+     "src": "/peta/foto-udara/ksa-foto-udara-hp.avif",
+     "w": 1600,
+     "h": 1067
+    },
+    "webp_hp": {
+     "src": "/peta/foto-udara/ksa-foto-udara-hp.webp",
+     "w": 1600,
+     "h": 1067
+    }
+   },
+   "sumber": "DJI_20261117094753_0035_D.JPG (foto 50 MP, 17 Nov 2026 09.47 WIB, 105 m, miring 34 derajat, menghadap barat)",
+   "arah": "Atas = barat, kanan = utara, bawah = timur, kiri = selatan.",
+   "isi": "Zona 01-16 dan 21. Zona 16 terpotong tepi kanan."
+  },
+  {
+   "id": "belakang",
+   "nama": "Area belakang",
+   "rasio": "16:9",
+   "berkas": {
+    "jpg_3840": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-3840.jpg",
+     "w": 3840,
+     "h": 2160
+    },
+    "avif_2560": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-2560.avif",
+     "w": 2560,
+     "h": 1440
+    },
+    "webp_2560": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-2560.webp",
+     "w": 2560,
+     "h": 1440
+    },
+    "avif_1440": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-1440.avif",
+     "w": 1440,
+     "h": 810
+    },
+    "webp_1440": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-1440.webp",
+     "w": 1440,
+     "h": 810
+    },
+    "avif_hp": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-hp.avif",
+     "w": 1600,
+     "h": 900
+    },
+    "webp_hp": {
+     "src": "/peta/foto-udara/ksa-foto-udara-belakang-hp.webp",
+     "w": 1600,
+     "h": 900
+    }
+   },
+   "sumber": "DJI_20261117142233_0088_D.MP4 detik 0,30-0,45 (video 4K tegak lurus ke bawah dari 86 m, 17 Nov 2026 14.22 WIB, mendung). Sepuluh frame berurutan dirata-rata untuk menurunkan noise.",
+   "arah": "Atas = barat, kanan = utara, sama dengan plat utama (frame asli diputar 180 derajat).",
+   "letak": "Di timur laut plat utama, di luar tepi kanan-bawahnya. Pusat plat sekitar 130 m dari Lobby. Purba Dewata dan Babakan Siluhur berada di luar tepi atas plat ini.",
+   "isi": "Zona 19 (18 dari 26 unit; deret Siceeh 25-32 di luar tepi atas) dan zona 20.",
+   "cahaya": "Siang mendung, jadi bayangan lebih lembut daripada plat utama yang pagi cerah. Titik hitam, titik putih, saturasi hijau, dan WB sudah disamakan dengan plat utama."
+  }
+ ],
+ "sumber": {
+  "berkas": "DJI_20261117094753_0035_D.JPG",
+  "keterangan": "Foto 50 MP DJI Mini 5 Pro, 17 Nov 2026 pukul 09.47 WIB, 105 m di atas titik lepas landas, kamera miring 34 derajat ke bawah, menghadap barat.",
+  "arah_mata_angin": "Atas foto = barat, kanan = utara, bawah = timur, kiri = selatan.",
+  "olah": "Grade Cerah Jujur: WB dinetralkan sebagian, kurva nada dicerahkan, dipertajam ringan. Tidak ada benda yang ditambah, dihapus, atau diubah. Citra satelit hanya dipakai di belakang layar untuk mencocokkan posisi dan tidak ada di dalam gambar."
+ },
+ "ukuran": {
+  "rasio": "3:2",
+  "master_px": [
+   7045,
+   4697
+  ],
+  "berkas": {
+   "jpg_4800": {
+    "src": "/peta/foto-udara/ksa-foto-udara-4800.jpg",
+    "w": 4800,
+    "h": 3200
+   },
+   "avif_2560": {
+    "src": "/peta/foto-udara/ksa-foto-udara-2560.avif",
+    "w": 2560,
+    "h": 1707
+   },
+   "webp_2560": {
+    "src": "/peta/foto-udara/ksa-foto-udara-2560.webp",
+    "w": 2560,
+    "h": 1707
+   },
+   "avif_1440": {
+    "src": "/peta/foto-udara/ksa-foto-udara-1440.avif",
+    "w": 1440,
+    "h": 960
+   },
+   "webp_1440": {
+    "src": "/peta/foto-udara/ksa-foto-udara-1440.webp",
+    "w": 1440,
+    "h": 960
+   },
+   "avif_hp": {
+    "src": "/peta/foto-udara/ksa-foto-udara-hp.avif",
+    "w": 1600,
+    "h": 1067
+   },
+   "webp_hp": {
+    "src": "/peta/foto-udara/ksa-foto-udara-hp.webp",
+    "w": 1600,
+    "h": 1067
+   }
+  },
+  "koordinat": "x dan y dalam persen lebar dan tinggi gambar (0 = kiri/atas, 100 = kanan/bawah). Semua berkas memakai potongan yang sama, jadi angka x/y berlaku untuk semua ukuran.",
+  "catatan": "Bagian sumber dan ukuran di tingkat atas menjelaskan plat utama (tetap ada supaya kode lama tidak rusak). Tiap zona memakai x/y dalam persen dari plat yang disebut di kolom plat."
+ },
+ "zona": [
+  {
+   "no": "01",
+   "nama": "Lobby",
+   "plat": "utama",
+   "x": 39.8,
+   "y": 15.8,
+   "yakin": false,
+   "catatan": "Poligon data satelit jatuh di lantai parkir, jadi titik dipindah ke bangunan berdinding bata merah dan papan kayu di ujung utara parkir. Ciri ini cocok dengan deskripsi Lobby di Data Master, tetapi belum dikonfirmasi KSA."
+  },
+  {
+   "no": "02",
+   "nama": "Kolam Renang Tasik Madu",
+   "plat": "utama",
+   "x": 40.87,
+   "y": 33.88,
+   "yakin": true,
+   "catatan": "Kolam biru dan tenda putih terlihat jelas."
+  },
+  {
+   "no": "03",
+   "nama": "Restoran Tunjung Balebat",
+   "plat": "utama",
+   "x": 37.28,
+   "y": 27.15,
+   "yakin": true,
+   "catatan": "Atap panjang di sisi kolam renang, sesuai letak di Data Master."
+  },
+  {
+   "no": "04",
+   "nama": "Ruang Intan Dewata",
+   "plat": "utama",
+   "x": 31.04,
+   "y": 30.62,
+   "yakin": true,
+   "catatan": "Atap besar di sisi kolam renang, sebagian tertutup pohon kelapa."
+  },
+  {
+   "no": "05",
+   "nama": "Saung Sunyaruri",
+   "plat": "utama",
+   "x": 36.76,
+   "y": 20.06,
+   "yakin": false,
+   "catatan": "Gugus atap kecil di antara parkir, Lobby, dan Kawung. Dari sudut ini saung tengah dan saung kecil di sekelilingnya tidak bisa dibedakan dengan pasti."
+  },
+  {
+   "no": "06",
+   "nama": "Area Parkir",
+   "plat": "utama",
+   "x": 33.5,
+   "y": 18.0,
+   "yakin": true,
+   "catatan": "Titik ditaruh di tengah lantai parkir yang terlihat (ada bus dan mobil)."
+  },
+  {
+   "no": "07",
+   "nama": "Villa Kawung",
+   "plat": "utama",
+   "x": 43.13,
+   "y": 11.02,
+   "yakin": true,
+   "catatan": "Dua deret atap ijuk, masing-masing lima unit."
+  },
+  {
+   "no": "08",
+   "nama": "Pondok Kalapa",
+   "plat": "utama",
+   "x": 42.14,
+   "y": 18.92,
+   "yakin": true,
+   "catatan": "Pondok panggung di atas balong, sama dengan klip video zona 08."
+  },
+  {
+   "no": "09",
+   "nama": "Suite Couple",
+   "plat": "utama",
+   "x": 47.72,
+   "y": 25.63,
+   "yakin": true,
+   "catatan": "Atap di timur laut kolam renang, paling dekat ke kolam."
+  },
+  {
+   "no": "10",
+   "nama": "Bungalow 1–14",
+   "plat": "utama",
+   "x": 46.41,
+   "y": 48.51,
+   "yakin": true,
+   "catatan": "Tiga deret bungalow beratap ijuk dengan rangka putih, di sekitar kolam bundar."
+  },
+  {
+   "no": "11",
+   "nama": "Suite Room",
+   "plat": "utama",
+   "x": 34.74,
+   "y": 43.55,
+   "yakin": true,
+   "catatan": "Dua atap bersebelahan dengan kolam kecil berbentuk ginjal."
+  },
+  {
+   "no": "12",
+   "nama": "Taman Sangkuriang",
+   "plat": "utama",
+   "x": 47.24,
+   "y": 55.94,
+   "yakin": false,
+   "catatan": "Lapangan rumputnya tertutup tajuk pohon dari sudut foto ini. Titik mengikuti data satelit."
+  },
+  {
+   "no": "13",
+   "nama": "Bungalow Arileu",
+   "plat": "utama",
+   "x": 31.75,
+   "y": 59.91,
+   "yakin": true,
+   "catatan": "Deret atap ijuk berangka putih di selatan Bungalow 1-14."
+  },
+  {
+   "no": "14",
+   "nama": "Suite Arileu",
+   "plat": "utama",
+   "x": 11.9,
+   "y": 56.58,
+   "yakin": true,
+   "catatan": "Atap di pojok selatan kawasan, dekat kolam kecil."
+  },
+  {
+   "no": "15",
+   "nama": "Tegal Pangulinan",
+   "plat": "utama",
+   "x": 62.8,
+   "y": 86.0,
+   "yakin": true,
+   "catatan": "Titik ditaruh di lapangan rumput yang terlihat, dekat saung panggung. Sisa lahan Tegal Pangulinan tertutup tajuk pohon besar."
+  },
+  {
+   "no": "16",
+   "nama": "Purba Dewata & Ligar Wangi",
+   "plat": "utama",
+   "x": 94.5,
+   "y": 59.0,
+   "yakin": true,
+   "catatan": "Atap selatan gedung (ruang meeting Purba Dewata) terpotong tepi kanan foto. Atap utara, Restoran Ligar Wangi, berada di luar foto."
+  },
+  {
+   "no": "17",
+   "nama": "Babakan Siluhur 1",
+   "plat": null,
+   "x": null,
+   "y": null,
+   "yakin": false,
+   "catatan": "Tidak ada di kedua plat. Babakan Siluhur 1 berada di luar tepi atas plat belakang (sekitar 80 m ke barat). Satu-satunya rekaman dekat (klip 0075/0076) diambil dari ketinggian 16 m, jadi tidak bisa dijadikan plat peta.",
+   "di_luar_foto": true,
+   "arah_dari_plat_belakang": "atas"
+  },
+  {
+   "no": "18",
+   "nama": "Babakan Siluhur 2",
+   "plat": null,
+   "x": null,
+   "y": null,
+   "yakin": false,
+   "catatan": "Tidak ada di kedua plat. Babakan Siluhur 2 berada di luar tepi atas plat belakang (sekitar 100 m ke barat). Rekaman yang ada hanya klip rendah 16 m.",
+   "di_luar_foto": true,
+   "arah_dari_plat_belakang": "atas"
+  },
+  {
+   "no": "19",
+   "nama": "Bungalow 15–40",
+   "plat": "belakang",
+   "x": 53.5,
+   "y": 72.0,
+   "yakin": true,
+   "catatan": "Klaster bungalow beratap ijuk mengelilingi balong berteratai dan titian kayu. Titik ada di tengah 18 unit yang terlihat. Deret 25-30 dan 31-32 berada di luar tepi atas plat."
+  },
+  {
+   "no": "20",
+   "nama": "Jr Suite",
+   "plat": "belakang",
+   "x": 63.2,
+   "y": 40.4,
+   "yakin": false,
+   "catatan": "Dua atap gelap yang posisinya miring di sisi utara balong. Ciri ini cocok dengan catatan data (dua unit, atap miring), tetapi letak Jr Suite di data satelit berkeyakinan rendah. Perlu konfirmasi KSA."
+  },
+  {
+   "no": "21",
+   "nama": "Villa Sibentang",
+   "plat": "utama",
+   "x": 71.44,
+   "y": 35.28,
+   "yakin": true,
+   "catatan": "Gugus atap ijuk berdinding putih. Sembilan klip drone yang memperlihatkan kolam privat Sibentang punya GPS di gugus ini."
+  }
+ ],
+ "batas_kawasan": {
+  "keterangan": "Opsional, untuk sorotan halus kawasan KSA. Dua poligon (tapak induk dan kompleks Villa Sibentang) di permukaan tanah, dalam persen yang sama dengan zona. Perkiraan dari data satelit, meleset beberapa meter. Bagian di luar 0-100 berarti di luar foto.",
+  "poligon": [
+   [
+    [
+     24.28,
+     41.5
+    ],
+    [
+     20.92,
+     47.54
+    ],
+    [
+     10.91,
+     43.38
+    ],
+    [
+     6.61,
+     48.21
+    ],
+    [
+     11.19,
+     52.36
+    ],
+    [
+     9.7,
+     56.81
+    ],
+    [
+     7.58,
+     58.41
+    ],
+    [
+     8.13,
+     59.24
+    ],
+    [
+     5.74,
+     65.45
+    ],
+    [
+     6.05,
+     66.05
+    ],
+    [
+     16.18,
+     65.37
+    ],
+    [
+     17.03,
+     66.62
+    ],
+    [
+     25.84,
+     65.47
+    ],
+    [
+     47.0,
+     76.96
+    ],
+    [
+     48.78,
+     72.79
+    ],
+    [
+     56.79,
+     71.66
+    ],
+    [
+     59.24,
+     72.15
+    ],
+    [
+     64.66,
+     97.72
+    ],
+    [
+     87.06,
+     110.06
+    ],
+    [
+     90.04,
+     110.48
+    ],
+    [
+     90.36,
+     111.85
+    ],
+    [
+     100.82,
+     117.49
+    ],
+    [
+     107.42,
+     125.07
+    ],
+    [
+     116.32,
+     144.71
+    ],
+    [
+     116.15,
+     148.81
+    ],
+    [
+     128.79,
+     177.42
+    ],
+    [
+     141.86,
+     221.36
+    ],
+    [
+     152.82,
+     234.06
+    ],
+    [
+     175.52,
+     249.33
+    ],
+    [
+     173.19,
+     239.86
+    ],
+    [
+     196.73,
+     250.96
+    ],
+    [
+     196.94,
+     246.89
+    ],
+    [
+     216.56,
+     255.98
+    ],
+    [
+     216.55,
+     251.31
+    ],
+    [
+     273.3,
+     269.05
+    ],
+    [
+     208.35,
+     171.28
+    ],
+    [
+     198.37,
+     168.53
+    ],
+    [
+     186.59,
+     154.57
+    ],
+    [
+     192.39,
+     130.36
+    ],
+    [
+     198.93,
+     128.17
+    ],
+    [
+     180.68,
+     110.24
+    ],
+    [
+     172.09,
+     97.19
+    ],
+    [
+     159.09,
+     81.75
+    ],
+    [
+     156.44,
+     69.9
+    ],
+    [
+     148.72,
+     67.24
+    ],
+    [
+     145.94,
+     62.94
+    ],
+    [
+     128.55,
+     46.77
+    ],
+    [
+     127.69,
+     43.19
+    ],
+    [
+     123.67,
+     42.16
+    ],
+    [
+     120.71,
+     39.42
+    ],
+    [
+     101.68,
+     38.64
+    ],
+    [
+     106.27,
+     51.18
+    ],
+    [
+     108.8,
+     55.89
+    ],
+    [
+     108.65,
+     62.75
+    ],
+    [
+     107.91,
+     62.76
+    ],
+    [
+     91.15,
+     51.96
+    ],
+    [
+     91.59,
+     45.09
+    ],
+    [
+     92.27,
+     45.0
+    ],
+    [
+     89.3,
+     38.2
+    ],
+    [
+     86.22,
+     38.24
+    ],
+    [
+     85.49,
+     37.11
+    ],
+    [
+     84.39,
+     37.14
+    ],
+    [
+     78.96,
+     34.46
+    ],
+    [
+     78.24,
+     32.49
+    ],
+    [
+     75.68,
+     32.43
+    ],
+    [
+     73.36,
+     30.74
+    ],
+    [
+     72.61,
+     27.93
+    ],
+    [
+     68.29,
+     27.58
+    ],
+    [
+     63.36,
+     26.6
+    ],
+    [
+     54.3,
+     26.41
+    ],
+    [
+     54.21,
+     28.11
+    ],
+    [
+     53.75,
+     28.37
+    ],
+    [
+     50.65,
+     27.46
+    ],
+    [
+     51.08,
+     26.15
+    ],
+    [
+     49.74,
+     25.74
+    ],
+    [
+     46.16,
+     19.23
+    ],
+    [
+     46.63,
+     18.88
+    ],
+    [
+     47.85,
+     9.3
+    ],
+    [
+     40.9,
+     9.53
+    ],
+    [
+     39.16,
+     9.86
+    ],
+    [
+     37.61,
+     10.38
+    ],
+    [
+     37.55,
+     10.59
+    ],
+    [
+     36.19,
+     11.07
+    ],
+    [
+     35.52,
+     11.07
+    ],
+    [
+     35.18,
+     11.44
+    ],
+    [
+     35.16,
+     11.44
+    ],
+    [
+     35.0,
+     11.58
+    ],
+    [
+     32.39,
+     14.46
+    ],
+    [
+     31.71,
+     15.26
+    ],
+    [
+     29.98,
+     17.62
+    ],
+    [
+     28.17,
+     19.8
+    ],
+    [
+     26.19,
+     22.01
+    ],
+    [
+     24.92,
+     23.39
+    ],
+    [
+     24.16,
+     24.08
+    ],
+    [
+     22.26,
+     25.75
+    ],
+    [
+     17.58,
+     30.01
+    ]
+   ],
+   [
+    [
+     71.11,
+     27.14
+    ],
+    [
+     79.13,
+     32.85
+    ],
+    [
+     90.21,
+     37.97
+    ],
+    [
+     93.25,
+     43.02
+    ],
+    [
+     92.67,
+     54.67
+    ],
+    [
+     84.17,
+     55.6
+    ],
+    [
+     57.12,
+     41.98
+    ],
+    [
+     56.21,
+     32.05
+    ],
+    [
+     56.32,
+     26.22
+    ],
+    [
+     64.84,
+     25.79
+    ]
+   ]
+  ]
+ },
+ "cakupan": "Plat utama menutup area depan, Villa Sibentang, Tegal Pangulinan, dan separuh gedung Purba Dewata. Plat belakang menutup Bungalow 15-40 (18 dari 26 unit) dan Jr Suite. Babakan Siluhur 1 dan 2 (zona 17, 18) tidak tertangkap dari ketinggian di rekaman mana pun, jadi tidak bertitik. Perlu foto drone baru dari ±100 m di atas area belakang untuk melengkapinya."
+}

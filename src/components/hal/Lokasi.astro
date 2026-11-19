@@ -14,6 +14,7 @@ import {
   EMAIL,
   waLink,
 } from "../../data/content";
+import { lekat } from "../../data/rag";
 import PetaPerjalanan from "../PetaPerjalanan.astro";
 
 /* Halaman lokasi.
@@ -21,6 +22,8 @@ import PetaPerjalanan from "../PetaPerjalanan.astro";
    Belum ada sumber yang mengukurnya, dan menaksir sendiri berarti mengarang
    angka yang dipakai orang untuk merencanakan perjalanan. Isi begitu sudah
    diukur, jangan sebelum itu.
+
+   Gerbang, lajur, parkir, dan Lobby: Data Master KSA bab 02 §5.
 
    Peta tidak disematkan sebagai iframe. Satu sematan Google Maps menarik
    ratusan kilobita skrip pihak ketiga demi gambar yang berakhir diketuk
@@ -38,10 +41,10 @@ const { lang } = Astro.props;
   path="/location/"
   og="/og/location.jpg"
   title={{ id: 'Lokasi dan Kontak di Cipanas Tarogong Kaler | Kampung Sumber Alam', en: 'Location and contact in Cipanas, Tarogong Kaler | Kampung Sumber Alam' }}
-  description={{ id: 'Kampung Sumber Alam berada di Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, di kawasan air panas kaki Gunung Guntur. Telepon (0262) 238000, WhatsApp, dan tautan peta.', en: 'Kampung Sumber Alam is at Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, in the hot spring area at the foot of Mount Guntur. Phone (0262) 238000, WhatsApp and a map link.' }}
+  description={{ id: 'Kampung Sumber Alam berada di Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, kawasan air panas Gunung Guntur. Halaman ini memuat nomor telepon, WhatsApp, dan tautan peta.', en: 'Kampung Sumber Alam is at Jl. Raya Cipanas No. 122, Tarogong Kaler, Garut, in the Mount Guntur hot spring area. This page lists the phone number, WhatsApp and a map link.' }}
   penanda={{id: "Lokasi", en: "Location"}}
-  judul={{id: "Di kawasan air panas Cipanas, kaki Gunung Guntur",
-      en: "In the Cipanas hot spring district",}}
+  judul={{id: lekat("Anda tiba di Cipanas, kawasan air panas Gunung Guntur"),
+      en: lekat("You arrive in Cipanas, the hot spring area of Mount Guntur"),}}
   foto="/images/kampung-pagi-berkabut.webp"
   w={1080}
   h={810}
@@ -101,15 +104,15 @@ const { lang } = Astro.props;
           </dl>
           <p class="mt-6 max-w-[46ch] text-sm text-tinta-lembut">
             <T
-              id="Sebutkan tanggal menginap di pesan pertama supaya tim reservasi bisa langsung mengecek kamarnya."
-              en="Put your dates in the first message so the reservations team can check availability straight away."
+              id="Cantumkan tanggal menginap pada pesan pertama agar tim reservasi dapat langsung memeriksa ketersediaan kamar."
+              en="Include your dates in the first message so the reservations team can check availability straight away."
             />
           </p>
         </div>
       </div>
     </section>
 
-    {/* ============ SAMPAI DI SINI ============ */}
+    {/* ============ MENUJU LOKASI ============ */}
     <section class="pt-16 sm:pt-24">
       <div class={`${seksi} grid items-center gap-9 md:grid-cols-2 md:gap-14`}>
         <Gbr
@@ -122,24 +125,24 @@ const { lang } = Astro.props;
           class="h-auto w-full"
         />
         <div>
-          <p class="penanda"><T id="Sampai di sini" en="Getting here" /></p>
-          <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
+          <p class="penanda"><T id="Menuju lokasi" en="Getting here" /></p>
+          <h2 class={`${judulSeksi} mt-4 max-w-[28ch]`}>
             <T
-              id="Satu jalur, Jalan Raya Cipanas, dan gerbangnya di nomor 122."
-              en="One road, Jalan Raya Cipanas, and the gate sits at number 122."
+              id={lekat("Gerbang Kampung Sumber Alam berada di Jalan\u00a0Raya\u00a0Cipanas nomor\u00a0122.")}
+              en={lekat("The Kampung Sumber Alam gate is at number\u00a0122, Jalan\u00a0Raya\u00a0Cipanas.")}
             />
           </h2>
-          <div class="mt-5 max-w-[52ch] space-y-4 text-tinta-lembut">
+          <div class="mt-5 max-w-[46ch] space-y-4 text-tinta-lembut">
             <p>
               <T
-                id="Cipanas adalah kawasan pemandian air panas di Tarogong Kaler, sebelah Gunung Guntur. Deretan hotel dan pemandian berjajar di satu jalan yang sama, jadi nomor rumahnya yang menentukan, bukan nama kawasannya."
-                en="Cipanas is the hot spring district in Tarogong Kaler, beside Mount Guntur. Hotels and bathing places line the same road, so it is the street number that matters, not the district name."
+                id={lekat("Cipanas adalah kawasan pemandian air panas di Tarogong Kaler, Garut, dan hotel serta pemandian air panas lain juga berada di Jalan\u00a0Raya\u00a0Cipanas. Gunakan nomor\u00a0122 sebagai patokan.")}
+                en={lekat("Cipanas is the hot spring area of Tarogong Kaler, Garut, and other hotels and hot spring baths also stand on Jalan\u00a0Raya\u00a0Cipanas. Use number\u00a0122 as your landmark.")}
               />
             </p>
             <p>
               <T
-                id="Parkir ada di dalam area dan tidak dipungut biaya. Tamu yang datang dengan bus rombongan sebaiknya memberi tahu jam tiba lebih dulu."
-                en="Parking sits inside the grounds and carries no charge. Groups arriving by coach are better off giving the reservations team an arrival time in advance."
+                id={lekat("Gerbang utama berupa pergola kayu dengan satu pos satpam di tengahnya, yang membagi gerbang menjadi dua lajur. Kendaraan masuk melalui lajur barat dan keluar melalui lajur timur. Parkir di dalam kawasan gratis. Dari area parkir, Anda naik ke teras Lobby, bangunan berdinding bata merah dengan atap ijuk bertingkat, melalui tangga tengah atau ramp di sisi barat.")}
+                en={lekat("The main gate is a timber pergola with a security post in the middle that splits it into two lanes. Cars enter through the west lane and leave through the east lane. Parking inside the grounds is free. From the car park, you walk up to the terrace of the Lobby, a red-brick building with a tiered thatched roof, by the central steps or the ramp on the west side.")}
               />
             </p>
           </div>

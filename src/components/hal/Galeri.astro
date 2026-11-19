@@ -4,6 +4,7 @@ import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
 import { RESTORAN, SPA, IG_URL, IG_HANDLE } from "../../data/content";
+import { lekat } from "../../data/rag";
 
 /* Galeri.
    Fotonya ditampilkan UTUH, tidak dipotong ke kotak seragam. Bentuk bangunan
@@ -11,21 +12,25 @@ import { RESTORAN, SPA, IG_URL, IG_HANDLE } from "../../data/content";
    dan di halaman yang isinya cuma foto itu kerugian terbesar.
 
    Tata letaknya kolom CSS, bukan kisi. Kolom membiarkan tiap foto memakai
-   tingginya sendiri tanpa satu baris pun JavaScript. */
+   tingginya sendiri tanpa satu baris pun JavaScript.
+
+   Foto bakso dan soto dibuang (20 Nov 2026): kedua hidangan itu tidak ada di
+   Menu Resto & Room Service (Data Master bab 06), dan src/assets tidak punya
+   foto hidangan yang namanya tercantum di menu. */
 
 const kelompok = [
   {
     penanda: { id: "Kampung", en: "The village" },
     judul: {
-      id: "Kabut pagi, lentera malam, dan gerbang batu",
-      en: "Morning mist, lanterns at night, a stone gate",
+      id: "Kabut pagi turun di atas balong, dan lentera menyala di tepi kolam saat malam.",
+      en: "Morning mist settles over the fish ponds, and lanterns glow by the water at night.",
     },
     foto: [
       { src: "/images/kampung-kolam-lotus.webp", w: 1200, h: 675, alt: "Bungalow beratap ijuk berdiri di seberang kolam teratai yang sedang berbunga" },
       { src: "/images/malam-lentera-tegak.webp", w: 1000, h: 1250, alt: "Lentera besar menyala di tepi kolam teratai pada malam hari" },
       { src: "/images/kampung-pagi-berkabut.webp", w: 1080, h: 810, alt: "Kabut pagi di atas kolam teratai dan deretan bungalow beratap ijuk" },
       { src: "/images/kampung-teratai.webp", w: 999, h: 756, alt: "Kolam teratai berbunga dengan bungalow beratap ijuk di belakangnya" },
-      { src: "/images/pandang-kolam.webp", w: 1000, h: 1250, alt: "Tamu memandang kolam teratai dari dalam pavilyun kayu" },
+      { src: "/images/pandang-kolam.webp", w: 1000, h: 1250, alt: "Tamu memandang kolam teratai dari dalam paviliun kayu" },
       { src: "/images/kampung-palem.webp", w: 819, h: 461, alt: "Bungalow beratap ijuk di antara pohon palem" },
       { src: "/images/taman-gunung.webp", w: 819, h: 544, alt: "Taman dan kolam Kampung Sumber Alam dengan latar pegunungan" },
       { src: "/images/gerbang-batu.webp", w: 819, h: 462, alt: "Gerbang batu menuju area bungalow Babakan Siluhur" },
@@ -35,12 +40,12 @@ const kelompok = [
   {
     penanda: { id: "Air panas", en: "Hot spring" },
     judul: {
-      id: "Bak rendam di kamar, kolam batu di halaman",
-      en: "A tub in the room, a stone pool in the yard",
+      id: "Air panas alami Gunung Guntur mengisi bak rendam di kamar, private pool di villa, dan Kolam Renang Tasik Madu di belakang Lobby.",
+      en: "Natural hot spring water from Mount Guntur fills the tubs in the rooms, the private pools in the villas and Kolam Renang Tasik Madu behind the Lobby.",
     },
     foto: [
       { src: "/images/air-panas-grotto.webp", w: 1600, h: 768, alt: "Kolam air panas berdinding batu menyerupai gua" },
-      { src: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar, ditemani lilin" },
+      { src: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar dengan lilin di tepinya" },
       { src: "/images/grotto-privat.webp", w: 819, h: 546, alt: "Kolam air panas pribadi berdinding batu" },
       { src: "/images/kolam-privat-putih.webp", w: 1200, h: 675, alt: "Kolam pribadi berdinding putih di halaman villa" },
       { src: "/images/kolam-utama-tegak.webp", w: 675, h: 900, alt: "Kolam renang utama dilihat dari tepi" },
@@ -53,8 +58,8 @@ const kelompok = [
   {
     penanda: { id: "Kamar", en: "Rooms" },
     judul: {
-      id: "Dinding kayu, jendela menghadap air",
-      en: "Timber walls, windows onto the water",
+      id: "Kamar berdinding kayu, sebagian dengan jendela yang menghadap balong.",
+      en: "Rooms have timber walls, and some have windows facing the fish ponds.",
     },
     foto: [
       { src: "/images/bungalow-interior.webp", w: 900, h: 675, alt: "Interior bungalow kayu dengan tempat tidur dan jendela menghadap kolam" },
@@ -67,29 +72,25 @@ const kelompok = [
   {
     penanda: { id: "Makan", en: "Dining" },
     judul: {
-      id: `${RESTORAN} dan yang keluar dari dapurnya`,
-      en: `${RESTORAN} and what comes out of its kitchen`,
+      id: `Restoran ${RESTORAN} menyajikan menu Sunda di tepi kolam renang.`,
+      en: `Restoran ${RESTORAN} serves Sundanese dishes beside the swimming pool.`,
     },
     foto: [
-      { src: "/images/restoran-tunjung.webp", w: 819, h: 544, alt: `Ruang makan ${RESTORAN} berdinding kayu menghadap kolam` },
+      { src: "/images/restoran-tunjung.webp", w: 819, h: 544, alt: `Ruang makan Restoran ${RESTORAN} berdinding kayu menghadap kolam` },
       { src: "/images/restoran-tegak.webp", w: 675, h: 900, alt: "Sudut restoran dengan meja kayu dan bukaan ke arah taman" },
-      { src: "/images/hidangan-nasi.webp", w: 800, h: 531, alt: "Hidangan nasi lengkap dengan lauk dan kopi" },
-      { src: "/images/hidangan-sayur.webp", w: 800, h: 531, alt: "Semangkuk sayur berkuah" },
-      { src: "/images/hidangan-bakso.webp", w: 800, h: 531, alt: "Bakso dengan pelengkapnya" },
-      { src: "/images/hidangan-soto.webp", w: 800, h: 532, alt: "Soto berkuah dengan kerupuk" },
     ],
   },
   {
-    penanda: { id: "Di dalam area", en: "On the grounds" },
+    penanda: { id: "Di dalam kawasan", en: "On the grounds" },
     judul: {
-      id: `Kacapi suling, ${SPA}, dan tempat anak bermain`,
-      en: `Kacapi suling, ${SPA}, and somewhere for the children`,
+      id: `${SPA} dan area bermain anak ada di dalam kawasan.`,
+      en: `${SPA} and the children's play area are on the grounds.`,
     },
     foto: [
-      { src: "/images/kacapi-suling.webp", w: 819, h: 544, alt: "Pemain kacapi dan suling berpakaian Sunda tampil di Kampung Sumber Alam" },
+      { src: "/images/kacapi-suling.webp", w: 819, h: 544, alt: "Pemusik berbusana Sunda membawakan live music di Kampung Sumber Alam" },
       { src: "/images/pitaloka-spa.webp", w: 819, h: 546, alt: `Terapis memijat tamu di ${SPA}` },
       { src: "/images/spa-benda.webp", w: 800, h: 533, alt: "Perlengkapan pijat tertata di meja spa" },
-      { src: "/images/bermain-anak.webp", w: 819, h: 544, alt: "Anak anak bermain di area bermain Kampung Sumber Alam" },
+      { src: "/images/bermain-anak.webp", w: 819, h: 544, alt: "Anak-anak bermain di area bermain Kampung Sumber Alam" },
       { src: "/images/keluarga-taman.webp", w: 819, h: 546, alt: "Keluarga duduk di bangku taman Kampung Sumber Alam" },
       { src: "/images/purba-dewata.webp", w: 819, h: 544, alt: "Ruang pertemuan Purba Dewata ditata dengan meja bundar berkain" },
     ],
@@ -107,10 +108,10 @@ const { lang } = Astro.props;
   path="/gallery/"
   og="/og/gallery.jpg"
   title={{ id: 'Galeri Foto Kampung Sumber Alam Garut | Kampung Sumber Alam', en: 'Photo gallery of Kampung Sumber Alam, Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Foto Kampung Sumber Alam Garut: bungalow beratap ijuk di atas kolam teratai, bak rendam air panas alami, kolam renang, restoran Tunjung Balebat, dan Pitaloka Spa.', en: 'Photos of Kampung Sumber Alam Garut: thatched bungalows over lotus ponds, natural hot spring tubs, the swimming pool, Tunjung Balebat restaurant and Pitaloka Spa.' }}
+  description={{ id: 'Galeri ini memperlihatkan bungalow beratap ijuk di atas balong, bak rendam air panas alami, kolam renang, Restoran Tunjung Balebat, dan Pitaloka Spa di Kampung Sumber Alam, Garut.', en: 'This gallery shows the thatched bungalows over the fish ponds, natural hot spring tubs, the swimming pool, Restoran Tunjung Balebat and Pitaloka Spa at Kampung Sumber Alam, Garut.' }}
   penanda={{id: "Galeri", en: "Gallery"}}
-  judul={{id: "Fotonya diambil di dalam area, bukan di studio",
-      en: "Every photograph was taken on the grounds",}}
+  judul={{id: lekat("Inilah suasana Kampung Sumber Alam dari pagi sampai malam"),
+      en: lekat("This is Kampung Sumber Alam, from morning to night"),}}
   foto="/images/kampung-kolam-lotus.webp"
   w={1200}
   h={675}
@@ -124,7 +125,7 @@ const { lang } = Astro.props;
               <T id={g.penanda.id} en={g.penanda.en} />
             </p>
             <h2 class={`${judulSeksi} mt-4 max-w-[24ch]`}>
-              <T id={g.judul.id} en={g.judul.en} />
+              <T id={lekat(g.judul.id)} en={lekat(g.judul.en)} />
             </h2>
           </div>
           <div class={`${seksi} mt-8 columns-2 gap-3 lg:columns-3`}>
@@ -150,8 +151,8 @@ const { lang } = Astro.props;
         <div class="max-w-[56ch] border-t border-garis pt-7">
           <p class="text-sm text-tinta-lembut">
             <T
-              id="Foto terbaru terbit lebih dulu di Instagram resort."
-              en="The newest photographs go up on the resort's Instagram first."
+              id={lekat("Foto terbaru Kampung Sumber Alam lebih dulu diunggah ke Instagram.")}
+              en={lekat("The latest photos of Kampung Sumber Alam appear first on Instagram.")}
             />
           </p>
           <a

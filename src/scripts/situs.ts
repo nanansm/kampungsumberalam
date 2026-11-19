@@ -263,7 +263,12 @@ function pasangMenu() {
   menu.addEventListener("toggle", (e: any) => {
     if (e.newState === "open") {
       kunciGulir();
-      if (gerak) gsap.fromTo(menu.querySelectorAll("nav a, .kecil"), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.9, ease: "ksa", stagger: 0.04, delay: 0.1 });
+      if (gerak) {
+        gsap.fromTo(menu.querySelectorAll("nav a, .menu-kontak > *:not(.goresan), .kecil"), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.9, ease: "ksa", stagger: 0.04, delay: 0.1 });
+        const foto = menu.querySelector(".menu-foto");
+        if (foto) gsap.fromTo(foto, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "ksa", delay: 0.18 });
+        menu.querySelectorAll(".goresan").forEach((g) => g.classList.add("tergores"));
+      }
     } else lepasGulir();
   });
   // tautan jangkar di menu: tutup menu dulu, lalu gulir
@@ -272,8 +277,25 @@ function pasangMenu() {
   );
 }
 
+/* ---------- Goresan kampung: dilukis sekali saat masuk layar ---------- */
+function pasangGoresan() {
+  if (!gerak) return;
+  const io = new IntersectionObserver(
+    (es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("tergores");
+      io.unobserve(e.target);
+    }),
+    { rootMargin: "0px 0px -12% 0px" },
+  );
+  document.querySelectorAll(".goresan").forEach((g) => {
+    if (!g.closest("#menu")) io.observe(g);
+  });
+}
+
 pasangHeader();
 pasangProgres();
+pasangGoresan();
 pasangReveal();
 pasangHalamanDalam();
 pasangNyala();

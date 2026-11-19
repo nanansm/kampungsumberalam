@@ -1,24 +1,28 @@
 ---
+/**
+ * Beranda. Urutannya bercerita dulu, menawarkan belakangan:
+ * hero → prolog air Guntur → satu hari di kampung (Cerita) → peta kawasan →
+ * cara berendam → kamar → cara menginap (harga) → perjalanan & lokasi → ulasan → ajakan.
+ * Tawaran dan harga muncul sebagai akibat cerita (arahan CD, 20 Nov 2026).
+ */
 import { Picture, getImage } from "astro:assets";
 import Situs from "../layouts/Situs.astro";
 import Hero from "./Hero.astro";
+import Cerita from "./Cerita.astro";
 import PetaKawasan from "./peta/PetaKawasan.astro";
 import PetaPerjalanan from "./PetaPerjalanan.astro";
 import { HERO_VIDEO } from "../data/drone";
 import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, KAMAR, DAY_VISIT, waLink } from "../data/content";
+import { lekat, rapi, rapiIsi } from "../data/rag";
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
 
-import sambut1 from "../assets/foto/sambut-1.jpg";
-import sambut2 from "../assets/foto/sambut-3.jpg";
-import berendamHp from "../assets/foto/berendam-hp.jpg";
-import berendamDesk from "../assets/foto/berendam-desk.jpg";
-import menginapImg from "../assets/foto/menginap.jpg";
 import caraBerdua from "../assets/foto/cara-berdua.jpg";
 import caraKeluarga from "../assets/foto/cara-keluarga.jpg";
 import caraKantor from "../assets/foto/cara-kantor.jpg";
 import lokasiDesk from "../assets/foto/lokasi-desk.jpg";
 import lokasiHp from "../assets/foto/lokasi-hp.jpg";
+import menginapImg from "../assets/foto/menginap.jpg";
 import vHp from "../assets/foto/video-hp.jpg";
 import vDk from "../assets/foto/video-dk.jpg";
 
@@ -30,10 +34,10 @@ const t = (k: string) => {
   if (v === undefined) throw new Error(`Teks hilang: ${lang}.${k}`);
   return v;
 };
+const L = (k: string) => rapi(t(k));
+const I = (k: string) => rapiIsi(t(k));
 
-const kataImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kata-*.jpg", { eager: true })).map((m) => m.default);
-const turImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/tur-*.jpg", { eager: true })).map((m) => m.default);
-const kampungImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/foto/kampung-*.jpg", { eager: true })).map((m) => m.default);
+const kamarImg = Object.values(import.meta.glob<{ default: ImageMetadata }>("../assets/cerita/kamar-*.jpg", { eager: true })).map((m) => m.default);
 
 /* Poster hero = gambar LCP. Poster manifest drone kalau sudah ada, kalau belum poster video udara lama. */
 const MQ_HP = "(max-width: 767px)";
@@ -46,18 +50,18 @@ const posterDk = HERO_VIDEO.desktop.posterAvif ?? lamaDk.srcSet.attribute;
 const posterSrc = HERO_VIDEO.desktop.poster ?? lamaDkWebp.src;
 
 const pesanWa = t("wa.umum");
-const berendam = [1, 2, 3, 4].map((n) => ({ nama: t(`berendam.${n}.nama`), isi: t(`berendam.${n}.isi`), url: n === 4 ? SIBENTANG_URL : undefined }));
-const kataAlt = [2, 3, 4, 5].map((n) => t(`alt.kata${n}`));
-const turCap = [2, 3, 4, 5, 6, 7, 8].map((n) => t(`menginap.foto${n}`));
+const berendam = [1, 2, 3, 4].map((n) => ({ nama: t(`berendam.${n}.nama`), isi: I(`berendam.${n}.isi`), url: n === 4 ? SIBENTANG_URL : undefined }));
+const fotoKamar = [menginapImg, ...kamarImg];
+const capKamar = fotoKamar.map((_, i) => L(`menginap.foto${i + 1}`));
 const caraImg = [caraBerdua, caraKeluarga, caraKantor];
 const waKey = ["wa.berdua", "wa.keluarga", "wa.kantor"];
-const cara = [1, 2, 3].map((n, i) => ({ lbl: t(`cara.${n}.label`), nama: t(`cara.${n}.nama`), isi: t(`cara.${n}.isi`), harga: t(`cara.${n}.harga`).replace("Twin Share", "Twin Share").replace(/(\d) (per)/, "$1 $2"), img: caraImg[i], alt: t(`alt.cara${n}`), wa: t(waKey[i]) }));
-const kampungCap = [1, 2, 3, 4].map((n) => t(`seharian.foto${n}`));
-const kampungAlt = [1, 2, 3, 4].map((n) => t(`alt.seharian${n}`));
-const tipe = KAMAR.filter((k) => k.kelompok !== "villa").map((k) => k.nama);
+const cara = [1, 2, 3].map((n, i) => ({ lbl: t(`cara.${n}.label`), nama: L(`cara.${n}.nama`), isi: I(`cara.${n}.isi`), harga: L(`cara.${n}.harga`), img: caraImg[i], alt: t(`alt.cara${n}`), wa: t(waKey[i]) }));
+const tipe = KAMAR.map((k) => ({ nama: k.nama, villa: k.kelompok === "villa" }));
 const telHref = `tel:${TELEPON}`;
 const p2 = t("lokasi.p2").split(TELEPON_TAMPIL);
 const geser = lang === "en" ? "Drag" : "Geser";
+const rapat = lang === "en" ? "/en/meetings/" : "/meetings/";
+const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
 ---
 <Situs
   lang={lang}
@@ -72,48 +76,22 @@ const geser = lang === "en" ? "Drag" : "Geser";
 >
   <Hero slot="hero" lang={lang} judul={t("hero.h1")} sub={t("hero.sub")} gulir={t("hero.gulir")} alt={t("video.label")} posterHp={posterHp} posterDk={posterDk} posterSrc={posterSrc} />
 
-  <!-- Pembuka: satu kalimat yang menyala kata demi kata saat digulir -->
+  <!-- Prolog: dua kalimat yang menyala kata demi kata saat digulir -->
   <div class="pembuka" id="pembuka">
-    <p class="pembuka-lead" data-nyala>{t("pembuka.lead")}</p>
-    <div class="dua" data-muncul>
-      <a class="btn btn-isi btn-wa" href={waLink(pesanWa)} rel="noopener"><span class="btn-tx">{t("penutup.tombol1")}</span></a>
-      <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("penutup.tombol2")}</span></a>
-    </div>
+    <p class="pembuka-lead" data-nyala>{I("pembuka.lead")}</p>
   </div>
 
-  <PetaKawasan lang={lang} />
-
-  <!-- Sambutan -->
-  <section class="sambut cv" aria-labelledby="h-sambut">
-    <div class="teks">
-      <p class="lbl" data-muncul>{t("sambut.label")}</p>
-      <h2 id="h-sambut" data-judul>{t("sambut.judul")}</h2>
-      <p data-muncul>{t("sambut.p1")}</p>
-      <p data-muncul>{t("sambut.p2")}</p>
-    </div>
-    <figure class="f1" data-singkap>
-      <Picture src={sambut1} formats={["avif", "webp"]} widths={[400, 640, 900]} sizes="(min-width: 900px) 34vw, 78vw" quality={45} alt={t("alt.sambut1")} loading="lazy" />
-    </figure>
-    <figure class="f2" data-singkap>
-      <Picture src={sambut2} formats={["avif", "webp"]} widths={[360, 560, 800]} sizes="(min-width: 900px) 28vw, 64vw" quality={45} alt={t("alt.sambut2")} loading="lazy" />
-    </figure>
-  </section>
+  <Cerita t={t} />
 
   <div class="bilik" role="presentation"></div>
 
-  <!-- Berendam -->
+  <PetaKawasan lang={lang} />
+
+  <!-- Cara berendam -->
   <section id="berendam" class="berendam cv" aria-labelledby="h-berendam">
-    <div class="pita-img" data-parallax="7">
-      <picture>
-        <source media="(min-width: 768px)" srcset={(await getImage({ src: berendamDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
-        <source media="(max-width: 767px)" srcset={(await getImage({ src: berendamHp, widths: [480, 720, 1080], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
-        <img src={(await getImage({ src: berendamDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.berendam")} width={berendamDesk.width} height={berendamDesk.height} loading="lazy" decoding="async" />
-      </picture>
-    </div>
     <div class="kepala">
-      <div class="judul-garis"><h2 id="h-berendam" data-judul>{t("berendam.judul")}</h2></div>
-      <p class="pengantar" data-muncul>{t("berendam.pengantar")}</p>
+      <div class="judul-garis"><h2 id="h-berendam" data-judul>{L("berendam.judul")}</h2></div>
+      <p class="pengantar" data-muncul>{I("berendam.pengantar")}</p>
     </div>
     <ol class="empat">
       {berendam.map((b, i) => (
@@ -130,61 +108,41 @@ const geser = lang === "en" ? "Drag" : "Geser";
         {DAY_VISIT.map((d) => (
           <li data-muncul>
             <p class="dv-nama">{d.nama}</p>
-            <p class="dv-harga">{d.harga[lang]}</p>
-            <p>{d.isi[lang]}</p>
+            <p class="dv-harga">{lekat(d.harga[lang])}</p>
+            <p>{rapiIsi(d.isi[lang])}</p>
           </li>
         ))}
       </ul>
     </div>
   </section>
 
-  <!-- Empat kata -->
-  <section class="kata cv" aria-labelledby="h-kata">
-    <div class="kepala">
-      <h2 id="h-kata" data-judul>{t("kata.judul")}</h2>
-      <p data-muncul>{t("kata.p")}</p>
-    </div>
-    <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / 0{kataImg.length}</span></div>
-    <div class="geser" tabindex="0" aria-label={t("kata.judul")} data-kursor={geser}>
-      {kataImg.map((img, i) => (
-        <figure class="kartu-foto">
-          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={kataAlt[i]} loading="lazy" draggable="false" />
-          <figcaption><span class="n">0{i + 1}</span><span>/ 04</span></figcaption>
-        </figure>
-      ))}
-    </div>
-  </section>
-
-  <!-- Menginap -->
+  <!-- Kamar -->
   <section id="menginap" class="menginap cv" aria-labelledby="h-menginap">
     <div class="kepala">
-      <div class="judul-garis"><h2 id="h-menginap" data-judul>{t("menginap.judul")}</h2></div>
-      <p data-muncul>{t("menginap.p")}</p>
+      <div class="judul-garis"><h2 id="h-menginap" data-judul>{L("menginap.judul")}</h2></div>
+      <p data-muncul>{I("menginap.p")}</p>
     </div>
-    <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / {String(turImg.length + 1).padStart(2, "0")}</span></div>
+    <div class="geser-kepala" aria-hidden="true"><span></span><span class="geser-no"><span data-geser-no>01</span> / {String(fotoKamar.length).padStart(2, "0")}</span></div>
     <div class="geser" tabindex="0" aria-label={t("menginap.judul")} data-kursor={geser}>
-      <figure class="kartu-foto">
-        <Picture src={menginapImg} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={t("menginap.foto1")} loading="lazy" draggable="false" />
-        <figcaption><span class="n">01</span><span>{t("menginap.foto1")}</span></figcaption>
-      </figure>
-      {turImg.map((img, i) => (
+      {fotoKamar.map((img, i) => (
         <figure class="kartu-foto">
-          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={45} alt={turCap[i]} loading="lazy" draggable="false" />
-          <figcaption><span class="n">{String(i + 2).padStart(2, "0")}</span><span>{turCap[i]}</span></figcaption>
+          <Picture src={img} formats={["avif", "webp"]} widths={[320, 480, 640, 800]} sizes="(min-width: 1024px) 28vw, (min-width: 640px) 44vw, 78vw" quality={48} alt={capKamar[i]} loading="lazy" draggable="false" />
+          <figcaption><span class="n">{String(i + 1).padStart(2, "0")}</span><span class="cap">{capKamar[i]}</span></figcaption>
         </figure>
       ))}
     </div>
     <div class="aksi" data-muncul>
       <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("menginap.tombol")}</span></a>
-      <a class="panah" href={lang === "en" ? "/en/accommodation/" : "/accommodation/"}>{t("menginap.semua")}</a>
-      <p class="tipe">{tipe.map((x) => <span>{x}</span>)}<span><a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a></span></p>
+      <a class="panah" href={kamarHal}>{t("menginap.semua")}</a>
+      <p class="tipe">{tipe.map((x) => (x.villa ? <span><a href={SIBENTANG_URL} rel="noopener">{lekat(x.nama)}</a></span> : <span>{lekat(x.nama)}</span>))}</p>
     </div>
   </section>
 
-  <!-- Tiga cara datang -->
+  <!-- Cara menginap: harga sebagai akibat cerita -->
   <section id="datang" class="cara cv" aria-labelledby="h-cara">
     <div class="cara-in">
-      <h2 id="h-cara" data-judul>{t("cara.judul")}</h2>
+      <h2 id="h-cara" data-judul>{L("cara.judul")}</h2>
+      <span class="goresan goresan--rumah" aria-hidden="true"></span>
       <div class="cara-grid">
         {cara.map((c) => (
           <article class="kartu" data-muncul>
@@ -197,24 +155,10 @@ const geser = lang === "en" ? "Drag" : "Geser";
           </article>
         ))}
       </div>
-      <p class="catatan">{t("cara.catatan")}</p>
-      <p class="catatan"><a class="panah" href={lang === "en" ? "/en/meetings/" : "/meetings/"}>{t("cara.semua")}</a></p>
-    </div>
-  </section>
-
-  <!-- Seharian -->
-  <section id="seharian" class="kampung cv" aria-labelledby="h-kampung">
-    <div class="kepala">
-      <h2 id="h-kampung" data-judul>{t("seharian.judul")}</h2>
-      <p data-muncul>{t("seharian.p")}</p>
-    </div>
-    <div class="jajar">
-      {kampungImg.map((img, i) => (
-        <figure data-muncul>
-          <div class="jajar-gbr"><Picture src={img} formats={["avif", "webp"]} widths={[240, 400, 600]} sizes="(min-width: 900px) 25vw, 50vw" quality={45} alt={kampungAlt[i]} loading="lazy" /></div>
-          <figcaption>{kampungCap[i]}</figcaption>
-        </figure>
-      ))}
+      <div class="cara-bawah">
+        <p class="catatan">{I("cara.catatan")}</p>
+        <p class="catatan">{I("cara.ruang")} <a class="panah" href={rapat}>{t("cara.semua")}</a></p>
+      </div>
     </div>
   </section>
 
@@ -232,9 +176,9 @@ const geser = lang === "en" ? "Drag" : "Geser";
     </div>
     <div class="kotak" data-muncul>
       <p class="lbl">{t("lokasi.label")}</p>
-      <h2 id="h-lokasi">{t("lokasi.judul")}</h2>
-      <p>{t("lokasi.p1")}</p>
-      <p style="margin-top:12px">{p2[0]}{p2.length > 1 && <><a href={telHref}>{TELEPON_TAMPIL}</a>{p2[1]}</>}</p>
+      <h2 id="h-lokasi">{L("lokasi.judul")}</h2>
+      <p>{I("lokasi.p1")}</p>
+      <p style="margin-top:12px">{rapiIsi(p2[0])}{p2.length > 1 && <><a href={telHref} style="white-space:nowrap">{TELEPON_TAMPIL}</a>{p2[1]}</>}</p>
       <a class="btn" href={MAPS_URL} rel="noopener" style="margin-top:20px"><span class="btn-tx">{t("lokasi.tombol")}</span></a>
     </div>
   </section>
@@ -242,13 +186,13 @@ const geser = lang === "en" ? "Drag" : "Geser";
   <!-- Ulasan -->
   <section class="ulasan cv" aria-labelledby="h-ulasan">
     <div class="ulasan-in">
-      <h2 id="h-ulasan" data-judul>{t("ulasan.judul")}</h2>
+      <h2 id="h-ulasan" data-judul>{L("ulasan.judul")}</h2>
       <div class="angka">
         {ULASAN.map((u) => (
           <div data-muncul>
             <p class="lbl">{u.sumber}</p>
             <p class="skor"><span data-angka={u.nilai}>{u.nilai}</span><small> / {u.dari}</small></p>
-            <p>{u.jumlah} {t("ulasan.kata")} · {u.catatan[lang]}</p>
+            <p>{u.jumlah} {t("ulasan.kata")} · {lekat(u.catatan[lang])}</p>
           </div>
         ))}
       </div>
@@ -259,7 +203,8 @@ const geser = lang === "en" ? "Drag" : "Geser";
 
   <!-- Penutup -->
   <section class="penutup cv" aria-labelledby="h-tutup">
-    <h2 id="h-tutup" data-judul>{t("penutup.judul")}</h2>
+    <span class="goresan goresan--teratai" aria-hidden="true"></span>
+    <h2 id="h-tutup" data-judul>{L("penutup.judul")}</h2>
     <div class="dua" data-muncul>
       <a class="btn btn-isi btn-wa" href={waLink(pesanWa)} rel="noopener"><span class="btn-tx">{t("penutup.tombol1")}</span></a>
       <a class="btn" href={BOOKING_URL} rel="noopener"><span class="btn-tx">{t("penutup.tombol2")}</span></a>

@@ -77,6 +77,7 @@ html.gerak .cv { content-visibility: visible; }
 /* ---------- Header ---------- */
 .hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 20; background: var(--krem); color: var(--tinta); border-bottom: 1px solid var(--garis); transition: transform .7s var(--ease-out), background-color .45s var(--ease-ui), border-color .45s var(--ease-ui), color .45s var(--ease-ui); view-transition-name: header; }
 .hdr.sembunyi { transform: translateY(-101%); }
+html:not(.js) .hdr { position: absolute; }
 .hdr.di-hero { background: transparent; border-color: transparent; color: #fff; }
 .hdr .logo { position: relative; display: block; }
 .hdr .logo .logo-putih { position: absolute; inset: 0; opacity: 0; transition: opacity .45s var(--ease-ui); }
@@ -117,7 +118,23 @@ html.gerak .cv { content-visibility: visible; }
 .menu-in { min-height: 100%; display: flex; flex-direction: column; padding: 0 var(--pad) 40px; }
 .menu-top { display: flex; justify-content: space-between; align-items: center; height: 60px; }
 .menu-top button { background: none; border: 0; color: var(--tinta); font: 500 .75rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; min-height: 44px; cursor: pointer; }
-.menu nav { margin-top: 6vh; display: grid; gap: 4px; }
+.menu-bilik { height: 12px; background-size: 12px 12px; }
+.menu-badan { display: grid; gap: 40px; margin-top: 6vh; }
+.menu nav { display: grid; gap: 4px; align-content: start; }
+.menu-samping { display: none; }
+@media (min-width: 900px) {
+  .menu-badan { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 6vw, 112px); margin-top: 4vh; }
+  .menu-samping { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 2.4vw, 36px); align-items: end; }
+  .menu-foto { margin: 0; aspect-ratio: 2 / 3; overflow: hidden; background: var(--udara); }
+  .menu-foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+}
+.menu-kontak { position: relative; display: grid; gap: 12px; align-content: end; justify-items: start; }
+.menu-kontak > .lbl { color: var(--alam); }
+.menu-kontak dl { margin: 6px 0 0; display: grid; gap: 2px; }
+.menu-kontak dt { color: var(--tinta-2); margin-top: 12px; font-size: .68rem; }
+.menu-kontak dd { margin: 0; max-width: 26ch; }
+.menu-kontak dd a { text-decoration: none; border-bottom: 1px solid var(--garis); }
+.menu-kontak .goresan { width: 56px; margin-top: 18px; }
 .menu nav a { font: 400 clamp(2.4rem, 9vw, 4.5rem)/1.15 var(--serif); text-decoration: none; }
 .menu nav a:hover { color: var(--alam); }
 .menu .kecil { margin-top: auto; padding-top: 32px; display: flex; flex-wrap: wrap; gap: 12px 28px; }
@@ -129,24 +146,21 @@ html.gerak .cv { content-visibility: visible; }
 @media (max-width: 520px) { .dua .btn { flex: 1 1 100%; } }
 
 /* ---------- Pita bilik (anyaman) ---------- */
-.bilik { height: 24px; background: var(--krem) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg fill='%23A1BF36'%3E%3Crect x='0' y='2' width='10' height='3'/%3E%3Crect x='0' y='7' width='10' height='3'/%3E%3Crect x='14' y='0' width='3' height='10'/%3E%3Crect x='19' y='0' width='3' height='10'/%3E%3Crect x='2' y='14' width='3' height='10'/%3E%3Crect x='7' y='14' width='3' height='10'/%3E%3Crect x='12' y='14' width='12' height='3'/%3E%3Crect x='12' y='19' width='12' height='3'/%3E%3C/g%3E%3C/svg%3E") repeat-x center / 24px 24px; }
+/* Pita bilik: anyaman bambu dinding rumah Sunda (Creative Direction 2027). Dipakai di antara
+   babak beranda, di atas footer, di kepala menu, dan di tepi panel zona. */
+:root { --bilik-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg fill='%23A1BF36'%3E%3Crect x='0' y='2' width='10' height='3'/%3E%3Crect x='0' y='7' width='10' height='3'/%3E%3Crect x='14' y='0' width='3' height='10'/%3E%3Crect x='19' y='0' width='3' height='10'/%3E%3Crect x='2' y='14' width='3' height='10'/%3E%3Crect x='7' y='14' width='3' height='10'/%3E%3Crect x='12' y='14' width='12' height='3'/%3E%3Crect x='12' y='19' width='12' height='3'/%3E%3C/g%3E%3C/svg%3E"); }
+.bilik { height: 24px; background: var(--krem) var(--bilik-svg) repeat-x center / 24px 24px; }
 
-/* ---------- Sambutan (asimetris) ---------- */
-.sambut { display: grid; gap: 32px; padding: 0 var(--pad) clamp(72px, 10vw, 140px); max-width: 1280px; margin: 0 auto; }
-.sambut .teks { text-align: center; max-width: 42ch; margin: 0 auto; }
-.sambut .teks h2 { font-size: clamp(2.2rem, 4vw, 3.4rem); margin: 14px 0 22px; }
-.sambut .teks p + p { margin-top: 1em; }
-.sambut figure { margin: 0; }
-.sambut .f1 { width: 100%; }
-.sambut .f2 { width: 62%; margin: -22% 0 0 auto; position: relative; border: 8px solid var(--krem); border-right: 0; border-bottom: 0; }
-.sambut .foto-cap { margin-top: 8px; font-size: .8rem; color: var(--tinta-2); }
-@media (min-width: 900px) {
-  .sambut { grid-template-columns: 1fr 1.1fr .9fr; align-items: start; gap: clamp(32px, 4vw, 72px); }
-  .sambut .teks { grid-column: 1; text-align: left; margin: 64px 0 0; }
-  .sambut .f1 { width: 100%; margin: 0; }
-  .sambut .f2 { width: 100%; margin: 160px 0 0; border: 0; }
-  .sambut figure:last-child img { aspect-ratio: 4/5; object-fit: cover; }
-}
+/* Goresan kampung: empat ilustrasi kuas Katalog versi MOTE (kelapa, kembang, daun teratai,
+   rumah panggung), satu warna, satu per tata letak. Bentuknya topeng, warnanya ikut bidang. */
+.goresan { display: block; background: var(--goresan-warna, var(--alam)); -webkit-mask: var(--goresan-mask) center / contain no-repeat; mask: var(--goresan-mask) center / contain no-repeat; pointer-events: none; }
+.goresan--kelapa { --goresan-mask: url("/pola/goresan-kelapa.webp"); aspect-ratio: 210 / 500; }
+.goresan--bunga { --goresan-mask: url("/pola/goresan-bunga.webp"); aspect-ratio: 442 / 390; }
+.goresan--teratai { --goresan-mask: url("/pola/goresan-teratai.webp"); aspect-ratio: 342 / 384; }
+.goresan--rumah { --goresan-mask: url("/pola/goresan-rumah.webp"); aspect-ratio: 500 / 411; }
+/* goresan "dilukis" dari bawah ke atas saat masuk layar (situs.ts menambah .tergores) */
+html.gerak .goresan { clip-path: inset(100% 0 0 0); transition: clip-path 1.4s var(--ease-out) .15s; }
+html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 
 /* ---------- Pita foto penuh + judul dengan garis rambut ---------- */
 .pita { position: relative; color: var(--krem); }
@@ -181,21 +195,13 @@ html.gerak .cv { content-visibility: visible; }
 .kartu-foto figcaption .n { font-variant-numeric: tabular-nums; }
 .kartu-foto figcaption .n::after { content: ""; display: inline-block; width: 28px; height: 1px; background: currentColor; opacity: .5; margin: 0 0 4px 10px; vertical-align: middle; }
 
-/* ---------- Empat kata ---------- */
-.kata { padding: clamp(72px, 10vw, 140px) 0; }
-.kata .kepala { padding: 0 var(--pad); max-width: 1440px; margin: 0 auto 36px; display: grid; gap: 18px; }
-.kata .kepala h2 { font-size: clamp(2.4rem, 5vw, 4.2rem); }
-.kata .kepala p { max-width: 46ch; color: var(--tinta-2); }
-.kata .geser { scrollbar-color: var(--garis) transparent; }
-@media (min-width: 900px) { .kata .kepala { grid-template-columns: 1.2fr 1fr; align-items: end; } }
-
 /* ---------- Menginap (latar hijau) ---------- */
 .menginap { background: var(--putih); color: var(--tinta); padding: clamp(56px, 8vw, 110px) 0 clamp(64px, 9vw, 120px); }
 .menginap .kepala { padding: 0 var(--pad); max-width: 1440px; margin: 0 auto 40px; display: grid; gap: 20px; }
 .menginap .kepala p { max-width: 44ch; font-size: 1.05rem; }
 @media (min-width: 900px) { .menginap .kepala { grid-template-columns: 1.4fr 1fr; align-items: center; gap: 40px; } }
 .menginap .aksi { text-align: center; margin-top: 44px; padding: 0 var(--pad); }
-.tipe { text-wrap: balance; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin-top: 22px; font-size: .9rem; opacity: .9; }
+.tipe { max-width: 62ch; margin-inline: auto; text-wrap: balance; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; margin-top: 22px; font-size: .9rem; opacity: .9; }
 
 /* ---------- Tiga cara datang (latar Udara) ---------- */
 .cara { background: var(--udara); padding: clamp(64px, 9vw, 120px) var(--pad); }
@@ -212,18 +218,6 @@ html.gerak .cv { content-visibility: visible; }
 .kartu .btn { margin-top: auto; align-self: stretch; }
 .kartu .harga { margin-bottom: 22px; }
 .cara .catatan { margin-top: 22px; font-size: .85rem; color: var(--tinta-2); }
-
-/* ---------- Kampung: jajaran 4 foto tepi-ke-tepi ---------- */
-.kampung { padding: clamp(72px, 10vw, 140px) 0 0; }
-.kampung .kepala { padding: 0 var(--pad); max-width: 1440px; margin: 0 auto 36px; text-align: center; }
-.kampung .kepala h2 { font-size: clamp(2.4rem, 5vw, 4.2rem); margin-bottom: 18px; }
-.kampung .kepala p { max-width: 52ch; margin: 0 auto; color: var(--tinta-2); }
-.jajar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 var(--pad); }
-@media (min-width: 900px) { .jajar { grid-template-columns: repeat(4, 1fr); } }
-.jajar figure { margin: 0; }
-.jajar img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
-.jajar figcaption { font-size: .85rem; padding: 10px 0 0; color: var(--tinta-2); }
-@media (min-width: 900px) { .jajar { padding: 0 var(--pad); gap: 12px; } }
 
 /* ---------- Guntur / lokasi ---------- */
 .guntur { position: relative; margin-top: clamp(72px, 10vw, 140px); }
@@ -247,7 +241,11 @@ html.gerak .cv { content-visibility: visible; }
 .penutup { text-align: center; padding: clamp(72px, 10vw, 130px) var(--pad); }
 .penutup h2 { font-size: clamp(2.2rem, 4.6vw, 3.8rem); max-width: 20ch; margin: 0 auto 30px; }
 .penutup .dua { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-.ftr { background: var(--putih); color: var(--tinta); border-top: 1px solid var(--garis); padding: 56px var(--pad) 32px; font-size: .92rem; }
+.ftr { background: var(--putih); color: var(--tinta); padding: 0 var(--pad) 32px; font-size: .92rem; }
+.ftr-bilik { margin: 0 calc(-1 * var(--pad)) 56px; }
+.ftr-merek { position: relative; }
+.ftr-slogan { margin-top: 18px; font: 400 1.35rem/1.2 var(--serif); color: var(--alam); }
+.ftr-merek .goresan { width: 40px; margin-top: 22px; }
 .ftr-in { max-width: 1440px; margin: 0 auto; display: grid; gap: 32px; }
 .ftr img { height: 64px; width: auto; }
 .ftr ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
@@ -428,3 +426,61 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .jalan + .guntur { margin-top: 0; }
+
+/* ---------- Cerita: satu hari di kampung (beranda) ---------- */
+.cerita { background: var(--krem); }
+.cerita-kepala { position: relative; max-width: 1440px; margin: 0 auto; padding: clamp(64px, 9vw, 128px) var(--pad) clamp(40px, 6vw, 88px); display: grid; gap: 16px; justify-items: start; }
+.cerita-kepala .lbl { color: var(--alam); }
+.cerita-kepala h2 { font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.02; max-width: 14em; text-wrap: balance; padding-right: clamp(56px, 9vw, 120px); }
+.cerita-kepala .goresan { position: absolute; right: var(--pad); bottom: clamp(28px, 5vw, 72px); width: clamp(44px, 6vw, 84px); }
+.babak-daftar { list-style: none; margin: 0; padding: 0; }
+.babak { --bidang: var(--krem); --tinta-babak: var(--tinta); --aksen: var(--alam); --goresan-warna: var(--alam); position: relative; background: var(--bidang); color: var(--tinta-babak); }
+.bidang-alam { --bidang: var(--alam); --tinta-babak: var(--krem); --aksen: var(--udara); --goresan-warna: var(--pohon); }
+.bidang-petang { --bidang: var(--petang); --tinta-babak: var(--krem); --aksen: var(--pohon); --goresan-warna: var(--pohon); }
+.bidang-udara { --bidang: var(--udara); --tinta-babak: var(--petang); --aksen: var(--alam); --goresan-warna: var(--petang); }
+.babak-media { position: relative; margin: 0; overflow: hidden; background: color-mix(in srgb, var(--bidang) 86%, #000); }
+.babak-media img, .babak-media picture, .babak-media video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.babak-teks { position: relative; display: grid; gap: 14px; align-content: center; padding: 0 var(--pad); }
+.babak-waktu { display: flex; align-items: center; gap: 12px; font: 500 .75rem/1.4 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--aksen); }
+.babak-no { font-variant-numeric: tabular-nums; }
+.babak-garis { width: 32px; height: 1px; background: currentColor; opacity: .7; }
+.babak h3 { font-size: clamp(2rem, 3.4vw, 3.3rem); line-height: 1.06; max-width: 12em; text-wrap: balance; }
+.babak-isi { max-width: 40ch; font-size: 1.05rem; line-height: 1.65; text-wrap: pretty; }
+.babak-teks .goresan { width: 56px; margin-top: 10px; }
+.babak-teks .goresan--kelapa { width: 34px; }
+/* foto: tegak, teks di sampingnya, ruang kosong lega */
+.babak--foto { display: grid; gap: 28px; padding-bottom: clamp(64px, 10vw, 120px); }
+.babak--foto .babak-media { aspect-ratio: 4 / 5; }
+/* klip: lebar penuh, teks di bawahnya, klip tidak tertutup apa pun */
+.babak--video { padding-bottom: clamp(56px, 8vw, 104px); }
+.babak--video .babak-media { aspect-ratio: 4 / 5; }
+.babak--video .babak-teks { padding-top: 32px; }
+.babak-video { position: absolute; inset: 0; opacity: 0; transition: opacity .9s var(--ease-ui); }
+.babak-video.main { opacity: 1; }
+@media (min-width: 768px) { .babak--video .babak-media { aspect-ratio: 16 / 9; max-height: 92svh; } }
+@media (min-width: 900px) {
+  .babak--foto { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: center; padding: clamp(72px, 9vw, 128px) var(--pad); }
+  .babak--foto .babak-media { grid-column: 2 / span 5; grid-row: 1; aspect-ratio: 2 / 3; max-height: 88svh; }
+  .babak--foto .babak-teks { grid-column: 8 / span 4; grid-row: 1; padding: 0; }
+  .babak--foto.babak--balik .babak-media { grid-column: 7 / span 5; }
+  .babak--foto.babak--balik .babak-teks { grid-column: 2 / span 4; }
+  .babak--video .babak-teks { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: clamp(32px, 5vw, 96px); max-width: 1440px; margin: 0 auto; padding: clamp(40px, 5vw, 72px) var(--pad) 0; }
+  .babak--video .babak-waktu, .babak--video h3 { grid-column: 1; }
+  .babak--video .babak-isi { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
+}
+.cerita-coda { position: relative; text-align: center; padding: clamp(80px, 11vw, 150px) var(--pad); display: grid; justify-items: center; gap: 18px; }
+.coda-kata { font: 400 clamp(2.6rem, 7vw, 6.2rem)/1 var(--serif); letter-spacing: -.01em; color: var(--alam); text-wrap: balance; }
+.coda-ket { color: var(--tinta-2); max-width: 36ch; text-wrap: balance; }
+
+/* beranda: prolog tanpa tombol, cara menginap, penutup bergoresan */
+.cara-in { position: relative; }
+.cara .goresan { position: absolute; right: 0; top: 0; width: clamp(64px, 8vw, 112px); --goresan-warna: var(--alam); }
+.cara h2 { padding-right: clamp(80px, 10vw, 140px); text-wrap: balance; }
+.cara-bawah { margin-top: 22px; display: grid; gap: 6px; }
+.cara-bawah .catatan { margin-top: 0; max-width: 60ch; }
+.penutup { position: relative; }
+.penutup .goresan { width: 52px; margin: 0 auto 26px; }
+.kartu-foto figcaption .cap { max-width: 34ch; text-wrap: pretty; }
+
+/* rag: paragraf dan butir daftar tanpa kata yatim di peramban yang mendukung */
+p, li, figcaption, dd { text-wrap: pretty; }

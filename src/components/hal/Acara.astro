@@ -4,15 +4,20 @@ import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
 import { ACARA, RUANG_MICE, waLink } from "../../data/content";
+import { lekat } from "../../data/rag";
 
 /* Halaman acara dan perayaan.
    Angkanya ditayangkan penuh, beda dengan tarif kamar. Alasannya paket acara
    itu keputusan yang direncanakan berminggu-minggu dan orang membandingkan
-   penawaran sebelum menghubungi siapa pun. Menyembunyikan angka di sini
-   berarti kalah sebelum ditanya.
+   penawaran sebelum menghubungi siapa pun. Menyembunyikan angka di halaman
+   ini berarti kalah sebelum ditanya.
 
-   Tarifnya dari situs resmi resort, dibaca 13 Agu 2026, dan tidak bertanggal
-   di sumbernya. Catatan konfirmasi ulang di bawah WAJIB tetap ada. */
+   Tarifnya dari flyer resmi KSA 2026 (Data Master bab 05 §5–6, bab 07).
+   Flyer tidak bertanggal masa berlaku. Catatan konfirmasi ulang di bawah
+   WAJIB tetap ada. Harga dan satuannya tidak boleh terpisah di akhir baris. */
+
+/* Versi Inggris memakai format mata uang Inggris: Rp180,000. */
+const rpEn = (s: string) => s.replace(/\./g, ",");
 
 const terbesar = RUANG_MICE[0];
 
@@ -27,10 +32,10 @@ const { lang } = Astro.props;
   path="/events/"
   og="/og/events.jpg"
   title={{ id: 'Paket Pernikahan, Ulang Tahun, dan Acara di Garut | Kampung Sumber Alam', en: 'Weddings, birthdays and event packages in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Sembilan paket acara di Kampung Sumber Alam Garut: Akad Package mulai Rp205.000 per orang, Engagement Package Rp180.000, Birthday Package Rp146.000, Pre Wedding Package Rp800.000. Berikut isi tiap paketnya.', en: 'Nine event packages at Kampung Sumber Alam Garut: Akad Package from Rp205,000 per person, Engagement Package Rp180,000, Birthday Package Rp146,000, Pre Wedding Package Rp800,000. What each package includes.' }}
+  description={{ id: 'Kampung Sumber Alam di Garut menawarkan sembilan pilihan paket acara, termasuk Engagement Package mulai Rp180.000 per orang, Akad Package mulai Rp205.000 per orang, dan Pre Wedding Package Rp800.000 per paket.', en: 'Kampung Sumber Alam in Garut offers nine event package options, including Engagement Package from Rp180,000 per person, Akad Package from Rp205,000 per person and Pre Wedding Package at Rp800,000 per package.' }}
   penanda={{id: "Acara dan perayaan", en: "Events"}}
-  judul={{id: "Lamaran, akad, ulang tahun, dan arisan",
-      en: "Engagements, weddings, birthdays and gatherings",}}
+  judul={{id: lekat("Keluarga Anda berkumpul untuk lamaran, akad, dan ulang tahun"),
+      en: lekat("Your family gathers for engagements, weddings and birthdays"),}}
   foto="/images/taman-kampung.webp"
   w={1200}
   h={501}
@@ -39,17 +44,17 @@ const { lang } = Astro.props;
     {/* ============ PEMBUKA ============ */}
     <section class="pt-16 sm:pt-24">
       <div class={seksi}>
-        <div class="max-w-[56ch] space-y-4 text-tinta-lembut">
+        <div class="max-w-[46ch] space-y-4 text-tinta-lembut">
           <p>
             <T
-              id={`Acara di sini bisa digelar di dalam ruang pertemuan atau di restoran yang menghadap kolam. Ruang terbesar, ${terbesar.nama}, memuat ${terbesar.theater} orang dengan tata letak teater.`}
-              en={`Events run either in a meeting room or in the restaurant facing the pond. The largest room, ${terbesar.nama}, takes ${terbesar.theater} people theatre style.`}
+              id={lekat(`Engagement Package, Akad Package, dan Intimate Wedding Package dapat digelar di ruang pertemuan Intan Dewata atau Purba Dewata, maupun di restoran Kampung Sumber Alam. Ruang terbesar, ${terbesar.nama}, menampung ${terbesar.theater} orang dengan susunan theatre.`)}
+              en={lekat(`Engagement Package, Akad Package and Intimate Wedding Package can be held in the Intan Dewata or Purba Dewata meeting rooms, or in a Kampung Sumber Alam restaurant. The largest room, ${terbesar.nama}, seats ${terbesar.theater} people in theatre style.`)}
             />
           </p>
           <p>
             <T
-              id="Sebagian paket berlangsung di Private Villa Sibentang, yang punya kolam air panas sendiri dan terpisah dari tamu yang menginap."
-              en="Some packages run at Private Villa Sibentang, which has its own hot spring pool, set apart from overnight guests."
+              id={lekat("Social Event at Private Villa Sibentang dan Swimming at Private Villa Sibentang memakai private pool berair panas alami di halaman villa tanpa perlu menginap, dengan pemesanan minimal enam orang. Pre Wedding Package Paket 2 juga memberi akses ke Private Villa Sibentang.")}
+              en={lekat("Social Event at Private Villa Sibentang and Swimming at Private Villa Sibentang use the villa's private pool of natural hot spring water with no overnight stay required, for a minimum of six guests. Pre Wedding Package Paket 2 also includes access to Private Villa Sibentang.")}
             />
           </p>
         </div>
@@ -84,29 +89,25 @@ const { lang } = Astro.props;
                   {a.satuan === "orang" ? (
                     <T id="Mulai" en="From" />
                   ) : (
-                    <T id="Paket" en="Package" />
+                    <T id="Harga paket" en="Package price" />
                   )}
                 </span>
                 <br />
-                <span class="font-display text-3xl font-medium text-hutan">Rp {a.harga}</span>
-                {a.satuan === "orang" && (
-                  <span class="text-tinta-lembut">
-                    {" "}
-                    <T id="per orang" en="per person" />
-                  </span>
-                )}
+                {/* Harga dan satuannya ditulis satu baris kode tanpa spasi biasa,
+                    supaya "Rp180.000 per orang" tidak terpotong di akhir baris. */}
+                <span class="font-display text-3xl font-medium text-hutan"><T id={`Rp${a.harga}`} en={`Rp${rpEn(a.harga)}`} /></span>{a.satuan === "orang" && (<span class="text-tinta-lembut">{"\u00a0"}<T id={"per\u00a0orang"} en={"per\u00a0person"} /></span>)}
               </p>
 
               {a.minimal !== null && (
                 <p class="penanda mt-2">
-                  <T id={`Minimal ${a.minimal} orang`} en={`Minimum ${a.minimal} guests`} />
+                  <T id={`Minimal ${a.minimal}\u00a0orang`} en={`Minimum ${a.minimal}\u00a0guests`} />
                 </p>
               )}
 
               <ul class="mt-5 space-y-1.5 text-[0.9375rem] text-tinta-lembut">
                 {a.termasuk.map((t) => (
                   <li>
-                    <T id={t.id} en={t.en} />
+                    <T id={lekat(t.id)} en={lekat(t.en)} />
                   </li>
                 ))}
               </ul>
@@ -114,13 +115,13 @@ const { lang } = Astro.props;
               {a.tambahan.length > 0 && (
                 <p class="mt-4 text-[0.9375rem] text-tinta-lembut">
                   <span class="penanda">
-                    <T id="Bisa ditambah" en="Can be added" />
+                    <T id="Tambahan berbayar" en="Paid extras" />
                   </span>
                   <br />
                   {a.tambahan.map((t, j) => (
                     <>
                       {j > 0 && <span aria-hidden="true"> · </span>}
-                      <T id={t.id} en={t.en} />
+                      <T id={lekat(t.id)} en={lekat(t.en)} />
                     </>
                   ))}
                 </p>
@@ -128,7 +129,7 @@ const { lang } = Astro.props;
 
               {a.catatan && (
                 <p class="mt-4 text-sm text-tinta-lembut">
-                  <T id={a.catatan.id} en={a.catatan.en} />
+                  <T id={lekat(a.catatan.id)} en={lekat(a.catatan.en)} />
                 </p>
               )}
 
@@ -138,7 +139,7 @@ const { lang } = Astro.props;
                 target="_blank"
                 class="mt-auto inline-block self-start border-b border-hutan pt-6 pb-0.5 text-hutan"
               >
-                <T id="Tanya paket ini" en="Ask about this package" />
+                <T id="Tanyakan paket ini" en="Ask about this package" />
               </a>
             </article>
           ))
@@ -151,10 +152,10 @@ const { lang } = Astro.props;
       <div class={seksi}>
         <div class="max-w-[64ch] border-t border-hutan pt-7">
           <p class="penanda"><T id="Sebelum menghitung anggaran" en="Before you budget" /></p>
-          <p class="mt-4 text-tinta-lembut">
+          <p class="mt-4 max-w-[46ch] text-tinta-lembut">
             <T
-              id="Semua angka di atas berasal dari daftar resmi resort dan dikonfirmasi ulang saat pemesanan. Tanggal acara, jumlah tamu, dan tambahan seperti dekorasi khusus mengubah totalnya. Susunan menu prasmanan dibicarakan terpisah dengan tim acara."
-              en="Every figure above comes from the resort's own published list and is reconfirmed at booking. The date, the head count, and extras such as custom decoration all move the total. Buffet menus are discussed separately with the events team."
+              id={lekat("Harga di atas mengikuti flyer resmi Kampung Sumber Alam tahun 2026 dan akan dikonfirmasi ulang saat pemesanan. Syarat dan ketentuan berlaku. Total biaya dapat berubah mengikuti tanggal acara, jumlah tamu, dan tambahan berbayar seperti dekorasi, MC, atau foto yang belum termasuk dalam paket. Rincian menu prasmanan dapat ditanyakan langsung kepada tim Kampung Sumber Alam melalui WhatsApp.")}
+              en={lekat("Prices above follow the official 2026 Kampung Sumber Alam flyers and are reconfirmed at booking. Terms and conditions apply. The total can change with the event date, the number of guests and paid extras not covered by the package, such as decoration, an MC or photography. Buffet menu details can be requested directly from the Kampung Sumber Alam team on WhatsApp.")}
             />
           </p>
           <a
@@ -162,7 +163,7 @@ const { lang } = Astro.props;
             rel="noopener"
             target="_blank"
             class="btn btn-isi btn-wa mt-8"
-          ><span class="btn-tx"><T id="Bicara dengan tim acara" en="Talk to the events team" /></span>
+          ><span class="btn-tx"><T id="Tanyakan paket melalui WhatsApp" en="Ask about packages on WhatsApp" /></span>
           </a>
         </div>
       </div>

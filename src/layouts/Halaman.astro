@@ -34,6 +34,9 @@ const W = [480, 720, 960, 1280, 1600].filter((x) => x <= m.default.width);
 const avif = await getImage({ src: m.default, widths: W, format: "avif", quality: 40 });
 const ukuran = `(max-width: 767px) max(100vw, ${Math.ceil((62 * w) / h)}vh), 100vw`;
 const webp = await getImage({ src: m.default, widths: W, format: "webp", quality: 65 });
+/* satu goresan kampung per halaman (Creative Direction 2027: satu warna, satu per tata letak) */
+const GORESAN: Record<string, string> = { "/about/": "kelapa", "/accommodation/": "rumah", "/meetings/": "bunga", "/events/": "bunga", "/gallery/": "teratai", "/location/": "kelapa" };
+const goresan = GORESAN[path] ?? "teratai";
 ---
 <Situs lang={lang} T={T} title={title[lang]} description={description[lang]} waPesan={pesan} path={path} og={og} noindex={noindex}>
   <section class="hal-hero" slot="hero" aria-labelledby="h-hal" data-hero data-parallax="7">
@@ -47,5 +50,6 @@ const webp = await getImage({ src: m.default, widths: W, format: "webp", quality
       <h1 id="h-hal" data-judul>{judul[lang]}</h1>
     </div>
   </section>
-  <div class="hal"><slot /></div>
+  <div class="bilik hal-bilik" role="presentation"></div>
+  <div class="hal"><span class:list={["goresan", `goresan--${goresan}`, "hal-goresan"]} aria-hidden="true"></span><slot /></div>
 </Situs>

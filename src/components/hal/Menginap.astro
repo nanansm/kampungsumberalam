@@ -4,6 +4,7 @@ import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
 import { KAMAR, TERMASUK_KAMAR, THERMAL_RESET, BOOKING_URL, SIBENTANG_URL, waLink } from "../../data/content";
+import { lekat } from "../../data/rag";
 
 /* Halaman menginap. Beranda cuma mengelompokkan kamar menurut jumlah orang
    karena itu yang dipakai tamu untuk menyaring. Di sini urutannya menurut
@@ -11,19 +12,25 @@ import { KAMAR, TERMASUK_KAMAR, THERMAL_RESET, BOOKING_URL, SIBENTANG_URL, waLin
    orang dan sekarang mau tahu bentuk kamarnya.
 
    Harga = Publish Rate dari Data Master KSA (bab 03), ditulis "mulai" karena
-   KSA memakai dynamic pricing. Harga di DIP bisa beda per tanggal. */
+   KSA memakai dynamic pricing. Harga di DIP bisa beda per tanggal.
+   Halaman menampilkan 14 nama unit (bab 03 §1), jadi teks menyebut 14 tipe.
+   Villa Sibentang ada di dalam kawasan (zona 21, ±130 m dari Lobby) dan
+   tidak diberi harga di sini (bab 09 §9.3). */
+
+/* Versi Inggris memakai format mata uang Inggris: Rp1,189,000. */
+const rpEn = (s: string) => s.replace(/\./g, ",");
 
 const kelompok = [
   {
     kunci: "bungalow" as const,
     penanda: { id: "Bungalow", en: "Bungalows" },
     judul: {
-      id: "Rumah kayu satu sampai dua lantai, berdiri di atas kolam.",
-      en: "Timber houses of one or two storeys, standing over the ponds.",
+      id: "Kawung dan empat tipe bungalow menampung dua sampai empat orang per unit.",
+      en: "Kawung and four bungalow types sleep two to four guests per unit.",
     },
     teks: {
-      id: "Lima tipe, 60 unit, semuanya beratap ijuk. Yang membedakan cuma jumlah lantai, jumlah orang, dan jarak jalan kaki ke lobi.",
-      en: "Five types, 60 units, all thatched in palm fibre. What separates them is the number of storeys, the head count, and the walk back to the lobby.",
+      id: "Kawung, Pondok Kalapa, dan Bungalow 1-14 berjarak ±60 sampai ±100 m dari Lobby, dekat Kolam Renang Tasik Madu dan Kamar Rendam. Bungalow Siceeh berada di area belakang, ±250 m dari Lobby. Bungalow Arileu menampung empat orang. Lantai bawahnya berupa ruang lesehan.",
+      en: "Kawung, Pondok Kalapa and Bungalow 1-14 are ±60 to ±100 m from the Lobby, close to Kolam Renang Tasik Madu and the Kamar Rendam. Bungalow Siceeh is in the rear area, ±250 m from the Lobby. Bungalow Arileu sleeps four. Its ground floor is a floor-seating lounge.",
     },
     foto: "/images/bungalow-interior.webp",
     w: 900,
@@ -34,12 +41,12 @@ const kelompok = [
     kunci: "suite" as const,
     penanda: { id: "Suite", en: "Suites" },
     judul: {
-      id: "Lima tipe suite untuk yang mau berendam tanpa keluar kamar.",
-      en: "Five suite types for guests who want to soak without leaving the room.",
+      id: "Lima tipe suite memiliki private whirlpool atau private pool sendiri.",
+      en: "Each of the five suite types has its own private whirlpool or private pool.",
     },
     teks: {
-      id: "Suite Couple, Suite Room, Suite Arileu, dan Junior Suite punya private whirlpool, untuk empat orang. Deluxe Suite punya tiga kamar tidur, private pool, dan pendopo, untuk enam orang.",
-      en: "Suite Couple, Suite Room, Suite Arileu and Junior Suite each have a private whirlpool and sleep four. The Deluxe Suite has three bedrooms, a private pool and a pendopo, and sleeps six.",
+      id: "Suite Couple, Suite Room, Suite Arileu, dan Junior Suite menampung empat orang, dengan satu kamar privat di lantai bawah dan satu kamar terbuka di lantai atas. Deluxe Suite menampung enam orang dalam tiga kamar tidur privat dan dilengkapi private pool serta pendopo.",
+      en: "Suite Couple, Suite Room, Suite Arileu and Junior Suite sleep four, with a private bedroom downstairs and an open bedroom upstairs. Deluxe Suite sleeps six in three private bedrooms and comes with a private pool and a pendopo, an open-sided pavilion.",
     },
     foto: "/images/suite-ranjang.webp",
     w: 900,
@@ -50,23 +57,23 @@ const kelompok = [
     kunci: "rombongan" as const,
     penanda: { id: "Rombongan", en: "Groups" },
     judul: {
-      id: "Babakan Siluhur, satu pemesanan untuk dua belas sampai delapan belas orang.",
-      en: "Babakan Siluhur, one booking for twelve to eighteen people.",
+      id: "Babakan Siluhur menampung 12 sampai 18 orang dalam satu kompleks.",
+      en: "Babakan Siluhur houses 12 to 18 guests in a single compound.",
     },
     teks: {
-      id: "Dua penginapan yang berdiri terpisah dari blok kamar lain, masing-masing dengan kolam air panas sendiri. Dipakai rombongan keluarga besar dan kantor yang tidak mau berbagi kolam dengan tamu lain.",
-      en: "Two lodgings set apart from the other room blocks, each with its own hot spring pool. Extended families and office groups take them when they would rather not share a pool with other guests.",
+      id: "Babakan Siluhur 1 terdiri atas tiga bungalow untuk 18 orang, sedangkan Babakan Siluhur 2 terdiri atas dua bungalow berhadapan untuk 12 orang. Kedua kompleks berada di area belakang, ±250 m dari Lobby, dan dilengkapi private whirlpool, gazebo, serta pendopo. Keluarga besar dapat memesannya untuk Siluhur Private Escape, sedangkan kantor dapat memakainya untuk Siluhur Private Meeting.",
+      en: "Babakan Siluhur 1 has three bungalows for 18 guests, and Babakan Siluhur 2 has two facing bungalows for 12. Both compounds sit in the rear area, ±250 m from the Lobby, with a private whirlpool, a gazebo and a pendopo. Extended families can book one for Siluhur Private Escape, and companies can use one for Siluhur Private Meeting.",
     },
     foto: "/images/grotto-privat.webp",
     w: 819,
     h: 546,
-    alt: "Kolam air panas pribadi berdinding batu di Babakan Siluhur",
+    alt: "Kolam air panas pribadi berdinding batu",
   },
 ];
 
 const pendukung = [
   { foto: "/images/kamar-twin.webp", w: 1200, h: 675, alt: "Kamar dengan dua tempat tidur menghadap taman" },
-  { foto: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar, ditemani lilin" },
+  { foto: "/images/bak-rendam.webp", w: 819, h: 544, alt: "Bak rendam air panas alami di dalam kamar dengan lilin di tepinya" },
   { foto: "/images/suite-gazebo.webp", w: 900, h: 600, alt: "Gazebo kayu di samping kolam pribadi suite" },
   { foto: "/images/kolam-utama-tegak.webp", w: 675, h: 900, alt: "Kolam renang utama Kampung Sumber Alam dilihat dari tepi" },
 ];
@@ -84,10 +91,10 @@ const { lang } = Astro.props;
   path="/accommodation/"
   og="/og/accommodation.jpg"
   title={{ id: 'Bungalow dan Suite Air Panas Alami di Garut | Kampung Sumber Alam', en: 'Bungalows and suites with natural hot spring water in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Empat belas tipe kamar di Kampung Sumber Alam, dari bungalow untuk berdua sampai Babakan Siluhur untuk delapan belas orang. Semuanya dialiri air panas alami Gunung Guntur.', en: 'Fourteen room types at Kampung Sumber Alam, from bungalows for two to Babakan Siluhur for eighteen. Every one runs on natural hot spring water from Mount Guntur.' }}
+  description={{ id: 'Kampung Sumber Alam memiliki 14 tipe kamar untuk dua sampai 18 orang. Setiap kamar dilengkapi bak rendam berisi air panas alami Gunung Guntur.', en: 'Kampung Sumber Alam offers 14 room types for two to 18 guests. Every room has a soaking tub filled with natural hot spring water from Mount Guntur.' }}
   penanda={{id: "Menginap", en: "Stay"}}
-  judul={{id: "Empat belas tipe kamar, semuanya berair panas alami",
-      en: "Fourteen room types, all on hot spring water",}}
+  judul={{id: lekat("Anda dapat berendam air panas alami Gunung Guntur tanpa keluar kamar"),
+      en: lekat("Soak in Mount Guntur's natural hot spring water without leaving your room"),}}
   foto="/images/menginap-balong.jpg"
   w={1600}
   h={1200}
@@ -96,17 +103,17 @@ const { lang } = Astro.props;
     {/* ============ PEMBUKA ============ */}
     <section class="pt-16 sm:pt-24">
       <div class={seksi}>
-        <div class="max-w-[56ch] space-y-4 text-tinta-lembut">
+        <div class="max-w-[46ch] space-y-4 text-tinta-lembut">
           <p>
             <T
-              id="Tidak ada kamar yang cuma dapat air panas lewat kolam umum. Tiap unit punya bak rendam yang dialiri air panas alami dari Gunung Guntur, jadi berendam tidak perlu menunggu pagi."
-              en="No room here gets its hot water only through a shared pool. Every unit has a soaking tub fed with natural hot spring water from Mount Guntur, so a soak never means waiting for morning."
+              id={lekat("Keran khusus di setiap kamar mandi mengalirkan air panas alami dari Gunung Guntur ke bak rendam. Anda dapat berendam pada malam hari, lalu berendam sekali lagi pada pagi hari sebelum check-out pukul\u00a012.00.")}
+              en={lekat("A dedicated tap in every bathroom runs natural hot spring water from Mount Guntur into the soaking tub. You can soak at night, then once more in the morning before check-out at\u00a0noon.")}
             />
           </p>
           <p>
             <T
-              id="Kapasitasnya mulai dari dua orang sampai delapan belas orang dalam satu pemesanan. Villa Sibentang dikelola manajemen yang sama tapi dijual di situsnya sendiri."
-              en="Capacity runs from two people to eighteen under a single booking. Villa Sibentang is run by the same management but sold on its own site."
+              id={lekat("Kampung Sumber Alam memiliki 80 kamar dalam 14 tipe. Satu pemesanan dapat menampung dua sampai 18 orang, dan jalan setapak di antara taman dan balong menghubungkan satu bungalow dengan bungalow lain. Villa Sibentang berada di kawasan yang sama dan memiliki situs sendiri.")}
+              en={lekat("Kampung Sumber Alam has 80 rooms across 14 types. A single booking can hold two to 18 guests, and footpaths between gardens and fish ponds link one bungalow to the next. Villa Sibentang stands within the same grounds and has its own website.")}
             />
           </p>
         </div>
@@ -134,10 +141,10 @@ const { lang } = Astro.props;
               <div>
                 <p class="penanda"><T id={g.penanda.id} en={g.penanda.en} /></p>
                 <h2 class={`${judulSeksi} mt-4`}>
-                  <T id={g.judul.id} en={g.judul.en} />
+                  <T id={lekat(g.judul.id)} en={lekat(g.judul.en)} />
                 </h2>
-                <p class="mt-5 max-w-[52ch] text-tinta-lembut">
-                  <T id={g.teks.id} en={g.teks.en} />
+                <p class="mt-5 max-w-[46ch] text-tinta-lembut">
+                  <T id={lekat(g.teks.id)} en={lekat(g.teks.en)} />
                 </p>
 
                 <ul class="mt-9 border-t border-garis">
@@ -150,15 +157,15 @@ const { lang } = Astro.props;
                         </span>
                       </div>
                       <p class="mt-1 text-[0.9375rem]">
-                        <span class="text-tinta-lembut">{k.kelas} · {k.unit} unit · </span>
-                        <span class="tabular-nums"><T id={`mulai Rp${k.harga.weekday}`} en={`from Rp${k.harga.weekday}`} /></span>
+                        <span class="text-tinta-lembut">{k.kelas} · <T id={`${k.unit}\u00a0unit`} en={`${k.unit}\u00a0${k.unit === 1 ? "unit" : "units"}`} /> · </span>
+                        <span class="tabular-nums"><T id={`mulai\u00a0Rp${k.harga.weekday}`} en={`from\u00a0Rp${rpEn(k.harga.weekday)}`} /></span>
                       </p>
                       {k.fakta.length > 0 && (
                         <p class="mt-1.5 text-[0.9375rem] text-tinta-lembut">
                           {k.fakta.map((f, j) => (
                             <>
                               {j > 0 && <span aria-hidden="true"> · </span>}
-                              <T id={f.id} en={f.en} />
+                              <T id={lekat(f.id)} en={lekat(f.en)} />
                             </>
                           ))}
                         </p>
@@ -199,14 +206,14 @@ const { lang } = Astro.props;
           <p class="penanda"><T id="Villa" en="Villa" /></p>
           <h2 class={`${judulSeksi} mt-4`}>
             <T
-              id="Private Villa Sibentang berdiri di lahannya sendiri."
-              en="Private Villa Sibentang sits on its own grounds."
+              id={lekat("Setiap Villa Sibentang memiliki private pool berair panas alami di halamannya.")}
+              en={lekat("Every Villa Sibentang has a private pool of natural hot spring water in its own yard.")}
             />
           </h2>
-          <p class="mt-5 max-w-[52ch] text-tinta-lembut">
+          <p class="mt-5 max-w-[46ch] text-tinta-lembut">
             <T
-              id="Sembilan villa, satu kamar dan dua kamar, semuanya dengan private pool berair panas alami. Di villa ini KSA menjalankan Sibentang Thermal Reset Journey, rangkaian menginap untuk pasangan."
-              en="Nine villas, one bedroom and two bedrooms, each with a private pool of natural hot spring water. This is where KSA runs the Sibentang Thermal Reset Journey, a stay designed for couples."
+              id={lekat("Villa Sibentang terdiri atas empat villa satu kamar tidur (1 BR) dan lima villa dua kamar tidur (2 BR) di dalam kawasan Kampung Sumber Alam, ±130 m dari Lobby. Di villa inilah Sibentang Thermal Reset Journey berlangsung, rangkaian menginap wellness yang dirancang untuk pasangan.")}
+              en={lekat("Villa Sibentang has four one-bedroom (1 BR) and five two-bedroom (2 BR) villas inside Kampung Sumber Alam, ±130 m from the Lobby. These villas host the Sibentang Thermal Reset Journey, a wellness stay designed for couples.")}
             />
           </p>
           <ul class="mt-8 border-t border-garis">
@@ -219,7 +226,7 @@ const { lang } = Astro.props;
                       <T id={`${k.pax} orang`} en={`${k.pax} guests`} />
                     </span>
                   </div>
-                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · {k.unit} villa · </span><T id="harga di situs Villa Sibentang" en="rates on the Villa Sibentang site" /></p>
+                  <p class="mt-1 text-[0.9375rem]"><span class="text-tinta-lembut">{k.kelas} · <T id={`${k.unit}\u00a0villa`} en={`${k.unit}\u00a0villas`} /> · </span><T id={lekat("harga tersedia di situs Villa Sibentang")} en={lekat("rates on the Villa Sibentang website")} /></p>
                 </li>
               ))
             }
@@ -232,8 +239,9 @@ const { lang } = Astro.props;
                   <h3 class="font-display text-lg font-medium">{r.nama}</h3>
                   <span class="penanda shrink-0">{r.durasi}</span>
                 </div>
-                <p class="mt-1 text-[0.9375rem] italic text-tinta-lembut">{r.janji}</p>
-                <p class="mt-1 text-[0.9375rem] text-tinta-lembut"><T id={r.isi.id} en={r.isi.en} /></p>
+                {/* arahan CD 20 Nov 2026: kata "sanctuary" tidak tampil di situs, jadi janji resmi yang memuatnya tidak ditampilkan */}
+                {!/sanctuary/i.test(r.janji) && <p class="mt-1 max-w-[46ch] text-[0.9375rem] italic text-tinta-lembut">{r.janji}</p>}
+                <p class="mt-1 max-w-[46ch] text-[0.9375rem] text-tinta-lembut"><T id={lekat(r.isi.id)} en={lekat(r.isi.en)} /></p>
               </li>
             ))}
           </ul>
@@ -258,23 +266,23 @@ const { lang } = Astro.props;
           <p class="penanda"><T id="Tarif" en="Rates" /></p>
           <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
             <T
-              id="Harga di atas adalah harga weekday. Isinya beda untuk weekday dan weekend."
-              en="Prices above are weekday rates. What is included differs on weekdays and weekends."
+              id="Harga di atas berlaku untuk check-in Minggu sampai Jumat."
+              en="Prices above apply to check-in from Sunday to Friday."
             />
           </h2>
-          <p class="mt-5 max-w-[54ch] text-tinta-lembut">
+          <p class="mt-5 max-w-[46ch] text-tinta-lembut">
             <T
-              id="Harga resmi (Publish Rate) per kamar per malam, sudah termasuk pajak dan pelayanan. Harga mengikuti tanggal, jadi angka pasti muncul di halaman pemesanan setelah tanggal dipilih."
-              en="Official prices (Publish Rate) per room per night, tax and service included. Prices follow the date, so the exact figure appears on the booking page once dates are picked."
+              id="Harga tersebut adalah Publish Rate, yaitu harga resmi per kamar per malam yang sudah termasuk pajak dan pelayanan. Tarif harian dapat berbeda. Kampung Sumber Alam menyesuaikan tarif mengikuti tanggal, musim, dan ketersediaan kamar, sehingga angka pastinya baru tampil di halaman pemesanan setelah Anda memilih tanggal."
+              en="These figures are the Publish Rate, the official price per room per night with tax and service included. Daily rates can differ. Kampung Sumber Alam adjusts them by date, season and room availability, so the exact figure only appears on the booking page once you choose your dates."
             />
           </p>
-          <ul class="mt-5 max-w-[60ch] space-y-2 text-[0.9375rem] text-tinta-lembut">
-            <li><T id={TERMASUK_KAMAR.weekday.id} en={TERMASUK_KAMAR.weekday.en} /></li>
-            <li><T id={TERMASUK_KAMAR.weekend.id} en={TERMASUK_KAMAR.weekend.en} /></li>
+          <ul class="mt-5 max-w-[46ch] space-y-2 text-[0.9375rem] text-tinta-lembut">
+            <li><T id={lekat(TERMASUK_KAMAR.weekday.id)} en={lekat(TERMASUK_KAMAR.weekday.en)} /></li>
+            <li><T id={lekat(TERMASUK_KAMAR.weekend.id)} en={lekat(TERMASUK_KAMAR.weekend.en)} /></li>
           </ul>
           <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
             <a href={BOOKING_URL} rel="noopener" class="btn btn-isi"><span class="btn-tx"><T id="Cek kamar dan tanggal" en="Check rooms and dates" /></span></a>
-            <a href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")} rel="noopener" target="_blank" class="btn btn-wa"><span class="btn-tx"><T id="Tanya lewat WhatsApp" en="Ask on WhatsApp" /></span></a>
+            <a href={waLink("Halo, saya mau tanya ketersediaan kamar di Kampung Sumber Alam.")} rel="noopener" target="_blank" class="btn btn-wa"><span class="btn-tx"><T id="Tanyakan melalui WhatsApp" en="Ask on WhatsApp" /></span></a>
           </div>
         </div>
       </div>

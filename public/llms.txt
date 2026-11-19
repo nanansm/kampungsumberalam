@@ -2,7 +2,7 @@
 
 > Resort air panas alami di Cipanas, Tarogong Kaler, Garut, Jawa Barat.
 > Sundanese Thermal Escape Village: kampung Sunda dengan bungalow kayu beratap ijuk di atas balong (kolam ikan).
-> Air panas alami dari Gunung Guntur dialirkan ke bak rendam setiap kamar.
+> Air panas alami dari Gunung Guntur dialirkan lewat keran khusus ke bak rendam di kamar mandi setiap bungalow.
 
 ## Halaman
 - Beranda (dengan peta kawasan interaktif 21 zona): https://kampungsumberalam.com/
@@ -32,7 +32,7 @@ Koordinat: -7.1785, 107.8736. Kaki Gunung Guntur sekitar 15 menit dari resort.
 
 ## Kamar (Publish Rate per kamar per malam, weekday / weekend, sudah termasuk pajak dan pelayanan)
 Weekday = check-in Minggu sampai Jumat. Weekend = check-in Sabtu dan hari libur.
-KSA memakai dynamic pricing: harga di booking engine bisa berbeda per tanggal.
+Kampung Sumber Alam memakai dynamic pricing: harga di booking engine bisa berbeda per tanggal.
 - Kawung (Thermal Studio), 10 unit, 2 dewasa: Rp1.189.000 / Rp1.989.000
 - Pondok Kalapa (Thermal Bungalow), 4 unit, 2 dewasa: Rp1.489.000 / Rp2.239.000
 - Bungalow 1-14 (Thermal Bungalow), 14 unit, 2 dewasa: Rp1.489.000 / Rp2.239.000

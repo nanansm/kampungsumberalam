@@ -4,43 +4,47 @@ import Gbr from "../Gbr.astro";
 
 import T from "../T.astro";
 import { NAMA, RESTORAN, SPA, MUSIK, ULASAN } from "../../data/content";
+import { lekat } from "../../data/rag";
 
-/* Halaman tentang.
-   Sumbernya halaman ABOUT US situs lama (versi Inggris) dan paragraf
-   arsitektur berbahasa Indonesia di halaman yang sama, dibaca 13 Agu 2026.
-
-   Tiga prinsip Rest, Recover, Rejuvenate dan nama kampanye Sundanese Thermal
-   Escape Village adalah rumusan resort sendiri, bukan karangan halaman
-   ini. Kata "sanctuary" TIDAK dipakai sampai program Bungalow Siceeh
-   lengkap (Data Master KSA bab 01 §4.6, rapat 6 Nov 2026). Keduanya dikutip apa adanya karena itu posisi merek yang dipilih
-   klien. Prosa jualan di sekelilingnya dipangkas, faktanya dipertahankan. */
+/* Halaman tentang. Ragam formal, sapaan "Anda".
+   Sumber satu-satunya: Data Master KSA FINAL (9 Nov 2026).
+   - Balong dan warga: bab 09 §9.6 (kutipan Pak Uli yang boleh dipakai).
+   - Asal air, keramahan Sunda, visi, arti Rest/Recover/Rejuvenate: bab 01 §5
+     (bunyi situs resmi). Versi Inggris tiga prinsip dikutip apa adanya.
+   - Empat batas: bab 00 §4. Live music: bab 03 §2 (Publish Rate check-in Sabtu).
+   Kata "sanctuary" TIDAK dipakai sampai program Bungalow Siceeh lengkap
+   (bab 01 §4.6). */
 
 const prinsip = [
   {
     nama: "Rest",
     teks: {
-      id: "Berhenti dulu dari yang biasa dikejar tiap hari.",
-      en: "A pause from whatever the week has been demanding.",
+      id: "Anda mendapat ruang untuk jeda dan menarik napas, jauh dari tuntutan sehari-hari.",
+      en: "Creating space to pause, breathe, and step away from the demands of daily life.",
     },
   },
   {
     nama: "Recover",
     teks: {
-      id: "Air panas alami dan pelayanan yang tidak dibuat-buat mengembalikan badan.",
-      en: "Natural hot water and unforced service to bring the body back.",
+      id: "Kehangatan air panas alami dan keramahan yang tulus memulihkan badan sekaligus pikiran.",
+      en: "Embracing the natural warmth of our thermal springs and the comfort of genuine hospitality to restore both body and mind.",
     },
   },
   {
     nama: "Rejuvenate",
     teks: {
-      id: "Pulang dengan tenaga dan kepala yang lebih terang.",
-      en: "Leaving with energy back and a clearer head.",
+      id: "Anda pulang dengan tenaga baru, pikiran yang lebih jernih, dan kenangan yang bertahan lama setelah masa menginap usai.",
+      en: "Leaving with renewed energy, clearer thoughts, and memories that continue long after your stay.",
     },
   },
 ];
 
 const tripadvisor = ULASAN.find((u) => u.sumber === "Tripadvisor")!;
 const gmaps = ULASAN.find((u) => u.sumber === "Google Maps")!;
+/* Versi Inggris memakai format angka Inggris: 4.5 dan 9,902. */
+const nilaiEn = (s: string) => s.replace(",", ".");
+const jumlahEn = (s: string) => s.replace(/\./g, ",");
+const WS = "Wilujeng\u00a0Sumping";
 
 const judulSeksi = "judul-seksi";
 const seksi = "seksi";
@@ -53,14 +57,14 @@ const { lang } = Astro.props;
   path="/about/"
   og="/og/about.jpg"
   title={{ id: 'Tentang Kampung Sumber Alam, Resort Air Panas Sunda di Garut | Kampung Sumber Alam', en: 'About Kampung Sumber Alam, a Sundanese hot spring resort in Garut | Kampung Sumber Alam' }}
-  description={{ id: 'Kampung Sumber Alam menata bungalow beratap ijuk di atas balong dengan gaya kampung Sunda Cipanas tempo dulu, dialiri air panas alami Gunung Guntur di Tarogong Kaler, Garut.', en: 'Thatched bungalows over fish ponds, laid out like the old Cipanas village and fed by natural hot spring water from Mount Guntur in Tarogong Kaler, Garut.' }}
+  description={{ id: 'Kampung Sumber Alam adalah resort bergaya kampung Sunda di Cipanas, Garut, yang mendirikan bungalownya di atas balong dan mengalirkan air panas alami Gunung Guntur ke setiap kamar.', en: 'Kampung Sumber Alam is a Sundanese village-style resort in Cipanas, Garut, with timber bungalows built over fish ponds and natural hot spring water from Mount Guntur in every room.' }}
   penanda={{id: "Tentang", en: "About"}}
-  judul={{id: "Bentuk kampungnya lebih dulu ada, kamarnya menyesuaikan",
-      en: "The village came first, the rooms followed",}}
+  judul={{id: lekat("Anda berendam air panas alami Gunung Guntur di kampung Sunda"),
+      en: lekat("Soak in Mount Guntur's natural hot springs in a Sundanese village"),}}
   foto="/images/pandang-kolam.webp"
   w={1000}
   h={1250}
-  alt="Tamu memandang kolam teratai dari dalam pavilyun kayu"
+  alt="Tamu memandang kolam teratai dari dalam paviliun kayu"
 >
     {/* ============ CERITA ============ */}
     <section class="pt-16 sm:pt-24">
@@ -68,27 +72,27 @@ const { lang } = Astro.props;
         <p class="penanda"><T id="Cerita" en="Our story" /></p>
         <h2 class={`${judulSeksi} mt-4 max-w-[24ch]`}>
           <T
-            id="Bangunan panggung di atas balong, beratap ijuk, dengan teras ngapung."
-            en="Stilt houses over the fish ponds, thatched in palm fibre, with terraces hanging over the water."
+            id="Bungalow berdiri di atas balong, sebutan orang Sunda untuk kolam ikan."
+            en="The bungalows stand over the balong, the Sundanese word for a fish pond."
           />
         </h2>
-        <div class="mt-7 max-w-[58ch] space-y-4 text-tinta-lembut">
+        <div class="mt-7 max-w-[46ch] space-y-4 text-tinta-lembut">
           <p>
             <T
-              id={`${NAMA} menata bangunannya mengikuti bentuk Kampung Cipanas tempo dulu. Rumah panggung berdiri di atas kolam ikan, atapnya ijuk, terasnya menggantung di atas air, dan jalan setapaknya batu. Susunan itu yang dipilih lebih dulu, dan kamar tamu menyesuaikan bentuknya.`}
-              en={`${NAMA} lays out its buildings after the shape of the old Cipanas village. Stilt houses stand over the fish ponds, roofed in palm fibre, their terraces hanging over the water, the paths laid in stone. That arrangement came first, and the guest rooms were fitted into it.`}
+              id={lekat(`Sejak awal, ${NAMA} mendirikan bangunannya di atas balong agar kolam-kolam ikan itu tetap terpelihara. Warga sekitar masih memakai air balong tersebut untuk kolam ikan mereka, sehingga tim ${NAMA} memberi tahu warga lebih dulu setiap kali ada kolam yang akan dikuras. Jalan setapak menghubungkan satu bungalow dengan bungalow lain.`)}
+              en={lekat(`From the start, ${NAMA} has built over the balong so that the fish ponds are kept. Neighbours still use water from these ponds for their own fish ponds, so the ${NAMA} team lets them know before any pond is drained. Footpaths link one bungalow to the next.`)}
             />
           </p>
           <p>
             <T
-              id="Mata air panasnya sendiri sudah mengalir jauh sebelum ada resort di sini. Air itu turun dari kawasan vulkanik Gunung Guntur, dan sampai sekarang dia yang menentukan bentuk hampir semua yang ditawarkan di sini, dari bak rendam di kamar sampai kolam batu di halaman."
-              en="The springs themselves ran here long before any resort did. The water comes down off the volcanic ground of Mount Guntur, and it still decides the shape of nearly everything on offer, from the tub in the room to the stone pool in the yard."
+              id={lekat(`Air panas di ${NAMA} datang dari Gunung Guntur. Di kaki gunung itu, mata air panas sudah mengalir dari generasi ke generasi. Keran khusus di setiap kamar mandi mengalirkan air tersebut ke bak rendam, dan air panas yang sama mengisi Kolam Renang Tasik Madu di belakang Lobby serta bilik-bilik Kamar Rendam.`)}
+              en={lekat(`The natural hot water at ${NAMA} comes from Mount Guntur, where thermal springs have flowed at the foothills for generations. A dedicated tap in every bathroom runs it into the soaking tub, and the same hot water fills Kolam Renang Tasik Madu behind the Lobby and the private soaking rooms of Kamar Rendam.`)}
             />
           </p>
           <p>
             <T
-              id={`Resort ini menyebut dirinya Sundanese Thermal Escape Village: kampung Sunda tempat orang lari sejenak dari rutinitas kota untuk berendam air panas alami. Kampungnya tetap enak ditinggali bersama orang lain: ${MUSIK} main langsung, ${RESTORAN} menghadap kolam, dan ${SPA} buka di dalam area yang sama.`}
-              en={`The resort calls itself a Sundanese Thermal Escape Village: a Sundanese village where people slip away from city routine to soak in natural hot spring water. It stays a comfortable place to be among other people: ${MUSIK} played live, ${RESTORAN} facing the pond, and ${SPA} open on the same grounds.`}
+              id={lekat(`${NAMA} menyebut dirinya Sundanese Thermal Escape Village, yaitu kampung Sunda tempat orang lari sejenak dari rutinitas kota untuk berendam air panas alami selama satu atau dua malam. Selepas berendam, tamu dapat makan di Restoran ${RESTORAN} di tepi kolam renang. ${SPA} menerima pesanan perawatan dari tamu yang menginap. Harga resmi untuk check-in hari Sabtu sudah termasuk makan malam, ${MUSIK}, dan paket pancingan, yaitu memancing di balong lalu ikannya dimasak oleh dapur ${NAMA}.`)}
+              en={lekat(`${NAMA} calls itself a Sundanese Thermal Escape Village: a Sundanese village where people step away from city routine to soak in natural hot spring water for a night or two. After a soak, guests can dine at Restoran ${RESTORAN} beside the swimming pool. ${SPA} takes treatment bookings from staying guests. For a Saturday check-in, the official room rate already includes dinner, ${MUSIK} and a fishing package: you fish in the balong, and the ${NAMA} kitchen cooks your catch.`)}
             />
           </p>
         </div>
@@ -109,11 +113,11 @@ const { lang } = Astro.props;
             class="h-auto w-full"
           />
           <div>
-            <p class="penanda"><T id="Yang dipegang" en="What guides us" /></p>
+            <p class="penanda"><T id="Filosofi" en="Our philosophy" /></p>
             <h2 class={`${judulSeksi} mt-4 max-w-[20ch]`}>
               <T
-                id="Tiga kata yang dipakai resort ini untuk mengukur dirinya sendiri."
-                en="Three words the resort measures itself against."
+                id={lekat("Tamu mengalami tiga tahap selama berada di Kampung Sumber Alam.")}
+                en={lekat("Guests move through three stages during their stay at Kampung Sumber Alam.")}
               />
             </h2>
             <dl class="mt-8 border-t border-garis">
@@ -136,24 +140,24 @@ const { lang } = Astro.props;
     {/* ============ KERAMAHAN SUNDA ============ */}
     <section class="pt-16 sm:pt-24">
       <div class={seksi}>
-        <p class="penanda"><T id="Cara melayani" en="How we host" /></p>
+        <p class="penanda"><T id="Keramahan Sunda" en="Sundanese hospitality" /></p>
         <h2 class={`${judulSeksi} mt-4 max-w-[26ch]`}>
           <T
-            id="Keramahan Sunda diukur dari ketulusan, bukan dari seragam dan naskah sambutan."
-            en="Sundanese hospitality is measured by sincerity, not by uniforms and a welcome script."
+            id={`Tamu disambut dengan ${WS}, ucapan selamat datang dalam bahasa Sunda.`}
+            en={`Guests are welcomed with ${WS}, the Sundanese words of welcome.`}
           />
         </h2>
-        <div class="mt-7 max-w-[58ch] space-y-4 text-tinta-lembut">
+        <div class="mt-7 max-w-[46ch] space-y-4 text-tinta-lembut">
           <p>
             <T
-              id="Sopan santun dalam budaya Sunda berangkat dari rendah hati dan perhatian pada orang lain. Itu yang dipakai sebagai patokan melayani tamu di sini, dan itu juga yang paling sering disebut tamu di ulasan mereka."
-              en="Courtesy in Sundanese culture starts from humility and attention to other people. That is the benchmark for looking after guests here, and it is what guests bring up most often in their reviews."
+              id={lekat(`Dalam budaya Sunda, keramahan ditunjukkan lewat ketulusan, kerendahan hati, dan kepedulian kepada sesama. Di ${NAMA}, tamu yang selesai berendam selama 25 menit di Kamar Rendam, bilik privat berisi air panas alami, mendapat bandrek atau bajigur, minuman hangat khas Sunda. Restoran ${RESTORAN} dan saung menyajikan menu Sunda untuk makan bersama, seperti Nasi Liwet 4 Orang dan Nasi Lulun Botram 4 Orang. Botram adalah tradisi Sunda makan bersama beralas daun pisang.`)}
+              en={lekat(`In Sundanese culture, hospitality is expressed through sincerity, humility, and genuine care for others. At ${NAMA}, guests who finish a 25-minute soak in the Kamar Rendam, a private room filled with natural hot spring water, are given bandrek or bajigur, two warm Sundanese drinks. Restoran ${RESTORAN} and the saung serve Sundanese dishes for sharing, such as Nasi Liwet 4 Orang and Nasi Lulun Botram 4 Orang. Botram is the Sundanese custom of eating together from banana leaves.`)}
             />
           </p>
           <p>
             <T
-              id={`Di Google Maps nilainya ${gmaps.nilai} dari ${gmaps.dari} sepanjang ${gmaps.jumlah} ulasan. Di Tripadvisor nilainya ${tripadvisor.nilai} dari ${tripadvisor.dari} sepanjang ${tripadvisor.jumlah} ulasan, dengan ${tripadvisor.catatan.id}.`}
-              en={`On Google Maps it holds ${gmaps.nilai} out of ${gmaps.dari} across ${gmaps.jumlah} reviews. On Tripadvisor it holds ${tripadvisor.nilai} out of ${tripadvisor.dari} across ${tripadvisor.jumlah} reviews, with ${tripadvisor.catatan.en}.`}
+              id={lekat(`Dari ${gmaps.jumlah} ulasan di Google Maps, ${NAMA} memperoleh nilai ${gmaps.nilai} dari ${gmaps.dari}. Di Tripadvisor, nilainya ${tripadvisor.nilai} dari ${tripadvisor.dari} berdasarkan ${tripadvisor.jumlah} ulasan. Tripadvisor juga memberinya penghargaan ${tripadvisor.catatan.id}.`)}
+              en={lekat(`From ${jumlahEn(gmaps.jumlah)} reviews on Google Maps, ${NAMA} holds a rating of ${nilaiEn(gmaps.nilai)} out of ${gmaps.dari}. On Tripadvisor, it holds ${nilaiEn(tripadvisor.nilai)} out of ${tripadvisor.dari} from ${jumlahEn(tripadvisor.jumlah)} reviews. Tripadvisor has also given it the ${tripadvisor.catatan.en} award.`)}
             />
           </p>
         </div>
@@ -167,14 +171,14 @@ const { lang } = Astro.props;
           <p class="penanda"><T id="Ke depan" en="Looking ahead" /></p>
           <h2 class={`${judulSeksi} mt-4 max-w-[22ch]`}>
             <T
-              id="Yang ditambah boleh banyak, yang dijaga tetap tiga."
-              en="Plenty may be added, but three things stay protected."
+              id={lekat("Kampung Sumber Alam memegang empat batas dalam setiap rencana barunya.")}
+              en={lekat("Kampung Sumber Alam holds every new plan to four limits.")}
             />
           </h2>
-          <p class="mt-6 max-w-[52ch] text-tinta-lembut">
+          <p class="mt-6 max-w-[46ch] text-tinta-lembut">
             <T
-              id="Arah yang dituju resort ini adalah jadi tujuan wisata air panas bergaya Sunda yang paling dikenal di Indonesia. Sambil menambah fasilitas, tiga hal tidak diutak-atik: sumber air panasnya, bentuk kampung Sundanya, dan cara menyambut tamunya."
-              en="The direction is to become the best known Sundanese thermal destination in Indonesia. While facilities get added, three things are left alone: the springs, the Sundanese village form, and the way guests are welcomed."
+              id={lekat(`Visi ${NAMA} berbunyi “To become Indonesia's leading Sundanese Thermal Wellness Destination”, yaitu menjadi tujuan wisata wellness air panas bergaya Sunda yang terdepan di Indonesia. Selama mengejar visi itu, ${NAMA} menjaga air panas alami tetap menjadi inti dan suasananya tetap tenang, tidak terlalu ramai atau bising. Kegiatan tamu dipilih dengan cermat. ${NAMA} juga menghindari citra sebagai tempat rekreasi massal.`)}
+              en={lekat(`The vision of ${NAMA} is “To become Indonesia's leading Sundanese Thermal Wellness Destination”. While pursuing it, the resort keeps natural hot spring water at the heart of every stay and the atmosphere calm, never too crowded or noisy. Guest activities are chosen with care. ${NAMA} also steers clear of becoming a mass-recreation venue.`)}
             />
           </p>
         </div>
@@ -182,7 +186,7 @@ const { lang } = Astro.props;
           src="/images/kacapi-suling.webp"
           width="819"
           height="544"
-          alt={`Pemain ${MUSIK} berpakaian Sunda tampil di Kampung Sumber Alam`}
+          alt={`Pemusik berbusana Sunda membawakan ${MUSIK} di Kampung Sumber Alam`}
           loading="lazy"
           decoding="async"
           class="h-auto w-full md:order-first"

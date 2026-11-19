@@ -6,7 +6,8 @@ lalu tiap foto ditarik ke angka yang sama: median luminans ±0,46 dan
 saturasi rata-rata ±0,32, supaya foto katalog (HDR, jingga) dan foto sesi
 MOTE November terlihat satu keluarga dan tidak terlalu gelap.
 
-Pakai: python3 tools/foto/siapkan.py   (keluaran: src/assets/peta/*.jpg)
+Pakai: python3 tools/foto/siapkan.py            (keluaran: src/assets/peta/*.jpg)
+      python3 tools/foto/siapkan.py --beranda  (keluaran: src/assets/cerita/*.jpg)
 """
 from pathlib import Path
 import numpy as np
@@ -43,6 +44,25 @@ DAFTAR = {
     "babakan-siluhur-1": (KAT / "p16_2.jpg", 4 / 3, 1.0),
     "babakan-siluhur-2": (KAT / "p17_2.jpg", 4 / 3, 1.0),
     "villa-sibentang": (SIB / "MOTE9760.jpg", 4 / 3, 0.4),
+}
+
+# Beranda: babak "satu hari di kampung" (tegak 2:3) dan galeri kamar (4:5).
+# Lolos 4 pertanyaan uji Data Master bab 01 §4.5: tamu melakukan sesuatu atau tempatnya
+# menunjuk nilai tambah (air panas, balong, ijuk, saung), suasana tenang, tanpa teks di gambar.
+KELUAR_BERANDA = REPO / "src/assets/cerita"
+BERANDA = {
+    "cerita-datang": (DRIVE / "MOTE6790.JPG", 2 / 3, 0.6),
+    "cerita-berendam": (DRIVE / "MOTE6889.JPG", 2 / 3, 0.5),
+    "cerita-saung": (DRIVE / "MOTE6834.JPG", 2 / 3, 0.6),
+    "cerita-pulang": (DRIVE / "MOTE6776.JPG", 2 / 3, 0.6),
+    "kamar-1": (DRIVE / "MOTE6725.JPG", 4 / 5, 0.6),
+    "kamar-2": (DRIVE / "MOTE6801.JPG", 4 / 5, 0.6),
+    "kamar-3": (DRIVE / "MOTE6819.JPG", 4 / 5, 0.6),
+    "kamar-4": (DRIVE / "MOTE6840.JPG", 4 / 5, 0.6),
+    "kamar-5": (DRIVE / "MOTE6868.JPG", 4 / 5, 0.6),
+    "kamar-6": (DRIVE / "MOTE6855.JPG", 4 / 5, 0.6),
+    "kamar-7": (DRIVE / "MOTE6732.JPG", 4 / 5, 0.6),
+    "menu-foto": (DRIVE / "MOTE6884.JPG", 2 / 3, 0.6),
 }
 
 
@@ -97,16 +117,22 @@ def toning(im, k):
 
 
 def main():
-    for nama, (src, rasio, k) in DAFTAR.items():
-        if not src.exists():
-            print("BELUM ADA", nama, src.name)
-            continue
-        im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
-        im = potong(im, rasio)
-        im.thumbnail((1600, 1600), Image.LANCZOS)
-        im = toning(im, k)
-        im.save(KELUAR / f"{nama}.jpg", quality=86, optimize=True, progressive=True)
-        print(nama, im.size)
+    import sys
+    tugas = [(DAFTAR, KELUAR)]
+    if "--beranda" in sys.argv:
+        KELUAR_BERANDA.mkdir(parents=True, exist_ok=True)
+        tugas = [(BERANDA, KELUAR_BERANDA)]
+    for daftar, keluar in tugas:
+        for nama, (src, rasio, k) in daftar.items():
+            if not src.exists():
+                print("BELUM ADA", nama, src.name)
+                continue
+            im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+            im = potong(im, rasio)
+            im.thumbnail((1600, 1600), Image.LANCZOS)
+            im = toning(im, k)
+            im.save(keluar / f"{nama}.jpg", quality=86, optimize=True, progressive=True)
+            print(nama, im.size)
 
 
 if __name__ == "__main__":

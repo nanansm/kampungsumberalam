@@ -3,8 +3,9 @@
  * Peta kawasan interaktif (beranda).
  *
  * Diadaptasi dari bedah peta udara ownprimland.com (19 Nov 2026), diterjemahkan ke
- * KSA: uap air panas yang tersibak (bukan awan), peta ilustrasi isometrik Opsi E
- * (bukan foto udara), enam pemberhentian mengikuti alur tamu.
+ * Kampung Sumber Alam: uap air panas yang tersibak (bukan awan), enam pemberhentian
+ * mengikuti alur tamu. Dasar peta: foto udara drone kalau public/peta/foto-udara/zona.json
+ * sudah ada (src/data/foto-udara.ts), kalau belum ilustrasi isometrik Opsi E.
  *
  * Kelemahan Primland yang diperbaiki di sini:
  * - label nama terlihat juga di layar sentuh (titik pemberhentian aktif selalu berlabel)
@@ -20,14 +21,17 @@
  */
 import { Picture } from "astro:assets";
 import "../../styles/peta.css";
-import { ZONA, HENTI, PANDANG_AWAL, DUNIA, PINTU_MASUK, TEKS_PETA as TX, hargaZona, dekatnya, SIBENTANG, type Zona } from "../../data/peta";
+import { ZONA, HENTI, PANDANG_AWAL, DUNIA, PLAT, PINTU_MASUK, FOTO_UDARA, TEPI, TEKS_PETA as TX, hargaZona, dekatnya, SIBENTANG, type Zona } from "../../data/peta";
+import lensaUdara from "../../data/lensa-udara.json";
 import { KLIP_ZONA } from "../../data/drone";
 import { BOOKING_URL, waLink } from "../../data/content";
-import { lekat } from "../../data/rag";
+import { lekat, rapi, rapiIsi } from "../../data/rag";
 
 interface Props { lang: "id" | "en" }
 const { lang } = Astro.props;
-const L = (d: { id: string; en: string }) => lekat(d[lang]);
+const L = (d: { id: string; en: string }) => rapi(d[lang]);
+/* paragraf isi di kotak dan panel: nama tidak disambung (kotak HP sempit), angka tetap */
+const I = (d: { id: string; en: string }) => rapiIsi(d[lang]);
 
 const fotoMod = import.meta.glob<{ default: ImageMetadata }>("../../assets/peta/*.jpg", { eager: true });
 const fotoLama = import.meta.glob<{ default: ImageMetadata }>("../../assets/images/*.webp", { eager: true });
@@ -43,22 +47,32 @@ const BABAK = { buka: 1.6, henti: 1.05, tutup: 0.9 };
 const TOTAL = BABAK.buka + BABAK.henti * HENTI.length + BABAK.tutup;
 
 /* Bingkai versi diam: pelat kawasan saja (unit SVG), tanpa langit di atas Guntur */
-const STATIS = { x: 40, y: 30, w: 1940, h: 1920 };
+const STATIS = FOTO_UDARA ? { x: 0, y: 0, w: DUNIA.lebar, h: DUNIA.tinggi } : { x: 40, y: 30, w: 1940, h: 1920 };
+/* letak titik di dalam potongan lensa foto udara (persen), dari tools/peta/lensa_udara.py */
+const LENSA_U: Record<string, { x: number; y: number }> = FOTO_UDARA ? lensaUdara : {};
 const pct = (v: number, o: number, w: number) => `${(((v - o) / w) * 100).toFixed(3)}%`;
 
-const rupiah = (s: string) => (lang === "en" ? `IDR ${s.replace(/\./g, ",")}` : `Rp${s}`);
+/* satu format rupiah per bahasa: Rp1.189.000 (ID) · Rp1,189,000 (EN) */
+const rupiah = (s: string) => (lang === "en" ? `Rp${s.replace(/\./g, ",")}` : `Rp${s}`);
 const pesanWa = (zn: Zona) =>
   lang === "en"
     ? `Hello Kampung Sumber Alam, I saw the map on your website and would like to ask about ${zn.label}.`
     : `Halo Kampung Sumber Alam, saya lihat peta di website dan mau tanya ${zn.label}.`;
 const hrefRapat = lang === "en" ? "/en/meetings/" : "/meetings/";
+/* kalimat pembuka mengikuti jumlah pemberhentian yang benar-benar ada di peta */
+const ANGKA = { id: ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh"], en: ["zero", "one", "two", "three", "four", "five", "six", "seven"] };
+const akhir = HENTI[HENTI.length - 1]?.id === "belakang" ? { id: "area belakang", en: "the back of the grounds" } : { id: "Tegal Pangulinan", en: "Tegal Pangulinan" };
+const ajak = TX.ajak[lang].replace("{n}", ANGKA[lang][HENTI.length] ?? String(HENTI.length)).replace("{akhir}", akhir[lang]);
 
 const dataSkrip = {
   babak: BABAK,
-  dunia: DUNIA,
+  plat: PLAT.map((p) => ({ lebar: p.lebar, tinggi: p.tinggi, foto: p.foto, ubin: p.ubin, kolom: p.kolom, baris: p.baris, tajam: p.tajam })),
   awal: PANDANG_AWAL,
-  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh })),
+  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0 })),
+  teksTutup: L(TX.tutupNav),
 };
+/* gambar dasar tiap plat: HP selalu versi HP/1600 (tidak ikut DPR), desktop 2560 */
+const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avif;
 ---
 <div class="peta-wadah" data-peta data-skrip={JSON.stringify(dataSkrip)}>
 <section class="peta" id="peta" aria-labelledby="h-peta" style={`--total:${TOTAL}`}>
@@ -66,7 +80,7 @@ const dataSkrip = {
     <div class="peta-pembuka">
       <p class="lbl">{L(TX.penanda)}</p>
       <h2 id="h-peta">{L(TX.judul)}</h2>
-      <p class="peta-ajak">{L(TX.ajak)}</p>
+      <p class="peta-ajak">{rapi(ajak)}</p>
       <span class="peta-garis" aria-hidden="true"></span>
     </div>
 
@@ -101,7 +115,7 @@ const dataSkrip = {
             <div class="kotak-teks">
               <p class="lbl"><span class="kotak-no">{String(i + 1).padStart(2, "0")}</span> {L(h.label)}</p>
               <h3 id={`h-henti-${h.id}`}>{L(h.judul)}</h3>
-              <p class="kotak-isi">{L(h.teks)}</p>
+              <p class="kotak-isi">{I(h.teks)}</p>
               <ul class="kotak-chip" aria-label={L(TX.zona)}>
                 {zh.map((zn) => (
                   <li><button type="button" data-buka={zn.no} aria-haspopup="dialog"><span>{zn.no}</span>{zn.label}</button></li>
@@ -123,23 +137,32 @@ const dataSkrip = {
       </div>
     </div>
     <!-- Dunia peta: satu gambar ilustrasi + ubin tajam yang dimuat saat dibutuhkan -->
-    <div class="peta-bingkai" style={`--sx:${STATIS.x};--sy:${STATIS.y};--sw:${STATIS.w};--sh:${STATIS.h};--dw:${DUNIA.lebar};--dh:${DUNIA.tinggi}`}>
-      <div class="peta-dunia" aria-hidden="true">
-        <picture>
-          <source type="image/avif" srcset="/peta/peta-1600.avif 1600w, /peta/peta-2560.avif 2560w" sizes="(max-width: 900px) 1600px, 2560px" />
-          <img class="peta-dasar" src="/peta/peta-2560.webp" srcset="/peta/peta-1600.webp 1600w, /peta/peta-2560.webp 2560w" sizes="(max-width: 900px) 1600px, 2560px" width="2560" height="2497" alt="" loading="lazy" decoding="async" />
-        </picture>
-        <div class="peta-ubin"></div>
-      </div>
+    <div class:list={["peta-bingkai", { "peta-bingkai--foto": !!FOTO_UDARA }]} style={`--sx:${STATIS.x};--sy:${STATIS.y};--sw:${STATIS.w};--sh:${STATIS.h};--dw:${DUNIA.lebar};--dh:${DUNIA.tinggi}${FOTO_UDARA && (DUNIA.hp.avif || DUNIA.hp.webp) ? `;--latar:url(${DUNIA.hp.avif ?? DUNIA.hp.webp})` : ""}`}>
+      {PLAT.map((pl, i) => (
+        <div class:list={["peta-dunia", { "plat-aktif": i === 0 }]} data-plat={i} aria-hidden="true" style={`--dw:${pl.lebar};--dh:${pl.tinggi}`}>
+          <picture>
+            {pl.hp.avif && <source media="(max-width: 899px)" type="image/avif" srcset={pl.hp.avif} />}
+            {pl.hp.webp && <source media="(max-width: 899px)" type="image/webp" srcset={pl.hp.webp} />}
+            {pl.dk.avif && <source type="image/avif" srcset={pl.dk.avif} />}
+            <img class="peta-dasar" src={imgDasar(pl)} width={pl.lebar} height={pl.tinggi} alt="" loading="lazy" decoding="async" />
+          </picture>
+          {pl.batas.length > 0 && (
+            <svg class="peta-batas" viewBox={`0 0 ${pl.lebar} ${pl.tinggi}`} preserveAspectRatio="none" aria-hidden="true">
+              {pl.batas.map((pg) => <polygon points={pg.map((t) => `${t.x.toFixed(1)},${t.y.toFixed(1)}`).join(" ")} pathLength="1" />)}
+            </svg>
+          )}
+          <div class="peta-ubin"></div>
+        </div>
+      ))}
 
       <!-- Titik zona. Posisi persen untuk versi diam; skrip menimpanya dengan posisi layar. -->
       <div class="peta-titik">
-        {ZONA.map((zn) => (
+        {ZONA.filter((zn) => !zn.hilang).map((zn) => (
           <>
             {zn.titikLain?.map((t) => (
-              <span class="titik-lain" data-induk={zn.no} data-x={t.x} data-y={t.y} style={`--x:${pct(t.x, STATIS.x, STATIS.w)};--y:${pct(t.y, STATIS.y, STATIS.h)}`} aria-hidden="true"></span>
+              <span class="titik-lain" data-induk={zn.no} data-plat={zn.plat} data-x={t.x} data-y={t.y} style={`--x:${pct(t.x, STATIS.x, STATIS.w)};--y:${pct(t.y, STATIS.y, STATIS.h)}`} aria-hidden="true"></span>
             ))}
-            <button type="button" class="pin" data-zona={zn.no} data-henti={zn.henti} data-arah={zn.arah} data-x={zn.x} data-y={zn.y}
+            <button type="button" class="pin" data-zona={zn.no} data-henti={zn.henti} data-plat={zn.plat} data-arah={zn.arah} data-x={zn.x} data-y={zn.y}
               style={`--x:${pct(zn.x, STATIS.x, STATIS.w)};--y:${pct(zn.y, STATIS.y, STATIS.h)}`}
               aria-label={`${L(TX.zona)} ${zn.no}: ${zn.nama}`} aria-haspopup="dialog">
               <span class="pin-isi">
@@ -149,11 +172,38 @@ const dataSkrip = {
             </button>
           </>
         ))}
-        <span class="pintu" data-x={PINTU_MASUK.x} data-y={PINTU_MASUK.y} style={`--x:${pct(PINTU_MASUK.x, STATIS.x, STATIS.w)};--y:${pct(PINTU_MASUK.y, STATIS.y, STATIS.h)}`}>
-          <span class="pintu-isi">{L(TX.pintu)}</span>
-        </span>
+        {TEPI.map((t) => (
+          <span class:list={["tepi-arah", `tepi-${t.arah}`]} data-x={t.x} data-y={t.y} data-henti={t.henti} data-plat={t.plat} style={`--x:${pct(t.x, STATIS.x, STATIS.w)};--y:${pct(t.y, STATIS.y, STATIS.h)}`}>
+            <span class="tepi-isi">
+              <svg class="tepi-panah" width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><path d="M5 15V2M1 6l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+              {t.zona.length ? (
+                <>
+                  {t.zona.map((no) => {
+                    const zn = ZONA.find((q) => q.no === no)!;
+                    return <button type="button" class="tepi-tombol" data-buka={no} aria-haspopup="dialog" aria-label={`${L(TX.zona)} ${no}: ${zn.nama} (${L(TX.diLuarFoto)})`}>{zn.label}</button>;
+                  })}
+                </>
+              ) : (
+                <span class="tepi-teks">{L(t.label!)}</span>
+              )}
+            </span>
+          </span>
+        ))}
+        {PINTU_MASUK && (
+          <span class="pintu" data-plat="0" data-x={PINTU_MASUK.x} data-y={PINTU_MASUK.y} style={`--x:${pct(PINTU_MASUK.x, STATIS.x, STATIS.w)};--y:${pct(PINTU_MASUK.y, STATIS.y, STATIS.h)}`}>
+            <span class="pintu-isi">{L(TX.pintu)}</span>
+          </span>
+        )}
       </div>
     </div>
+
+    <!-- Kabut pindah plat: menutup sebentar saat kamera pindah dari plat utama ke plat lain -->
+    {PLAT.length > 1 && (
+      <div class="peta-kabut" aria-hidden="true">
+        <span class="kabut-dasar"></span>
+        <img class="kabut-uap" src="/peta/uap-tengah.webp" alt="" width="1200" height="900" decoding="async" loading="lazy" />
+      </div>
+    )}
 
     <!-- Uap air panas yang tersibak saat digulir -->
     <div class="peta-uap" aria-hidden="true">
@@ -179,8 +229,8 @@ const dataSkrip = {
           <article class="zona" id={`zona-${zn.no}`} data-zona-isi={zn.no} aria-labelledby={`h-zona-${zn.no}`}>
             <div class="zona-media">
               {klip ? (
-                <video class="zona-video" muted loop playsinline preload="none" aria-hidden="true"
-                  poster={klip.poster}
+                <video class="zona-video" muted playsinline preload="none" aria-hidden="true"
+                  data-poster-dk={klip.desktop?.posterAvif ?? klip.desktop?.poster} data-poster-hp={klip.hp?.posterAvif ?? klip.hp?.poster ?? klip.desktop?.posterAvif}
                   data-mp4-dk={klip.desktop?.mp4} data-webm-dk={klip.desktop?.webm}
                   data-mp4-hp={klip.hp?.mp4 ?? klip.desktop?.mp4} data-webm-hp={klip.hp?.webm ?? klip.desktop?.webm}></video>
               ) : null}
@@ -188,22 +238,31 @@ const dataSkrip = {
                 <Picture class="zona-foto" src={foto(zn.foto)} formats={["avif", "webp"]} widths={[480, 720, 1040]} sizes="(min-width: 640px) 520px, 100vw" quality={55} alt={zn.fotoAlt ? L(zn.fotoAlt) : ""} loading="lazy" decoding="async" />
               ) : (
                 <div class="zona-lensa">
-                  <img src={`/peta/lensa-${zn.no}.webp`} width="720" height="540" alt={lang === "en" ? `Where ${zn.label} sits on the site map` : `Letak ${zn.label} di peta kawasan`} loading="lazy" decoding="async" />
-                  <span class="lensa-titik" aria-hidden="true">{zn.no}</span>
+                  {LENSA_U[zn.no] ? (
+                    <>
+                      <img src={`/peta/lensa-udara-${zn.no}.webp`} width="720" height="540" alt={lang === "en" ? `${zn.label} seen from the air` : `${zn.label} dilihat dari udara`} loading="lazy" decoding="async" />
+                      <span class="lensa-titik" aria-hidden="true" style={`left:${LENSA_U[zn.no].x}%;top:${LENSA_U[zn.no].y}%`}>{zn.no}</span>
+                    </>
+                  ) : (
+                    <>
+                      <img src={`/peta/lensa-${zn.no}.webp`} width="720" height="540" alt={lang === "en" ? `Where ${zn.label} sits on the site map` : `Letak ${zn.label} di peta kawasan`} loading="lazy" decoding="async" />
+                      <span class="lensa-titik" aria-hidden="true">{zn.no}</span>
+                    </>
+                  )}
                 </div>
               )}
             </div>
             <div class="zona-teks">
               <p class="lbl">{L(TX.zona)} {zn.no} · {L(TX.kelompok[zn.kelompok])}</p>
               <h3 id={`h-zona-${zn.no}`}>{lekat(zn.nama)}</h3>
-              <p class="zona-isi">{L(zn.isi)}</p>
+              <p class="zona-isi">{I(zn.isi)}</p>
               <ul class="zona-fakta">
                 {zn.fakta.map((f) => <li>{L(f)}</li>)}
               </ul>
               {harga && (
                 <div class="zona-harga">
                   <p class="harga-utama"><span class="lbl">{L(TX.mulai)}</span> <strong>{rupiah(harga.weekday)}</strong></p>
-                  <p class="harga-ket">{L(TX.malam)} · {L(TX.weekend)}: {rupiah(harga.weekend)}</p>
+                  <p class="harga-ket">{L(zn.kamar?.startsWith("babakan-siluhur") ? TX.malamKompleks : TX.malam)} · {L(TX.weekend)}: {rupiah(harga.weekend)}</p>
                   <p class="harga-ket">{L(TX.termasukWeekday)} {L(TX.dinamis)}</p>
                 </div>
               )}

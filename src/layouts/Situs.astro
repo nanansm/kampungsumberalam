@@ -1,5 +1,7 @@
 ---
 import "../styles/situs.css";
+import { getImage } from "astro:assets";
+import fotoMenu from "../assets/cerita/menu-foto.jpg";
 import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON, TELEPON_TAMPIL, EMAIL, IG_URL, FB_URL, TIKTOK_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink } from "../data/content";
 
 interface Props {
@@ -41,6 +43,9 @@ const schema = {
   sameAs: [IG_URL, FB_URL, TIKTOK_URL],
 };
 const adaHero = Astro.slots.has("hero");
+/* foto menu layar penuh: dimuat hanya saat menu dibuka (loading lazy di dalam popover tertutup) */
+const fotoMenuAvif = await getImage({ src: fotoMenu, widths: [480, 720, 960], format: "avif", quality: 48 });
+const fotoMenuWebp = await getImage({ src: fotoMenu, width: 720, format: "webp", quality: 62 });
 ---
 <!doctype html>
 <html lang={lang}>
@@ -98,12 +103,14 @@ const adaHero = Astro.slots.has("hero");
   </header>
 
   <div id="menu" class="menu" popover>
+    <div class="bilik menu-bilik" role="presentation"></div>
     <div class="menu-in">
       <div class="menu-top">
         <button type="button" popovertarget="menu" popovertargetaction="hide">{t("ui.tutup")}</button>
         <img src="/logo/logotype-color.svg" alt="" width="113" height="36" loading="lazy" />
         <a class="lbl" href={BOOKING_URL} style="text-decoration:none">{t("ui.pesan")}</a>
       </div>
+      <div class="menu-badan">
       <nav aria-label={t("ui.menu")}>
         <a href={akar}>{t("nav.beranda")}</a>
         <a href={`${akar}#berendam`}>{t("nav.berendam")}</a>
@@ -115,6 +122,25 @@ const adaHero = Astro.slots.has("hero");
         <a href={`${akar}location/`}>{t("nav.lokasi")}</a>
         <a href={SIBENTANG_URL} rel="noopener">Villa Sibentang</a>
       </nav>
+      <aside class="menu-samping">
+        <figure class="menu-foto">
+          <picture>
+            <source type="image/avif" srcset={fotoMenuAvif.srcSet.attribute} sizes="(min-width: 900px) 30vw, 0px" />
+            <img src={fotoMenuWebp.src} width={fotoMenu.width} height={fotoMenu.height} alt={t("menu.foto")} loading="lazy" decoding="async" />
+          </picture>
+        </figure>
+        <div class="menu-kontak">
+          <p class="lbl">{t("menu.reservasi")}</p>
+          <a class="btn btn-isi btn-wa" href={waLink(waPesan)} rel="noopener"><span class="btn-tx">{t("menu.wa")}</span></a>
+          <dl>
+            <dt class="lbl">{t("menu.telepon")}</dt><dd><a href={tel}>{TELEPON_TAMPIL}</a></dd>
+            <dt class="lbl">Email</dt><dd><a href={`mailto:${EMAIL}`}>{EMAIL}</a></dd>
+            <dt class="lbl">{t("menu.alamat")}</dt><dd>{ALAMAT_SATU_BARIS}</dd>
+          </dl>
+          <span class="goresan goresan--teratai" aria-hidden="true"></span>
+        </div>
+      </aside>
+      </div>
       <div class="kecil lbl">
         <a href={path} hreflang="id" lang="id">Bahasa Indonesia</a>
         <a href={pathEn} hreflang="en" lang="en">English</a>
@@ -128,10 +154,13 @@ const adaHero = Astro.slots.has("hero");
   <main id="isi" class:list={[{ "isi-tanpa-hero": !adaHero }]}><slot name="hero" /><slot /></main>
 
   <footer class="ftr cv">
+    <div class="bilik ftr-bilik" role="presentation"></div>
     <div class="ftr-in">
-      <div>
+      <div class="ftr-merek">
         <img src="/logo/lockup-color.svg" alt={NAMA_PANJANG} width="89" height="64" loading="lazy" />
         <p style="margin-top:18px;max-width:34ch">{ALAMAT_SATU_BARIS}</p>
+        <p class="ftr-slogan" lang="en">Rest. Recover. Rejuvenate.</p>
+        <span class="goresan goresan--kelapa" aria-hidden="true"></span>
       </div>
       <div>
         <p class="lbl">{t("ui.hubungi")}</p>

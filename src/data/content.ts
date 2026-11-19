@@ -94,8 +94,8 @@ export const KAMAR: Kamar[] = [
   {
     slug: "kawung", nama: "Kawung", kelas: "Thermal Studio", unit: 10, pax: 2, kelompok: "bungalow",
     fakta: [
-      { id: "Dua lantai: tempat tidur di atas, ruang lesehan di bawah", en: "Two storeys: bed upstairs, floor-seating lounge below" },
-      { id: "±70 m dari lobi", en: "±70 m from the lobby" },
+      { id: "Tempat tidur di lantai atas, ruang lesehan di lantai bawah", en: "Bed upstairs, floor-seating lounge downstairs" },
+      { id: "±70 m dari Lobby", en: "±70 m from the Lobby" },
     ],
     harga: { weekday: "1.189.000", weekend: "1.989.000" }, airPanasPribadi: true,
   },
@@ -103,7 +103,7 @@ export const KAMAR: Kamar[] = [
     slug: "pondok-kalapa", nama: "Pondok Kalapa", kelas: "Thermal Bungalow", unit: 4, pax: 2, kelompok: "bungalow",
     fakta: [
       { id: "Bungalow satu lantai", en: "Single-storey bungalow" },
-      { id: "±60 m dari lobi", en: "±60 m from the lobby" },
+      { id: "±60 m dari Lobby", en: "±60 m from the Lobby" },
     ],
     harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
@@ -111,7 +111,7 @@ export const KAMAR: Kamar[] = [
     slug: "bungalow-1-14", nama: "Bungalow 1-14", kelas: "Thermal Bungalow", unit: 14, pax: 2, kelompok: "bungalow",
     fakta: [
       { id: "Bungalow satu lantai, tiga deret", en: "Single-storey bungalows in three rows" },
-      { id: "±100 m dari lobi", en: "±100 m from the lobby" },
+      { id: "±100 m dari Lobby", en: "±100 m from the Lobby" },
     ],
     harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
@@ -119,7 +119,7 @@ export const KAMAR: Kamar[] = [
     slug: "bungalow-siceeh", nama: "Bungalow Siceeh", kelas: "Thermal Bungalow", unit: 26, pax: 2, kelompok: "bungalow",
     fakta: [
       { id: "Satu atau dua lantai seperti rumah panggung, twin bed", en: "One or two storeys like a stilt house, twin beds" },
-      { id: "±250 m dari lobi", en: "±250 m from the lobby" },
+      { id: "±250 m dari Lobby", en: "±250 m from the Lobby" },
     ],
     harga: { weekday: "1.489.000", weekend: "2.239.000" }, airPanasPribadi: true,
   },
@@ -127,7 +127,7 @@ export const KAMAR: Kamar[] = [
     slug: "bungalow-arileu", nama: "Bungalow Arileu", kelas: "Grand Thermal Bungalow", unit: 6, pax: 4, kelompok: "bungalow",
     fakta: [
       { id: "Dua lantai, ruang lesehan, tempat tidur bertirai", en: "Two storeys, floor-seating lounge, curtained beds" },
-      { id: "±130 m dari lobi", en: "±130 m from the lobby" },
+      { id: "±130 m dari Lobby", en: "±130 m from the Lobby" },
     ],
     harga: { weekday: "1.969.000", weekend: "3.529.000" }, airPanasPribadi: true,
   },
@@ -135,7 +135,7 @@ export const KAMAR: Kamar[] = [
     slug: "suite-couple", nama: "Suite Couple", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
       { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
-      { id: "Private whirlpool · ±30 m dari lobi", en: "Private whirlpool · ±30 m from the lobby" },
+      { id: "Private whirlpool · ±30 m dari Lobby", en: "Private whirlpool · ±30 m from the Lobby" },
     ],
     harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
@@ -143,7 +143,7 @@ export const KAMAR: Kamar[] = [
     slug: "suite-room", nama: "Suite Room", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
       { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
-      { id: "Private whirlpool · ±100 m dari lobi", en: "Private whirlpool · ±100 m from the lobby" },
+      { id: "Private whirlpool · ±100 m dari Lobby", en: "Private whirlpool · ±100 m from the Lobby" },
     ],
     harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
@@ -151,7 +151,7 @@ export const KAMAR: Kamar[] = [
     slug: "suite-arileu", nama: "Suite Arileu", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
       { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
-      { id: "Private whirlpool · ±130 m dari lobi", en: "Private whirlpool · ±130 m from the lobby" },
+      { id: "Private whirlpool · ±130 m dari Lobby", en: "Private whirlpool · ±130 m from the Lobby" },
     ],
     harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
@@ -159,7 +159,7 @@ export const KAMAR: Kamar[] = [
     slug: "junior-suite", nama: "Junior Suite", kelas: "Thermal Pool Suite", unit: 2, pax: 4, kelompok: "suite",
     fakta: [
       { id: "Kamar privat di bawah, kamar terbuka di atas", en: "Private room downstairs, open room upstairs" },
-      { id: "Private whirlpool · ±250 m dari lobi", en: "Private whirlpool · ±250 m from the lobby" },
+      { id: "Private whirlpool · ±250 m dari Lobby", en: "Private whirlpool · ±250 m from the Lobby" },
     ],
     harga: { weekday: "2.849.000", weekend: "4.789.000" }, airPanasPribadi: true,
   },
@@ -202,12 +202,12 @@ export const KAMAR: Kamar[] = [
 /** Isi Publish Rate (Data Master bab 03 §2). */
 export const TERMASUK_KAMAR = {
   weekday: {
-    id: "Weekday (check-in Minggu–Jumat): sarapan, tiket kolam renang dan Kamar Rendam, pajak dan pelayanan.",
-    en: "Weekday (check-in Sunday–Friday): breakfast, swimming pool and Kamar Rendam access, tax and service.",
+    id: "Harga weekday untuk check-in Minggu sampai Jumat sudah termasuk sarapan, tiket kolam renang dan Kamar Rendam, serta pajak dan pelayanan.",
+    en: "The weekday rate, for check-in from Sunday to Friday, includes breakfast, swimming pool and Kamar Rendam access, tax and service.",
   },
   weekend: {
-    id: "Weekend (check-in Sabtu dan libur): sarapan, makan malam, live music, paket pancingan, tiket kolam renang dan Kamar Rendam, pajak dan pelayanan.",
-    en: "Weekend (check-in Saturday and holidays): breakfast, dinner, live music, fishing package, swimming pool and Kamar Rendam access, tax and service.",
+    id: "Harga weekend untuk check-in Sabtu dan hari libur sudah termasuk sarapan, makan malam, live music, paket pancingan, tiket kolam renang dan Kamar Rendam, serta pajak dan pelayanan.",
+    en: "The weekend rate, for check-in on Saturdays and public holidays, includes breakfast, dinner, live music, a fishing package, swimming pool and Kamar Rendam access, tax and service.",
   },
 } as const;
 
@@ -215,11 +215,13 @@ export const TERMASUK_KAMAR = {
  *  tidak ditulis: keputusan 9 Agu 2026, harga paket dijawab lewat WhatsApp. */
 export const THERMAL_RESET = [
   { nama: "Thermal Reset", durasi: "2D1N", janji: "A Gentle Escape to Pause, Restore & Reconnect",
-    isi: { id: "Satu malam di villa: Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy, dan Slow Dining Experience.", en: "One night in the villa: Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy and Slow Dining Experience." } },
+    isi: { id: "Thermal Reset berlangsung satu malam di villa, dengan Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy, dan Slow Dining Experience.", en: "Thermal Reset is one night in the villa, with Private Thermal Soak Ritual, Sunset Tea Reflection, spa, yoga, aquatic therapy and Slow Dining Experience." } },
   { nama: "Deep Reset", durasi: "3D2N", janji: "A Deeper Journey to Pause, Restore & Reconnect",
-    isi: { id: "Dua malam. Hari kedua menjadi inti perjalanan, dengan Sundanese Cultural Touch.", en: "Two nights. Day two is the heart of the journey, with the Sundanese Cultural Touch." } },
+    isi: { id: "Deep Reset berlangsung dua malam. Hari kedua menjadi inti perjalanan dan memuat Sundanese Cultural Touch.", en: "Deep Reset runs for two nights. Day two is the heart of the journey and includes the Sundanese Cultural Touch." } },
+  /* Janji Integration Reset memuat kata "Sanctuary". Bunyi itu kutipan resmi
+     PDF KSA, dan Data Master bab 09 §9.8 meminta kutipan resmi dipakai apa adanya. */
   { nama: "Integration Reset", durasi: "4D3N", janji: "A Deeper Sanctuary Escape to Pause, Restore & Reconnect",
-    isi: { id: "Tiga malam dengan jadwal paling longgar. Thermal Restoration menjadi inti perjalanan.", en: "Three nights on the loosest schedule. Thermal Restoration is the heart of the journey." } },
+    isi: { id: "Integration Reset berlangsung tiga malam dengan jadwal paling longgar. Thermal Restoration menjadi inti perjalanannya.", en: "Integration Reset runs for three nights on the most relaxed schedule. Thermal Restoration is the heart of the journey." } },
 ] as const;
 
 /** Datang tanpa menginap (Data Master bab 04 §2–3, flyer resmi KSA 2026). */
@@ -258,9 +260,11 @@ export const FASILITAS = [
   { id: "Tiga tempat makan", en: "Three dining outlets" },
   { id: "Ruang pertemuan", en: "Meeting rooms" },
   { id: "Area bermain anak", en: "Children's playground" },
-  { id: "Kolam anak", en: "Children's pool" },
+  /* "Kolam anak" dibuang 20 Nov 2026: tidak ada di Data Master bab 02 §4.
+     Gantinya Kamar Rendam, bilik berendam air panas yang tercatat di Catalog KSA. */
+  { id: "Kamar Rendam", en: "Kamar Rendam private hot spring soaking rooms" },
   { id: "Pemancingan", en: "Fishing pond" },
-  { id: "Spa dan pijat", en: "Spa and massage" },
+  { id: "Pitaloka Spa", en: "Pitaloka Spa" },
   { id: "WiFi", en: "WiFi" },
   { id: "Parkir gratis", en: "Free parking" },
 ] as const;
@@ -269,7 +273,9 @@ export const FASILITAS = [
 
 export const RESTORAN = "Tunjung Balebat";
 export const SPA = "Pitaloka Spa";
-export const MUSIK = "Kacapi Suling";
+/** Data Master hanya mencatat "live music", dan live music termasuk di
+ *  Publish Rate check-in Sabtu (bab 03 §2). Jangan klaim tampil tiap malam. */
+export const MUSIK = "live music";
 
 /* ---------- Ulasan ----------
  * Data Master KSA bab 01 §9, diambil 30 Okt 2026.
@@ -317,10 +323,10 @@ export const RUANG_MICE: { nama: string; theater: Kap; kelas: Kap; uShape: Kap; 
 
 type Baris = { isi: { id: string; en: string }; weekday: string; weekend: string };
 const OKUPANSI = {
-  single: { id: "Single Occupied (sendiri)", en: "Single Occupied" },
-  twin: { id: "Twin Share (berdua)", en: "Twin Share" },
-  triple: { id: "Triple Share (bertiga, +1 extra bed)", en: "Triple Share (+1 extra bed)" },
-  quadra: { id: "Quadra (berempat, +2 extra bed)", en: "Quadra (+2 extra beds)" },
+  single: { id: "Single Occupied (satu orang)", en: "Single Occupied (one guest)" },
+  twin: { id: "Twin Share (dua orang)", en: "Twin Share (two guests)" },
+  triple: { id: "Triple Share (tiga orang, +1 extra bed)", en: "Triple Share (three guests, +1 extra bed)" },
+  quadra: { id: "Quadra (empat orang, +2 extra bed)", en: "Quadra (four guests, +2 extra beds)" },
 };
 
 export const TARIF_FULLBOARD: Baris[] = [
@@ -346,23 +352,23 @@ export const TERMASUK_SEMUA = [
 
 export const TERMASUK_MEETING = [
   { id: "2 kali coffee break", en: "Two coffee breaks" },
-  { id: "Ruang pertemuan: notebook, pensil, permen, air mineral, AC, proyektor, layar", en: "Meeting room: notebook, pencil, sweets, mineral water, AC, projector, screen" },
+  { id: "Ruang pertemuan dengan notebook, pensil, permen, air mineral, AC, proyektor, dan layar", en: "Meeting room with notebooks, pencils, sweets, mineral water, AC, a projector and a screen" },
 ] as const;
 
 export const TERMASUK_OUTING = [
   { id: "1 kali coffee break", en: "One coffee break" },
-  { id: "Entertainment: 1 singer + 1 player, 18.30–22.00", en: "Entertainment: 1 singer + 1 player, 18.30–22.00" },
+  { id: "Entertainment oleh 1 singer dan 1 player, pukul 18.30–22.00", en: "Entertainment by 1 singer and 1 player, 18.30–22.00" },
   { id: "Fun games", en: "Fun games" },
 ] as const;
 
 /** Rombongan tanpa menginap dan Babakan Siluhur (Data Master bab 04 §8, bab 05 §4). */
 export const PAKET_TANPA_MENGINAP = [
   { nama: "Non Residental Meeting", harga: { id: "Rp484.000–Rp847.000 per orang", en: "Rp484,000–Rp847,000 per person" },
-    isi: { id: "Halfday Rp484.000, Full Day Rp605.000, One Day Rp847.000. Sudah termasuk makan, coffee break, ruang pertemuan, pajak, dan pelayanan.", en: "Halfday Rp484,000, Full Day Rp605,000, One Day Rp847,000. Meals, coffee breaks, meeting room, tax and service included." } },
+    isi: { id: "Non Residental Meeting tersedia dalam pilihan Halfday Rp484.000, Full Day Rp605.000, dan One Day Rp847.000 per orang. Setiap pilihan sudah termasuk makan, coffee break, ruang pertemuan, pajak, dan pelayanan.", en: "Non Residental Meeting comes as Halfday at Rp484,000, Full Day at Rp605,000 or One Day at Rp847,000 per person. Every option includes meals, coffee breaks, the meeting room, tax and service." } },
   { nama: "Fullday Gathering", harga: { id: "Rp1.023.000", en: "Rp1,023,000" },
-    isi: { id: "Buffet lunch, coffee break, venue resto, fun games, entertainment, kolam renang, Kamar Rendam, pajak, dan pelayanan.", en: "Buffet lunch, coffee break, restaurant venue, fun games, entertainment, swimming pool, Kamar Rendam, tax and service." } },
+    isi: { id: "Fullday Gathering sudah termasuk buffet lunch, coffee break, venue resto, fun games, entertainment, kolam renang, Kamar Rendam, pajak, dan pelayanan.", en: "Fullday Gathering includes a buffet lunch, a coffee break, the restaurant venue, fun games, entertainment, the swimming pool, Kamar Rendam, tax and service." } },
   { nama: "Siluhur Private Meeting · Siluhur Private Gathering", harga: { id: "mulai Rp8.659.000 per kompleks", en: "from Rp8,659,000 per compound" },
-    isi: { id: "Tim kecil rapat, menginap, dan berkumpul di satu kompleks Babakan Siluhur sendiri, 12 atau 18 orang.", en: "A small team meets, stays and gathers in its own Babakan Siluhur compound, for 12 or 18 people." } },
+    isi: { id: "Tim kecil berisi 12 atau 18 orang dapat rapat, menginap, dan berkumpul di satu kompleks Babakan Siluhur.", en: "A small team of 12 or 18 can meet, stay and gather in its own Babakan Siluhur compound." } },
 ] as const;
 
 /* ---------- Paket acara ----------
@@ -409,21 +415,21 @@ export const ACARA: Acara[] = [
     termasuk: [
       { id: "Prasmanan", en: "Buffet" },
       { id: "Dekorasi", en: "Decoration" },
-      { id: "Perias", en: "Make-up artist" },
-      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+      { id: "Perias (MUA)", en: "Make-up artist (MUA)" },
+      { id: "Sound system dan tempat acara", en: "Sound system and venue" },
     ],
     tambahan: [
-      { id: "Pembawa acara", en: "MC" },
+      { id: "MC", en: "MC" },
       { id: "Foto", en: "Photography" },
     ],
     catatan: {
-      id: "Berlangsung di ruang pertemuan atau di restoran.",
-      en: "Held in a meeting room or in the restaurant.",
+      id: "Engagement Package, paket untuk acara lamaran, dapat digelar di ruang pertemuan atau di restoran.",
+      en: "Engagement Package, for engagement ceremonies, can be held in a meeting room or in the restaurant.",
     },
     foto: "/images/restoran-tunjung.webp",
     w: 819,
     h: 544,
-    alt: "Ruang makan Tunjung Balebat berdinding kayu menghadap kolam",
+    alt: "Ruang makan Restoran Tunjung Balebat berdinding kayu menghadap kolam",
   },
   {
     slug: "akad",
@@ -434,16 +440,16 @@ export const ACARA: Acara[] = [
     termasuk: [
       { id: "Prasmanan", en: "Buffet" },
       { id: "Dekorasi", en: "Decoration" },
-      { id: "Perias", en: "Make-up artist" },
-      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+      { id: "Perias (MUA)", en: "Make-up artist (MUA)" },
+      { id: "Sound system dan tempat acara", en: "Sound system and venue" },
     ],
     tambahan: [
-      { id: "Pembawa acara", en: "MC" },
+      { id: "MC", en: "MC" },
       { id: "Foto", en: "Photography" },
     ],
     catatan: {
-      id: "Berlangsung di ruang pertemuan atau di restoran.",
-      en: "Held in a meeting room or in the restaurant.",
+      id: "Akad Package dapat digelar di ruang pertemuan atau di restoran.",
+      en: "Akad Package can be held in a meeting room or in the restaurant.",
     },
     foto: "/images/taman-kampung.webp",
     w: 1200,
@@ -459,16 +465,16 @@ export const ACARA: Acara[] = [
     termasuk: [
       { id: "Prasmanan", en: "Buffet" },
       { id: "Dekorasi", en: "Decoration" },
-      { id: "Perias", en: "Make-up artist" },
-      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+      { id: "Perias (MUA)", en: "Make-up artist (MUA)" },
+      { id: "Sound system dan tempat acara", en: "Sound system and venue" },
     ],
     tambahan: [
-      { id: "Pembawa acara", en: "MC" },
+      { id: "MC", en: "MC" },
       { id: "Foto", en: "Photography" },
     ],
     catatan: {
-      id: "Berlangsung di ruang pertemuan atau di restoran.",
-      en: "Held in a meeting room or in the restaurant.",
+      id: "Intimate Wedding Package dapat digelar di ruang pertemuan atau di restoran.",
+      en: "Intimate Wedding Package can be held in a meeting room or in the restaurant.",
     },
     foto: "/images/purba-dewata.webp",
     w: 819,
@@ -477,19 +483,19 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "pre-wedding",
-    nama: { id: "Pre Wedding Package · Paket 1", en: "Pre Wedding Package · Package 1" },
+    nama: { id: "Pre Wedding Package · Paket 1", en: "Pre Wedding Package · Paket 1" },
     harga: "800.000",
     satuan: "paket",
     minimal: null,
     termasuk: [
-      { id: "Ruang rias", en: "Make-up room" },
-      { id: "Kudapan dan minuman selamat datang untuk 4 orang", en: "Light meal and welcome drink for 4" },
-      { id: "Akses seluruh area resort", en: "Access to the whole resort" },
+      { id: "Ruang make up", en: "Make-up room" },
+      { id: "Light meal dan welcome drink untuk 4 orang", en: "Light meal and welcome drink for 4 people" },
+      { id: "Lokasi foto di seluruh area Kampung Sumber Alam", en: "Photo locations across Kampung Sumber Alam" },
     ],
     tambahan: [],
     catatan: {
-      id: "Villa Sibentang tidak termasuk di paket ini.",
-      en: "Villa Sibentang is not included in this package.",
+      id: "Pre Wedding Package Paket 1 tidak mencakup akses ke Villa Sibentang.",
+      en: "Pre Wedding Package Paket 1 does not include access to Villa Sibentang.",
     },
     foto: "/images/kampung-teratai.webp",
     w: 999,
@@ -498,15 +504,15 @@ export const ACARA: Acara[] = [
   },
   {
     slug: "pre-wedding-sibentang",
-    nama: { id: "Pre Wedding Package · Paket 2", en: "Pre Wedding Package · Package 2" },
+    nama: { id: "Pre Wedding Package · Paket 2", en: "Pre Wedding Package · Paket 2" },
     harga: "1.500.000",
     satuan: "paket",
     minimal: null,
     termasuk: [
-      { id: "Ruang rias", en: "Make-up room" },
+      { id: "Ruang make up", en: "Make-up room" },
       { id: "Makan siang", en: "Lunch" },
-      { id: "Kudapan dan minuman selamat datang untuk 4 orang", en: "Light meal and welcome drink for 4" },
-      { id: "Akses seluruh area termasuk Private Villa Sibentang", en: "Access to the whole resort including Private Villa Sibentang" },
+      { id: "Light meal dan welcome drink untuk 4 orang", en: "Light meal and welcome drink for 4 people" },
+      { id: "Lokasi foto di seluruh area, termasuk Private Villa Sibentang", en: "Photo locations across the grounds, including Private Villa Sibentang" },
     ],
     tambahan: [],
     foto: "/images/kolam-privat-putih.webp",
@@ -523,16 +529,14 @@ export const ACARA: Acara[] = [
     termasuk: [
       { id: "Prasmanan", en: "Buffet" },
       { id: "Kue", en: "Cake" },
-      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+      { id: "Sound system dan tempat acara", en: "Sound system and venue" },
     ],
     tambahan: [
       { id: "Dekorasi", en: "Decoration" },
-      { id: "Pembawa acara", en: "MC" },
+      { id: "MC", en: "MC" },
     ],
-    catatan: {
-      id: "Untuk remaja dan dewasa.",
-      en: "For teenagers and adults.",
-    },
+    /* Catatan "Untuk remaja dan dewasa" dibuang 20 Nov 2026: tidak ada di
+       flyer maupun Data Master bab 05 §6. */
     foto: "/images/keluarga-taman.webp",
     w: 819,
     h: 546,
@@ -546,9 +550,9 @@ export const ACARA: Acara[] = [
     minimal: 50,
     termasuk: [
       { id: "Menu anak", en: "Kids menu" },
-      { id: "Bingkisan", en: "Goodie bag" },
+      { id: "Goodie bag", en: "Goodie bag" },
       { id: "Kue", en: "Cake" },
-      { id: "Tata suara dan tempat", en: "Sound system and venue" },
+      { id: "Sound system dan tempat acara", en: "Sound system and venue" },
     ],
     tambahan: [
       { id: "Dekorasi", en: "Decoration" },
@@ -558,7 +562,7 @@ export const ACARA: Acara[] = [
     foto: "/images/bermain-anak.webp",
     w: 819,
     h: 544,
-    alt: "Anak anak bermain di area bermain Kampung Sumber Alam",
+    alt: "Anak-anak bermain di area bermain Kampung Sumber Alam",
   },
   {
     slug: "arisan-sibentang",
@@ -567,13 +571,13 @@ export const ACARA: Acara[] = [
     satuan: "orang",
     minimal: 6,
     termasuk: [
-      { id: "Buffet", en: "Buffet" },
+      { id: "Prasmanan", en: "Buffet" },
       { id: "Private pool Villa Sibentang", en: "Private pool at Villa Sibentang" },
     ],
     tambahan: [],
     catatan: {
-      id: "Tanpa menginap. Cocok untuk arisan, gathering, dan reuni.",
-      en: "Day use, no overnight stay. Suits arisan, gatherings and reunions.",
+      id: "Social Event at Private Villa Sibentang dipakai untuk arisan, gathering, reuni, dan acara sosial lain tanpa perlu menginap.",
+      en: "Social Event at Private Villa Sibentang suits arisan (a social savings circle), gatherings, reunions and other social occasions, with no overnight stay.",
     },
     foto: "/images/suite-gazebo.webp",
     w: 900,
@@ -587,7 +591,7 @@ export const ACARA: Acara[] = [
     satuan: "orang",
     minimal: 6,
     termasuk: [
-      { id: "Kolam air panas pribadi", en: "Private hot spring pool" },
+      { id: "Berenang di private pool Villa Sibentang", en: "A swim in the Villa Sibentang private pool" },
       { id: "Light meal", en: "Light meal" },
     ],
     tambahan: [],
@@ -611,8 +615,12 @@ export const JARAK_TEMPUH: { nama: string; menit: number; ket?: { id: string; en
   { nama: "Tegal Malaka", menit: 6 },
   { nama: "Pusat Oleh-oleh", menit: 8 },
   { nama: "Pusat Oleh-oleh Chocodot", menit: 9 },
-  { nama: "Kaki Gunung Guntur", menit: 15, ket: { id: "asal air panas Kampung Sumber Alam", en: "where the resort's hot spring water comes from" } },
-  { nama: "Stasiun", menit: 19, ket: { id: "dari stasiun ke Kampung Sumber Alam", en: "from the station to the resort" } },
+  /* Keterangan dipendekkan 20 Nov 2026 supaya baris keterangan tidak lebih
+     panjang daripada nama tempatnya (QA rag: daftar jarak timpang). Stasiun
+     tidak diberi keterangan: arah "dari stasiun ke hotel" di katalog sama
+     dengan waktu tempuh dari Kampung Sumber Alam yang sudah tertulis di judul daftar. */
+  { nama: "Kaki Gunung Guntur", menit: 15, ket: { id: "sumber air panas", en: "hot water source" } },
+  { nama: "Stasiun", menit: 19 },
   { nama: "Situ Bagendit", menit: 22 },
   { nama: "Sukaregang", menit: 25 },
   { nama: "Candi Cangkuang", menit: 34 },
@@ -629,5 +637,5 @@ export const META_BAWAAN = {
   title:
     "Resort Air Panas Alami di Cipanas Garut | Kampung Sumber Alam",
   description:
-    "Resort bergaya kampung Sunda di Cipanas, Garut. Bungalow beratap ijuk berdiri di atas kolam, berendam air panas alami dari Gunung Guntur. Booking langsung.",
+    "Kampung Sumber Alam adalah resort bergaya kampung Sunda di Cipanas, Garut. Bungalow kayu beratap ijuk berdiri di atas balong, dan setiap kamar dialiri air panas alami Gunung Guntur.",
 } as const;
