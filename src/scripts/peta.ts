@@ -659,7 +659,7 @@ export function mulaiPeta(akar: HTMLElement) {
      (dalam lebar pandang). Ganti plat tetap memakai kabut dasar yang menutup penuh. */
   /* QA putaran 4: puncak 0,40-0,45 di desktop (0,28 terlalu tipis dan terasa tidak konsisten) */
   function puncakHalimun(jarak: number) {
-    const p = jarak < 0.6 ? 0.4 : jarak >= 1.2 ? 0.45 : 0.4 + ((jarak - 0.6) / 0.6) * 0.05;
+    const p = jarak < 0.6 ? 0.43 : jarak >= 1.2 ? 0.45 : 0.43 + ((jarak - 0.6) / 0.6) * 0.02;
     return hp ? p * 0.8 : p;
   }
   function acakUbin(el: HTMLElement) {
