@@ -270,6 +270,8 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
         const dekat = dekatnya(zn);
         return (
           <article class="zona" id={`zona-${zn.no}`} data-zona-isi={zn.no} aria-labelledby={`h-zona-${zn.no}`}>
+            {/* daftar ringkas (dengan JS): seluruh kartu membuka panel zona; tanpa JS rincian tampil penuh */}
+            <button type="button" class="zona-buka" data-buka={zn.no} aria-haspopup="dialog" aria-label={lang === "en" ? `See photo and details of ${zn.label}` : `Lihat foto dan keterangan ${zn.label}`}></button>
             <div class="zona-media">
               {klip ? (
                 <video class="zona-video" muted playsinline preload="none" aria-hidden="true"

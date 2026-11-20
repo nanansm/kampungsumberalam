@@ -134,6 +134,33 @@ html.gerak .tepi-panah { animation: tepi-geser 1.8s var(--ease-io) infinite; }
 .daftar-jml { font: 600 .72rem/1 var(--sans); background: var(--alam); color: #fff; border-radius: 999px; padding: 5px 8px; }
 .daftar-isi { display: grid; gap: 28px; margin-top: 28px; }
 @media (min-width: 900px) { .daftar-isi { grid-template-columns: repeat(2, 1fr); gap: 40px 32px; } }
+/* Daftar semua zona ringkas (QA putaran 4): foto kecil + nomor + nama, kisi 2 kolom HP / 3-4 kolom
+   desktop; rincian dibaca di panel zona. Isi lengkap tetap ada di DOM (sumber panel, mesin pencari),
+   dan tanpa JavaScript daftar tampil penuh seperti sebelumnya. */
+.zona-buka { display: none; }
+html.js .daftar-isi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+@media (min-width: 700px) { html.js .daftar-isi { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { html.js .daftar-isi { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 20px; } }
+html.js .daftar-isi .zona { position: relative; align-content: start; }
+/* kisi seimbang untuk 21 zona: kartu pertama (Lobby, tempat tamu tiba) diperbesar supaya tidak ada kartu
+   yang sendirian di baris terakhir: HP 2 kolom (1 lebar + 10 baris), 3 kolom pas 7 baris, 4 kolom 2x2 + 20 */
+html.js .daftar-isi .zona:first-child { grid-column: span 2; }
+@media (min-width: 700px) { html.js .daftar-isi .zona:first-child { grid-column: auto; } }
+@media (min-width: 1100px) {
+  html.js .daftar-isi .zona:first-child { grid-column: span 2; grid-row: span 2; grid-template-rows: 1fr auto; }
+  html.js .daftar-isi .zona:first-child .zona-media { aspect-ratio: auto; height: 100%; min-height: 0; }
+  html.js .daftar-isi .zona:first-child h3 { font-size: clamp(1.4rem, 2vw, 1.8rem); }
+}
+html.js .daftar-isi .zona-teks { padding: 10px 2px 4px; gap: 4px; }
+html.js .daftar-isi .zona-teks > :not(.lbl):not(h3) { display: none; }
+html.js .daftar-isi .zona-teks > .lbl { font-size: .62rem; }
+html.js .daftar-isi .zona h3 { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.15; }
+html.js .daftar-isi .zona-video { display: none; }
+html.js .daftar-isi .lensa-ket { left: 6px; bottom: 6px; font-size: .6rem; padding: 2px 5px; }
+html.js .daftar-isi .zona-buka { display: block; position: absolute; inset: 0; z-index: 3; margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer; }
+html.js .daftar-isi .zona-buka:focus-visible { outline: 2px solid var(--alam); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { html.js .daftar-isi .zona:hover h3 { color: var(--alam); } }
+.panel-badan .zona-buka { display: none !important; }
 
 /* Isi zona (dipakai di daftar dan di panel) */
 .zona { display: grid; gap: 0; background: #fff; }
@@ -209,9 +236,11 @@ html.gerak .pin.plat-lain, html.gerak .titik-lain.plat-lain, html.gerak .tepi-ar
 /* kabut pindah plat: di atas peta dan titik, di bawah kotak keterangan dan navigasi */
 .peta-kabut { display: none; }
 html.gerak .peta-kabut { display: block; position: absolute; inset: 0; z-index: 2; opacity: 0; pointer-events: none; overflow: hidden; }
-html.gerak .kabut-dasar { position: absolute; inset: 0; background: var(--krem); opacity: .92; }
-html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; background: url("/peta/halimun-a.webp") repeat 0 0 / 1536px 1536px; }
-@media (max-width: 899px) { html.gerak .kabut-uap { background-image: url("/peta/halimun-a-hp.webp"); background-size: 1024px 1024px; } }
+/* tutup ganti plat: krem .8 + tekstur halimun (karakter sama dengan halimun pindah henti, bukan putih rata) */
+html.gerak .kabut-dasar { position: absolute; inset: 0; background: var(--krem); opacity: .8; }
+html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; background-repeat: repeat; background-size: 1536px 1536px; }
+html.gerak .halimun-siap .kabut-uap { background-image: url("/peta/halimun-a.webp"); }
+@media (max-width: 899px) { html.gerak .kabut-uap { background-size: 1024px 1024px; } html.gerak .halimun-siap .kabut-uap { background-image: url("/peta/halimun-a-hp.webp"); } }
 
 /* ---------- Halimun pindah pemberhentian (butir 3) ----------
    Dua lapis tekstur prosedural yang bisa diubin (tools/peta/uap.py), di atas peta dan titik, di bawah
@@ -220,10 +249,14 @@ html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; 
 .peta-halimun { display: none; }
 html.gerak .peta-halimun { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 html.gerak .halimun { position: absolute; display: block; opacity: 0; will-change: transform, opacity; background-repeat: repeat; }
-html.gerak .halimun-a { left: -40%; top: -40%; width: 180%; height: 180%; background-image: url("/peta/halimun-a.webp"); background-size: 1536px 1536px; }
-html.gerak .halimun-b { left: -70%; top: -70%; width: 240%; height: 240%; background-image: url("/peta/halimun-b.webp"); background-size: 1536px 1536px; }
+/* tekstur baru dimuat saat peta mendekat (peta.ts menambah .halimun-siap) */
+html.gerak .halimun-a { left: -40%; top: -40%; width: 180%; height: 180%; background-size: 1536px 1536px; }
+html.gerak .halimun-b { left: -70%; top: -70%; width: 240%; height: 240%; background-size: 1536px 1536px; }
+html.gerak .halimun-siap .halimun-a { background-image: url("/peta/halimun-a.webp"); }
+html.gerak .halimun-siap .halimun-b { background-image: url("/peta/halimun-b.webp"); }
 @media (max-width: 899px) {
-  html.gerak .halimun-a { background-image: url("/peta/halimun-a-hp.webp"); background-size: 1024px 1024px; }
+  html.gerak .halimun-a { background-size: 1024px 1024px; }
+  html.gerak .halimun-siap .halimun-a { background-image: url("/peta/halimun-a-hp.webp"); }
   html.gerak .halimun-b { display: none; }
 }
 
@@ -338,7 +371,8 @@ html.gerak .peta-wadah { overflow-anchor: none; }
   html.gerak .kotak-teks { padding: 16px 16px 18px; gap: 8px; }
   html.gerak .peta-kotak h3 { font-size: 1.36rem; }
   html.gerak .kotak-isi { font-size: .88rem; line-height: 1.5; }
-  html.gerak .kotak-chip { flex-wrap: nowrap; overflow-x: auto; margin: 2px -16px 0; padding: 0 16px 2px; scrollbar-width: none; }
+  /* chip zona dibungkus ke baris berikutnya (bukan digeser), jadi tidak ada nama yang terpotong */
+  html.gerak .kotak-chip { flex-wrap: wrap; gap: 5px; margin: 2px 0 0; }
   html.gerak .kotak-chip::-webkit-scrollbar { display: none; }
   html.gerak .kotak-chip li { flex: none; }
   .nav-ringkas { display: inline-flex; position: absolute; left: var(--tepi); top: 12px; pointer-events: auto; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--krem); color: var(--petang); box-shadow: 0 1px 4px rgba(4, 40, 33, .16); font: 500 .8rem/1 var(--sans); cursor: pointer; opacity: 0; visibility: hidden; transition: opacity .5s var(--ease-out), visibility 0s linear .5s; }

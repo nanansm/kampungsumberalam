@@ -41,8 +41,24 @@ const campur = (a: Kam, b: Kam, t: number): Kam => ({
 export function mulaiPeta(akar: HTMLElement) {
   const D: Data = JSON.parse(akar.dataset.skrip || "{}");
   pasangPanel(akar);
+  // tombol WhatsApp melayang disembunyikan selama bagian peta terlihat, termasuk saat baru masuk dari
+  // bawah layar: "Lewati peta" (pojok kanan) tidak pernah tertutup, dan kotak keterangan punya jalan WA
+  // sendiri. Berlaku juga di versi diam.
+  const bagianPeta = akar.querySelector(".peta");
+  if (bagianPeta && "IntersectionObserver" in window) {
+    new IntersectionObserver((es) => es.forEach((e) => document.documentElement.classList.toggle("di-peta", e.isIntersecting))).observe(bagianPeta);
+  }
   if (!gerakBoleh() || !document.documentElement.classList.contains("gerak")) return;
   (window as any).__petaSiap = true;
+  // tekstur halimun/kabut (WebP lossless +-0,9 MB) baru dimuat saat peta mendekat
+  if ("IntersectionObserver" in window) {
+    const dekatPeta = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      akar.classList.add("halimun-siap");
+      dekatPeta.disconnect();
+    }, { rootMargin: "150% 0px" });
+    dekatPeta.observe(akar);
+  } else akar.classList.add("halimun-siap");
 
   const seksi = akar.querySelector<HTMLElement>(".peta")!;
   const panggung = akar.querySelector<HTMLElement>(".peta-panggung")!;
@@ -615,14 +631,14 @@ export function mulaiPeta(akar: HTMLElement) {
     const o = { t: 0 };
     muatUbin(tujuan, pl);
     terbang = gsap.timeline({ onComplete: selesaiTerbang })
-      .to(kabut, { opacity: 1, duration: 0.65, ease: "power2.in" }, 0)
+      .to(kabut, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, 0)
       .fromTo(uap, { scale: 1.25 }, { scale: 1, duration: 0.65, ease: "power2.out" }, 0)
       .add(() => {
         gantiPlat(pl);
         cur = { ...mulai };
         gambar();
       })
-      .to(kabut, { opacity: 0, duration: 1.1, ease: "power2.out" })
+      .to(kabut, { opacity: 0, duration: 1.1, ease: "sine.inOut" })
       .to(uap, { scale: 1.3, duration: 1.1, ease: "power1.in" }, "<")
       .to(o, {
         t: 1,
@@ -641,8 +657,9 @@ export function mulaiPeta(akar: HTMLElement) {
   /* ---------- halimun pindah henti (butir 3) ----------
      Dua lapis tipis melintas searah terbang selama 1,4 dtk; puncak opacity mengikuti jarak terbang
      (dalam lebar pandang). Ganti plat tetap memakai kabut dasar yang menutup penuh. */
+  /* QA putaran 4: puncak 0,40-0,45 di desktop (0,28 terlalu tipis dan terasa tidak konsisten) */
   function puncakHalimun(jarak: number) {
-    const p = jarak < 0.6 ? 0.28 : jarak >= 1.2 ? 0.55 : 0.28 + ((jarak - 0.6) / 0.6) * 0.27;
+    const p = jarak < 0.6 ? 0.4 : jarak >= 1.2 ? 0.45 : 0.4 + ((jarak - 0.6) / 0.6) * 0.05;
     return hp ? p * 0.8 : p;
   }
   function acakUbin(el: HTMLElement) {
@@ -662,16 +679,18 @@ export function mulaiPeta(akar: HTMLElement) {
     vx /= n;
     vy /= n;
     const pA = puncakHalimun(jarak), pB = pA * 0.7;
+    // masuk +-0,4 dtk, tahan +-0,55 dtk di puncak, keluar sisanya; sine supaya tidak menyergap
+    const masuk = Math.min(0.4, d * 0.3), tahan = Math.min(0.55, d - masuk - 0.3), keluar = d - masuk - tahan;
     const tl = gsap.timeline();
     if (t0) tl.to(lapis, { opacity: 0, duration: 0.2, ease: "power1.out" }, 0);
     tl.add(() => lapis.forEach(acakUbin), t0)
       .fromTo(halimunA, { xPercent: vx * 12, yPercent: vy * 12, scale: 1.05 }, { xPercent: -vx * 12, yPercent: -vy * 12, scale: 1.18, duration: d, ease: "none", immediateRender: false }, t0)
-      .fromTo(halimunA, { opacity: 0 }, { opacity: pA, duration: d * 0.45, ease: "power2.in", immediateRender: false }, t0)
-      .to(halimunA, { opacity: 0, duration: d * 0.45, ease: "power2.out" }, t0 + d * 0.55);
+      .fromTo(halimunA, { opacity: 0 }, { opacity: pA, duration: masuk, ease: "sine.inOut", immediateRender: false }, t0)
+      .to(halimunA, { opacity: 0, duration: keluar, ease: "sine.inOut" }, t0 + masuk + tahan);
     if (lapis.length > 1 && halimunB) {
       tl.fromTo(halimunB, { xPercent: vx * 22, yPercent: vy * 22, scale: 1.1 }, { xPercent: -vx * 22, yPercent: -vy * 22, scale: 1.32, duration: d, ease: "none", immediateRender: false }, t0)
-        .fromTo(halimunB, { opacity: 0 }, { opacity: pB, duration: d * 0.37, ease: "power2.in", immediateRender: false }, t0 + d * 0.08)
-        .to(halimunB, { opacity: 0, duration: d * 0.37, ease: "power2.out" }, t0 + d * 0.55);
+        .fromTo(halimunB, { opacity: 0 }, { opacity: pB, duration: masuk, ease: "sine.inOut", immediateRender: false }, t0 + 0.08)
+        .to(halimunB, { opacity: 0, duration: keluar - 0.08, ease: "sine.inOut" }, t0 + masuk + tahan);
     }
     halimunTl = tl;
   }
@@ -997,11 +1016,9 @@ export function mulaiPeta(akar: HTMLElement) {
     end: "bottom bottom",
     onUpdate: (self) => perbarui(self.progress),
     onRefresh: (self) => perbarui(self.progress),
-    // tombol WhatsApp melayang disembunyikan selama di dalam peta: kotak keterangan sudah punya jalannya sendiri
     onToggle: (self) => {
       if (beku) return;
       diDalam = self.isActive;
-      document.documentElement.classList.toggle("di-peta", self.isActive);
     },
   });
 
