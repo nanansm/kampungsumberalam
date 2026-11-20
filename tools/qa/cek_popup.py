@@ -10,7 +10,7 @@ import asyncio, json, os, sys
 from playwright.async_api import async_playwright
 
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
-UKURAN = {"1512": (1512, 830), "1440": (1440, 900), "1280": (1280, 720), "390": (390, 844), "844": (844, 390), "1024": (1024, 768)}
+UKURAN = {"1512": (1512, 830), "1440": (1440, 900), "1280": (1280, 720), "1190": (1190, 680), "390": (390, 844), "844": (844, 390), "1024": (1024, 768)}
 JS = r"""(utama) => {
   const pg = document.querySelector('.peta-panggung').getBoundingClientRect();
   const r = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); return b.width && b.height ? { l: b.left, t: b.top, r: b.right, b: b.bottom } : null; };
@@ -39,7 +39,7 @@ JS = r"""(utama) => {
 
 async def main():
     mesin = sys.argv[1] if len(sys.argv) > 1 else "chromium"
-    lebar = sys.argv[2:] or ["1512", "1440", "1280", "390"]
+    lebar = sys.argv[2:] or ["1512", "1440", "1280", "1190", "390"]
     gagal = 0
     async with async_playwright() as p:
         b = await getattr(p, mesin).launch()

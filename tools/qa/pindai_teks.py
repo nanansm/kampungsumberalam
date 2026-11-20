@@ -15,7 +15,7 @@ from playwright.async_api import async_playwright
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
 RUTE = ["/", "/accommodation/", "/meetings/", "/events/", "/gallery/", "/location/", "/about/", "/404.html", "/link/",
         "/en/", "/en/accommodation/", "/en/meetings/", "/en/events/", "/en/gallery/", "/en/location/", "/en/about/"]
-UKURAN = {360: (360, 640), 390: (390, 844), 844: (844, 390), 1024: (1024, 768), 1440: (1440, 900), 1920: (1920, 1080)}
+UKURAN = {360: (360, 640), 390: (390, 844), 844: (844, 390), 1024: (1024, 768), 1190: (1190, 680), 1440: (1440, 900), 1512: (1512, 830), 1920: (1920, 1080)}
 
 JS = r"""
 () => {

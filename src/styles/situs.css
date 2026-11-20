@@ -137,6 +137,8 @@ html:not(.js) .hdr { position: absolute; }
 .menu-kontak dd { margin: 0; max-width: 26ch; }
 .menu-kontak dd a { text-decoration: none; border-bottom: 1px solid var(--garis); }
 /* goresan utuh di dalam kolom kontak (tidak menyentuh tepi), mengecil di layar pendek */
+.menu-kontak .btn { padding: 0 16px; }
+.menu-kontak .btn-tx { white-space: nowrap; letter-spacing: .14em; }
 .menu-kontak .goresan { width: 110px; width: min(110px, 13vh); width: min(110px, 13dvh); margin-top: 18px; }
 /* ukuran item ikut lebar DAN tinggi layar: sembilan item (+ kepala menu) muat di layar 680 px;
    lebih pendek lagi, menu bisa digulir */
@@ -275,7 +277,7 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 .ftr-in { max-width: 1440px; margin: 0 auto; display: grid; gap: 32px; }
 .ftr img { height: 64px; width: auto; }
 .ftr ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
-.ftr a { text-decoration: none; opacity: .9; overflow-wrap: anywhere; display: inline-block; padding: 4px 0; }
+.ftr a { text-decoration: none; opacity: .9; display: inline-block; padding: 4px 0; }
 .ftr a:hover { opacity: 1; text-decoration: underline; }
 @media (max-width: 899px) { .ftr .bawah { padding-right: 72px; } }
 .ftr .sosmed { display: flex; gap: 10px; margin-bottom: 4px; }
@@ -298,14 +300,17 @@ html.di-peta .wa-float { opacity: 0; transform: translateY(16px) scale(.9); poin
 @media (min-width: 560px) and (max-width: 899px) { .ftr-in { grid-template-columns: 1fr 1fr; } .ftr-in > div:first-child, .ftr .bawah { grid-column: 1 / -1; } }
 .panah { color: var(--alam); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
 .panah::after { content: " \2192"; }
-.menginap .aksi .panah { display: inline-block; margin-top: 14px; }
+.menginap .aksi .panah { display: inline-block; margin-top: 22px; }
 @media (max-width: 767px) { .wa-float { width: 52px; height: 52px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); } }
 .catatan .panah { color: var(--tinta); }
 
 /* Datang tanpa menginap (beranda, blok Berendam) — 19 Nov 2026 */
 .dv { max-width: 1440px; margin: 0 auto; padding: 0 var(--pad) clamp(56px, 8vw, 110px); }
 .dv-judul { font: 600 .72rem/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--alam); }
-.dv ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 28px; }
+/* kisi seimbang: tidak ada butir yang sendirian di baris terakhir (5 butir: 3+2, layar lebar 5 sejajar) */
+.dv ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 28px; }
+@media (min-width: 640px) { .dv ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } .dv ul:has(> li:nth-child(4):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1300px) { .dv ul:has(> li:nth-child(5):last-child) { grid-template-columns: repeat(5, minmax(0, 1fr)); } .dv ul:has(> li:nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .dv li { border-top: 1px solid var(--garis); padding: 16px 0; }
 .dv-nama { font: 400 1.25rem/1.15 var(--serif); }
 .dv-harga { margin-top: 4px; font-variant-numeric: tabular-nums; font-weight: 600; font-size: .9rem; }
@@ -342,6 +347,8 @@ html.gerak .hero-gulir { animation: muncul-saja 1s var(--ease-out) both 1.5s; }
 .sub-bagian { white-space: nowrap; }
 @media (max-width: 599px) { .hero-sub .sub-titik { display: none; } .hero-sub .sub-bagian { display: block; } }
 .hero-gulir { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: grid; justify-items: center; gap: 10px; color: #fff; text-decoration: none; font: 500 .66rem/1 var(--sans); letter-spacing: .28em; text-transform: uppercase; }
+/* label GULIR memudar begitu halaman digulir > 40 px, supaya tidak menimpa logo di header */
+html.gulir-lewat .hero-gulir { opacity: 0 !important; pointer-events: none; transition: opacity .35s var(--ease-ui); animation: none; }
 .hero-gulir-garis { position: relative; width: 1px; height: 46px; background: rgba(255, 255, 255, .3); overflow: hidden; }
 .hero-gulir-garis::after { content: ""; position: absolute; inset: 0; background: #fff; animation: garis-turun 2.2s var(--ease-io) infinite; }
 @keyframes garis-turun { 0% { transform: translateY(-100%); } 55% { transform: translateY(0); } 100% { transform: translateY(100%); } }
@@ -481,7 +488,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .cerita-isi { margin: 8px 0 0; max-width: 45ch; font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.6; color: var(--tinta-2); text-wrap: pretty; }
 /* klip drone selebar layar di pembuka dan penutup cerita */
 .cerita-klip { margin: 0; aspect-ratio: 4 / 5; }
-@media (min-width: 768px) { .cerita-klip { aspect-ratio: 16 / 9; max-height: 92svh; } }
+/* selebar layar di semua ukuran: tinggi mengikuti 16:9 tetapi paling tinggi 92svh, isi di-cover
+   (aspect-ratio + max-height membuat lebarnya menyusut di layar pendek seperti 1190x680) */
+@media (min-width: 768px) { .cerita-klip { width: 100%; aspect-ratio: auto; height: min(56.25vw, 92svh); } }
 .cerita-kepala h2 { font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.02; max-width: 14em; text-wrap: balance; padding-right: calc(clamp(72px, 9vw, 150px) + 16px); }
 .cerita-kepala { overflow: clip; }
 /* kelapa utuh di dalam kepala bagian, berjarak dari tepi bawah (latar sesudahnya sama-sama Kertas) */
@@ -537,7 +546,7 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .babak--teks .babak-isi { max-width: 45ch; font-size: clamp(1.05rem, 1.2vw, 1.2rem); color: color-mix(in srgb, var(--krem) 88%, transparent); }
 .babak-video { position: absolute; inset: 0; opacity: 0; transition: opacity .9s var(--ease-ui); }
 .babak-video.main { opacity: 1; }
-@media (min-width: 768px) { .babak--video .babak-media { aspect-ratio: 16 / 9; max-height: 92svh; } }
+@media (min-width: 768px) { .babak--video .babak-media { width: 100%; aspect-ratio: auto; height: min(56.25vw, 92svh); } }
 @media (min-width: 900px) {
   .babak--foto { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: center; padding: clamp(72px, 9vw, 128px) var(--pad); }
   .babak--foto .babak-media { grid-column: 2 / span 5; grid-row: 1; aspect-ratio: 2 / 3; max-height: 88svh; }
@@ -562,9 +571,10 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .cara-in { position: relative; }
 .cara { overflow: clip; }
 /* rumah keluar tegas dari tepi kanan layar (±33% tinta), utuh di atas */
-/* top paling tinggi 16 px di bawah tepi atas seksi (padding atas seksi = clamp(64px, 9vw, 120px)) */
-.cara .goresan { --lb: clamp(120px, 18vw, 280px); position: absolute; right: calc(-1 * var(--pad) - var(--lb) * var(--keluar-kanan)); top: max(-6vw, calc(16px - clamp(64px, 9vw, 120px))); width: var(--lb); --goresan-warna: var(--alam); }
-.cara h2 { padding-right: clamp(110px, 18vw, 260px); text-wrap: balance; position: relative; }
+/* rumah utuh di dalam seksi, berjarak dari tepi jendela (bleed hanya di batas seksi beda warna);
+   top paling tinggi 16 px di bawah tepi atas seksi (padding atas seksi = clamp(64px, 9vw, 120px)) */
+.cara .goresan { --lb: clamp(96px, 14vw, 220px); position: absolute; right: 0; top: max(-6vw, calc(16px - clamp(64px, 9vw, 120px))); width: var(--lb); --goresan-warna: var(--alam); }
+.cara h2 { padding-right: calc(clamp(96px, 14vw, 220px) + 20px); text-wrap: balance; position: relative; }
 .cara-bawah { margin-top: 22px; display: grid; gap: 6px; }
 .cara-bawah .catatan { margin-top: 0; max-width: 60ch; }
 .penutup { position: relative; }

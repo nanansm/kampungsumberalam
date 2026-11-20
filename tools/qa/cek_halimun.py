@@ -53,7 +53,7 @@ async def main():
         # KSA_GPU=1: komposit lewat GPU (ANGLE Metal di Mac), mendekati peramban sungguhan
         gpu = ["--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist", "--enable-gpu-rasterization"] if os.environ.get("KSA_GPU") else []
         b = await p.chromium.launch(args=gpu)
-        for nama, vw, vh, mob in (("dk", 1440, 900, False), ("hp", 390, 844, True)):
+        for nama, vw, vh, mob in (("dk", 1440, 900, False), ("dk1190", 1190, 680, False), ("dk1512", 1512, 830, False), ("hp", 390, 844, True)):
             ctx = await b.new_context(viewport={"width": vw, "height": vh}, has_touch=mob, is_mobile=mob, device_scale_factor=2 if mob else 1)
             pg = await ctx.new_page()
             await pg.goto(B + "/", wait_until="networkidle")

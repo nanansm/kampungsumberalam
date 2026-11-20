@@ -2,7 +2,7 @@
 import "../styles/situs.css";
 import { getImage } from "astro:assets";
 import fotoMenu from "../assets/cerita/menu-foto.jpg";
-import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON, TELEPON_TAMPIL, EMAIL, IG_URL, FB_URL, TIKTOK_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink } from "../data/content";
+import { NAMA_PANJANG, ALAMAT_SATU_BARIS, TELEPON, TELEPON_TAMPIL, EMAIL, IG_URL, FB_URL, TIKTOK_URL, IG_HANDLE, MAPS_URL, BOOKING_URL, SIBENTANG_URL, TRAVELOKA_URL, SITE, GEO, waLink, emailPatah } from "../data/content";
 
 interface Props {
   lang: "id" | "en";
@@ -134,7 +134,7 @@ const fotoMenuWebp = await getImage({ src: fotoMenu, width: 720, format: "webp",
           <a class="btn btn-isi btn-wa" href={waLink(waPesan)} rel="noopener"><span class="btn-tx">{t("menu.wa")}</span></a>
           <dl>
             <dt class="lbl">{t("menu.telepon")}</dt><dd><a href={tel}>{TELEPON_TAMPIL}</a></dd>
-            <dt class="lbl">Email</dt><dd><a href={`mailto:${EMAIL}`}>{EMAIL}</a></dd>
+            <dt class="lbl">Email</dt><dd><a href={`mailto:${EMAIL}`} set:html={emailPatah(EMAIL)}></a></dd>
             <dt class="lbl">{t("menu.alamat")}</dt><dd>{ALAMAT_SATU_BARIS}</dd>
           </dl>
           <span class="goresan goresan--teratai" aria-hidden="true"></span>
@@ -167,7 +167,7 @@ const fotoMenuWebp = await getImage({ src: fotoMenu, width: 720, format: "webp",
         <ul>
           <li><a href={waLink(waPesan)} rel="noopener">WhatsApp</a></li>
           <li><a href={tel}>{TELEPON_TAMPIL}</a></li>
-          <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+          <li><a href={`mailto:${EMAIL}`} set:html={emailPatah(EMAIL)}></a></li>
         </ul>
       </div>
       <div>

@@ -610,6 +610,9 @@ export const ACARA: Acara[] = [
  * (Daftar lama 'Di sekitar resort' dari situs lama dibuang 19 Nov 2026:
  * menyebut pemandian pesaing dan tidak ada di Data Master.)
  */
+/** email dengan titik patah hanya sesudah @ dan tanda hubung (dipakai lewat set:html) */
+export const emailPatah = (e: string) => e.replace("@", "@<wbr>").replace(/-/g, "-<wbr>");
+
 export const JARAK_TEMPUH: { nama: string; menit: number; ket?: { id: string; en: string } }[] = [
   { nama: "CFD Ibrahim Adji", menit: 5 },
   { nama: "Tegal Malaka", menit: 6 },

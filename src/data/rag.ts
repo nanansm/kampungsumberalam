@@ -23,7 +23,7 @@ const rentang = (t: string) => t.replace(/(\S)–(\S)/g, `$1${WJ}–${WJ}$2`);
  *  (menyambung nama panjang di paragraf justru membuat sisi kanan timpang) */
 export function lekatAngka(t: string): string {
   return rentang(t)
-    .replace(/(±?\d[\d.,:–\u2060-]*) (m|menit|min|jam|hr|orang|dewasa|adults|unit|units|villa|villas|WIB|am|pm|noon)\b/g, `$1${NBSP}$2`)
+    .replace(/(±?\d[\d.,:–\u2060-]*) (m|menit|min|jam|hr|orang|dewasa|adults|unit|units|villa|villas|WIB|am|pm|noon|minutes|minute)\b/g, `$1${NBSP}$2`)
     .replace(/\b(Rp|pukul) (\d)/g, `$1${NBSP}$2`)
     .replace(/ · /g, `${NBSP}· `);
 }

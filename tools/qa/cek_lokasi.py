@@ -51,7 +51,7 @@ async def main():
     gagal = 0
     async with async_playwright() as p:
         br = await p.chromium.launch()
-        for vw, vh in ((1440, 900), (1280, 720), (1024, 768), (768, 1024), (390, 844)):
+        for vw, vh in ((1512, 830), (1440, 900), (1280, 720), (1190, 680), (1024, 768), (768, 1024), (390, 844)):
             mob = vw < 900
             pg = await br.new_page(viewport={"width": vw, "height": vh}, is_mobile=mob, has_touch=mob, device_scale_factor=1)
             await pg.goto(B + "/", wait_until="networkidle")

@@ -13,8 +13,7 @@ import {
   TELEPON_TAMPIL,
   TELEPON_ALT_TAMPIL,
   EMAIL,
-  waLink,
-} from "../../data/content";
+  waLink, emailPatah } from "../../data/content";
 import { lekat } from "../../data/rag";
 import PetaPerjalanan from "../PetaPerjalanan.astro";
 
@@ -98,8 +97,8 @@ const { lang } = Astro.props;
             </div>
             <div class="flex items-baseline justify-between gap-6 border-b border-garis py-4">
               <dt class="text-tinta-lembut">Email</dt>
-              <dd class="text-right break-all">
-                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              <dd class="text-right">
+                <a href={`mailto:${EMAIL}`} set:html={emailPatah(EMAIL)}></a>
               </dd>
             </div>
           </dl>

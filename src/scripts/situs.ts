@@ -50,6 +50,21 @@ function pasangHeader() {
   set();
 }
 
+/* ---------- Label GULIR di hero: memudar begitu halaman digulir > 40 px ----------
+   (di layar pendek label itu ikut naik dan menimpa logo di header) */
+function pasangGulirHero() {
+  if (!document.querySelector(".hero-gulir")) return;
+  let lewat = false;
+  const cek = () => {
+    const y = window.scrollY > 40;
+    if (y === lewat) return;
+    lewat = y;
+    html.classList.toggle("gulir-lewat", y);
+  };
+  window.addEventListener("scroll", cek, { passive: true });
+  cek();
+}
+
 /* ---------- Garis progres gulir ---------- */
 function pasangProgres() {
   const g = document.querySelector<HTMLElement>(".garis-progres span");
@@ -328,6 +343,7 @@ function pasangGoresan() {
 pasangHeader();
 pasangProgres();
 pasangGoresan();
+pasangGulirHero();
 pasangReveal();
 pasangHalamanDalam();
 pasangNyala();

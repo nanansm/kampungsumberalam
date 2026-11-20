@@ -102,10 +102,10 @@ html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
 /* pola kampung di halaman dalam: pita bilik di bawah foto pembuka, satu goresan di pojok isi */
 .hal { position: relative; }
 .hal { overflow-x: clip; isolation: isolate; }
-/* goresan keluar tegas dari tepi kanan layar (±33% tinta); kelapa yang tinggi ramping tetap utuh */
-.hal-goresan { --lb: clamp(110px, 14vw, 220px); position: absolute; right: calc(var(--lb) * var(--keluar-kanan) * -1); top: clamp(20px, 4vw, 56px); width: var(--lb); z-index: -1; opacity: .9; }
+/* goresan utuh di dalam isi, berjarak dari tepi jendela (bleed hanya di batas seksi beda warna) */
+.hal-goresan { --lb: clamp(84px, 11vw, 180px); position: absolute; right: var(--pad, 24px); top: clamp(20px, 4vw, 56px); width: var(--lb); z-index: -1; opacity: .9; }
 .hal-goresan.goresan--kelapa { --lb: clamp(64px, 7vw, 110px); right: var(--pad, 24px); }
-@media (max-width: 767px) { .hal-goresan { --lb: 96px; } .hal-goresan.goresan--kelapa { --lb: 52px; right: 16px; } }
+@media (max-width: 767px) { .hal-goresan { --lb: 72px; right: 16px; } .hal-goresan.goresan--kelapa { --lb: 52px; right: 16px; } }
 /* judul seksi halaman dalam: ukuran display, ±24–28 karakter per baris (rapihkan-rag) */
 :where(.hal .judul-seksi) { max-width: 26ch; text-wrap: balance; }
 /* galeri: kelompok dua foto memenuhi lebar halaman (tidak menyisakan kolom kosong) */

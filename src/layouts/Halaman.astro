@@ -2,6 +2,7 @@
 /* Kerangka halaman dalam (Tentang, Menginap, Rapat, Acara, Galeri, Lokasi).
    Pola sama dengan beranda: foto paling atas, header putih di bawahnya lalu menempel saat scroll. */
 import { altTeks } from "../data/alt-en";
+import { lekat } from "../data/rag";
 import "../styles/halaman.css";
 import Situs from "./Situs.astro";
 import { getImage } from "astro:assets";
@@ -48,7 +49,7 @@ const goresan = GORESAN[path] ?? "teratai";
     </picture>
     <div class="hal-hero-tx">
       <p class="lbl" data-muncul>{penanda[lang]}</p>
-      <h1 id="h-hal" data-judul>{judul[lang]}</h1>
+      <h1 id="h-hal" data-judul>{lekat(judul[lang])}</h1>
     </div>
   </section>
   <div class="bilik hal-bilik" role="presentation"></div>

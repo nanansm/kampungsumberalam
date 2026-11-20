@@ -11,7 +11,9 @@ import asyncio, os, sys
 from playwright.async_api import async_playwright
 
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
-LEBAR = [(1920, 1080), (1512, 830), (1440, 900), (1280, 720), (1024, 768), (768, 1024), (390, 844), (360, 640)]
+LEBAR = [(1920, 1080), (1512, 830), (1440, 900), (1280, 720), (1190, 680), (1024, 768), (768, 1024), (390, 844), (360, 640)]
+RUTE = ["/", "/accommodation/", "/meetings/", "/events/", "/gallery/", "/location/", "/about/", "/404.html", "/link/",
+        "/en/", "/en/accommodation/", "/en/meetings/", "/en/events/", "/en/gallery/", "/en/location/", "/en/about/"]
 JS = r"""() => {
   const baris = (el) => {
     const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); const L = []; let n;
@@ -25,7 +27,13 @@ JS = r"""() => {
     const cs = getComputedStyle(el); return el.offsetParent && cs.visibility === 'visible' && !el.closest('[inert],[aria-hidden="true"],.sr');
   }).map((el) => { const L = baris(el); const cs = getComputedStyle(el);
     const kolom = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    return { id: el.id || el.className || el.tagName, teks: el.textContent.trim().slice(0, 60), kolom: Math.round(kolom), luber: el.scrollWidth > el.clientWidth + 1,
+    // nama resort tidak boleh terbelah antarbaris (QA putaran 4: "Kampung Sumber / Alam")
+    let namaPatah = false;
+    const tw2 = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t2;
+    while ((t2 = tw2.nextNode())) { const re2 = /Kampung[\s\u00a0]+Sumber[\s\u00a0]+Alam/g; let m2;
+      while ((m2 = re2.exec(t2.textContent))) { const rg = document.createRange(); rg.setStart(t2, m2.index); rg.setEnd(t2, m2.index + m2[0].length);
+        const tops = new Set([...rg.getClientRects()].filter((b) => b.width > 1).map((b) => Math.round(b.top / 6))); if (tops.size > 1) namaPatah = true; } }
+    return { id: el.id || el.className || el.tagName, teks: el.textContent.trim().slice(0, 60), kolom: Math.round(kolom), luber: el.scrollWidth > el.clientWidth + 1, namaPatah,
       lebar: L.map((x) => Math.round(x.r - x.l)), akhir: L.length > 1 ? L[L.length - 1].w.length : 9, baris: L.map((x) => x.w.join(' ')) }; });
 }"""
 
@@ -38,7 +46,7 @@ async def main():
         for vw, vh in LEBAR:
             mob = vw < 900
             ctx = await b.new_context(viewport={"width": vw, "height": vh}, has_touch=mob, is_mobile=mob, reduced_motion="reduce")
-            for r in ("/", "/en/"):
+            for r in RUTE:
                 pg = await ctx.new_page()
                 await pg.goto(B + r, wait_until="networkidle")
                 await pg.evaluate("document.fonts.ready.then(()=>1)")
@@ -48,6 +56,8 @@ async def main():
                         masalah.append("meluber")
                     if j["akhir"] == 1:
                         masalah.append("baris akhir satu kata")
+                    if j.get("namaPatah"):
+                        masalah.append("nama Kampung Sumber Alam terbelah")
                     if j["id"] == "h-lokasi" and vw in (1512, 1440, 1280, 1024, 768, 390):
                         L = j["lebar"]
                         if len(L) != 2:

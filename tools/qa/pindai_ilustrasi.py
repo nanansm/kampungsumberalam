@@ -26,7 +26,7 @@ from playwright.async_api import async_playwright
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
 RUTE = ["/", "/accommodation/", "/meetings/", "/events/", "/gallery/", "/location/", "/about/", "/404.html", "/link/",
         "/en/", "/en/accommodation/", "/en/meetings/", "/en/events/", "/en/gallery/", "/en/location/", "/en/about/"]
-UKURAN = {360: (360, 640), 390: (390, 844), 844: (844, 390), 1024: (1024, 768), 1440: (1440, 900), 1920: (1920, 1080)}
+UKURAN = {360: (360, 640), 390: (390, 844), 844: (844, 390), 1024: (1024, 768), 1190: (1190, 680), 1440: (1440, 900), 1512: (1512, 830), 1920: (1920, 1080)}
 PROFIL = json.load(open(Path(__file__).with_name("goresan-profil.json")))
 AMAN = 16          # px: jarak aman ilustrasi utuh dari tepi klip
 MIN_POTONG = 0.25  # massa tinta minimal yang terpotong agar bleed terbaca disengaja

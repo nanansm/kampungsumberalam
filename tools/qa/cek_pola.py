@@ -32,7 +32,7 @@ async def main():
     gagal = 0
     async with async_playwright() as p:
         b = await getattr(p, mesin).launch()
-        for vw, vh, mob in ((1440, 900, False), (390, 844, True)):
+        for vw, vh, mob in ((1440, 900, False), (1512, 830, False), (1190, 680, False), (390, 844, True)):
             ctx = await b.new_context(viewport={"width": vw, "height": vh}, has_touch=mob, is_mobile=mob, reduced_motion="reduce")
             for r in RUTE:
                 pg = await ctx.new_page()

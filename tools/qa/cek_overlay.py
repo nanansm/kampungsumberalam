@@ -12,7 +12,7 @@ from playwright.async_api import async_playwright
 
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
 OUT = sys.argv[1] if len(sys.argv) > 1 else "."
-UKURAN = [(1190, 680), (1280, 720), (1440, 800), (1024, 600), (844, 390), (390, 664)]
+UKURAN = [(1190, 680), (1512, 830), (1280, 720), (1440, 800), (1024, 600), (844, 390), (390, 664)]
 TAMPAK = r"""(sel) => { const el = document.querySelector(sel); if (!el) return 'tidak ada';
   const cs = getComputedStyle(el); if (cs.display === 'none' || !el.getClientRects().length) return 'tersembunyi';
   const r = el.getBoundingClientRect(); return (r.top >= -0.5 && r.bottom <= innerHeight + 0.5 && r.left >= -0.5 && r.right <= innerWidth + 0.5) ? 'penuh' : `sebagian ${Math.round(r.top)}..${Math.round(r.bottom)} / ${innerHeight}`; }"""
