@@ -101,7 +101,6 @@ html.gerak .hal [data-jalan] .seksi > * { opacity: 1; }
 
 /* pola kampung di halaman dalam: pita bilik di bawah foto pembuka, satu goresan di pojok isi */
 .hal { position: relative; }
-.hal-bilik { height: 14px; background-size: 14px 14px; }
 .hal { overflow-x: clip; isolation: isolate; }
 /* goresan keluar tegas dari tepi kanan layar (±33% tinta); kelapa yang tinggi ramping tetap utuh */
 .hal-goresan { --lb: clamp(110px, 14vw, 220px); position: absolute; right: calc(var(--lb) * var(--keluar-kanan) * -1); top: clamp(20px, 4vw, 56px); width: var(--lb); z-index: -1; opacity: .9; }

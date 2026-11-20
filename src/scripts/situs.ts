@@ -98,6 +98,13 @@ function judulPerBaris(el: HTMLElement) {
 function pasangReveal() {
   if (!gerak) return;
   document.querySelectorAll<HTMLElement>("[data-judul]").forEach(judulPerBaris);
+  // pita bilik: tersingkap dari kiri sekali, marka logo muncul di akhir (butir 4)
+  document.querySelectorAll<HTMLElement>("main .bilik, .ftr .bilik").forEach((el) => {
+    const marka = el.querySelector(".bilik-marka");
+    const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 92%", once: true } })
+      .fromTo(el, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "ksa" });
+    if (marka) tl.fromTo(marka, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, ">-0.2");
+  });
   // teks & blok kecil: naik 14px sambil muncul, berurutan per kelompok
   ScrollTrigger.batch("[data-muncul]", {
     start: "top 90%",

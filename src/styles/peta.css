@@ -184,7 +184,7 @@ html.gerak .tepi-panah { animation: tepi-geser 1.8s var(--ease-io) infinite; }
 .panel-tutup:active svg { transform: scale(.9); }
 .panel-badan { margin: 0; }
 /* tepi panel = kain berpola bilik (anyaman) */
-.panel-kain::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 12px; z-index: 4; background: var(--krem) var(--bilik-svg) repeat-y center / 12px 12px; pointer-events: none; }
+.panel-kain::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 24px; z-index: 4; background: var(--krem) var(--bilik-kertas) left top / 24px 24px; background-repeat: no-repeat round; pointer-events: none; }
 .panel-badan .zona { background: transparent; }
 .panel-badan .zona-media { aspect-ratio: 4 / 3; }
 @media (max-width: 639px) {
@@ -192,7 +192,7 @@ html.gerak .tepi-panah { animation: tepi-geser 1.8s var(--ease-io) infinite; }
   .panel-kain::before { content: ""; position: absolute; left: 50%; top: 8px; z-index: 4; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: rgba(252, 250, 230, .9); box-shadow: 0 0 0 1px rgba(4, 40, 33, .12); }
   .panel-tutup { width: 48px; height: 48px; }
   .panel-tutup { border-radius: 0 16px 0 0; }
-  .panel-kain::after { right: 0; bottom: auto; width: auto; height: 10px; background-repeat: repeat-x; background-size: 10px 10px; border-radius: 16px 16px 0 0; }
+  .panel-kain::after { right: 0; bottom: auto; width: auto; height: 24px; background-repeat: round no-repeat; border-radius: 16px 16px 0 0; }
 }
 
 /* ---------- Mode gerak ---------- */

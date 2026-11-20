@@ -118,7 +118,6 @@ html:not(.js) .hdr { position: absolute; }
 .menu-in { min-height: 100%; display: flex; flex-direction: column; padding: 0 var(--pad) 40px; }
 .menu-top { display: flex; justify-content: space-between; align-items: center; height: 60px; }
 .menu-top button { background: none; border: 0; color: var(--tinta); font: 500 .75rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; min-height: 44px; cursor: pointer; }
-.menu-bilik { height: 12px; background-size: 12px 12px; }
 .menu-badan { display: grid; gap: 40px; margin-top: 6vh; }
 .menu nav { display: grid; gap: 4px; align-content: start; }
 .menu-samping { display: none; }
@@ -145,11 +144,26 @@ html:not(.js) .hdr { position: absolute; }
 .dua .btn { min-width: 220px; }
 @media (max-width: 520px) { .dua .btn { flex: 1 1 100%; } }
 
-/* ---------- Pita bilik (anyaman) ---------- */
-/* Pita bilik: anyaman bambu dinding rumah Sunda (Creative Direction 2027). Dipakai di antara
-   babak beranda, di atas footer, di kepala menu, dan di tepi panel zona. */
-:root { --bilik-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg fill='%23A1BF36'%3E%3Crect x='0' y='2' width='10' height='3'/%3E%3Crect x='0' y='7' width='10' height='3'/%3E%3Crect x='14' y='0' width='3' height='10'/%3E%3Crect x='19' y='0' width='3' height='10'/%3E%3Crect x='2' y='14' width='3' height='10'/%3E%3Crect x='7' y='14' width='3' height='10'/%3E%3Crect x='12' y='14' width='12' height='3'/%3E%3Crect x='12' y='19' width='12' height='3'/%3E%3C/g%3E%3C/svg%3E"); }
-.bilik { height: 24px; background: var(--krem) var(--bilik-svg) repeat-x center / 24px 24px; }
+/* ---------- Pita bilik (anyaman) ----------
+   Anyaman bambu dinding rumah Sunda (Creative Direction 2027). Satu ubin 24x24 (empat sel 12x12
+   berselang arah; bilah 10x3, sela 3, tepi 1), satu skala di semua tempat dan semua lebar layar,
+   dua tinggi saja: 24 px (jeda kecil) dan 48 px (jeda besar, .bilik--dua). background-repeat: round
+   membuat pita selalu berakhir dengan ubin utuh (ubin melar paling banyak +-2%). Warna bilah adalah
+   pasangan sepalet berkontras rendah dengan latarnya; latar pita sendiri bening. */
+:root {
+  --bilik-kertas: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23C6D984'%3E%3Crect x='1' y='1.5' width='10' height='3'/%3E%3Crect x='1' y='7.5' width='10' height='3'/%3E%3Crect x='13.5' y='1' width='3' height='10'/%3E%3Crect x='19.5' y='1' width='3' height='10'/%3E%3Crect x='1.5' y='13' width='3' height='10'/%3E%3Crect x='7.5' y='13' width='3' height='10'/%3E%3Crect x='13' y='13.5' width='10' height='3'/%3E%3Crect x='13' y='19.5' width='10' height='3'/%3E%3C/g%3E%3C/svg%3E");
+  --bilik-alam: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23A1BF36' fill-opacity='.55'%3E%3Crect x='1' y='1.5' width='10' height='3'/%3E%3Crect x='1' y='7.5' width='10' height='3'/%3E%3Crect x='13.5' y='1' width='3' height='10'/%3E%3Crect x='19.5' y='1' width='3' height='10'/%3E%3Crect x='1.5' y='13' width='3' height='10'/%3E%3Crect x='7.5' y='13' width='3' height='10'/%3E%3Crect x='13' y='13.5' width='10' height='3'/%3E%3Crect x='13' y='19.5' width='10' height='3'/%3E%3C/g%3E%3C/svg%3E");
+  --bilik-petang: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%2306735F'%3E%3Crect x='1' y='1.5' width='10' height='3'/%3E%3Crect x='1' y='7.5' width='10' height='3'/%3E%3Crect x='13.5' y='1' width='3' height='10'/%3E%3Crect x='19.5' y='1' width='3' height='10'/%3E%3Crect x='1.5' y='13' width='3' height='10'/%3E%3Crect x='7.5' y='13' width='3' height='10'/%3E%3Crect x='13' y='13.5' width='10' height='3'/%3E%3Crect x='13' y='19.5' width='10' height='3'/%3E%3C/g%3E%3C/svg%3E");
+}
+.bilik { --bilik-svg: var(--bilik-kertas); height: 24px; background: var(--bilik-svg) left top / 24px 24px round; }
+.bilik--dua { height: 48px; }
+.bilik--alam { --bilik-svg: var(--bilik-alam); }
+.bilik--petang { --bilik-svg: var(--bilik-petang); }
+/* marka logo di tengah pita utama (satu per halaman): pita terputus selebar 3 ubin, jadi tepi
+   putusnya jatuh di batas sel dan tidak ada bilah yang terpotong */
+.bermarka { position: relative; }
+.bilik-marka { position: absolute; left: 50%; top: 0; width: 72px; height: 100%; margin-left: -36px; display: grid; place-items: center; background: var(--latar-pita, var(--krem)); }
+.bilik-marka img { display: block; width: 32px; height: 32px; }
 
 /* Goresan kampung: empat ilustrasi kuas Katalog versi MOTE (kelapa, kembang, daun teratai,
    rumah panggung), satu warna, satu per tata letak. Bentuknya topeng, warnanya ikut bidang. */
@@ -241,7 +255,8 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 @media (min-width: 900px) { .ulasan-in { grid-template-columns: 1fr 2fr; align-items: end; } .ulasan .angka { grid-template-columns: 1fr 1fr; } }
 
 /* ---------- Penutup + footer ---------- */
-.penutup { text-align: center; padding: clamp(72px, 10vw, 130px) var(--pad); }
+/* setinggi satu layar: pita sebelum penutup dan pita kaki halaman tidak pernah tampil di satu layar (butir 4) */
+.penutup { text-align: center; padding: clamp(72px, 10vw, 130px) var(--pad); min-height: 100svh; display: grid; align-content: center; }
 .penutup h2 { font-size: clamp(2.2rem, 4.6vw, 3.8rem); max-width: 20ch; margin: 0 auto 30px; }
 .penutup .dua { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .ftr { background: var(--putih); color: var(--tinta); padding: 0 var(--pad) 32px; font-size: .92rem; }
@@ -249,7 +264,6 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 .ftr-merek { position: relative; }
 .ftr-slogan { margin-top: 18px; font: 400 1.35rem/1.2 var(--serif); color: var(--alam); }
 .ftr-merek .goresan { width: 64px; margin-top: 22px; }
-.ftr-bilik { height: 40px; background-size: 40px 40px; }
 .ftr-in { max-width: 1440px; margin: 0 auto; display: grid; gap: 32px; }
 .ftr img { height: 64px; width: auto; }
 .ftr ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
@@ -494,8 +508,6 @@ html.gerak [data-judul] .baris { will-change: transform; }
   .babak--video .babak-isi { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
 }
 .cerita-coda { position: relative; text-align: center; padding: 0 0 0; display: grid; justify-items: center; gap: clamp(28px, 4vw, 48px); }
-/* bilik lebar: kemunculan pola anyaman yang lebih berani, pengapit coda */
-.bilik-lebar { width: 100%; height: clamp(40px, 5vw, 64px); background-size: clamp(40px, 5vw, 64px) clamp(40px, 5vw, 64px); }
 .coda-kata { padding: clamp(24px, 4vw, 56px) var(--pad) 0; font: 400 clamp(2.6rem, 7vw, 6.2rem)/1 var(--serif); letter-spacing: -.01em; color: var(--alam); text-wrap: balance; }
 .coda-arti { list-style: none; margin: 0; padding: 0 var(--pad) clamp(24px, 4vw, 56px); display: grid; gap: 22px; max-width: 1100px; text-align: left; }
 .coda-arti li { display: grid; gap: 6px; border-top: 1px solid var(--garis); padding-top: 14px; }

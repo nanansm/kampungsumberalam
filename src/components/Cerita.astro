@@ -89,14 +89,12 @@ const no = (n: number) => String(n).padStart(2, "0");
   </ol>
 
   <div class="cerita-coda">
-    <div class="bilik bilik-lebar" role="presentation"></div>
     <p class="coda-kata" data-judul lang="en">{t("cerita.coda")}</p>
     <ol class="coda-arti">
       {["Rest", "Recover", "Rejuvenate"].map((k, i) => (
         <li data-muncul><p class="coda-kunci" lang="en">{k}</p><p>{rapiIsi(t(`cerita.coda.${i + 1}`))}</p></li>
       ))}
     </ol>
-    <div class="bilik bilik-lebar" role="presentation"></div>
   </div>
 </section>
 
