@@ -99,6 +99,9 @@ export function mulaiPeta(akar: HTMLElement) {
   let halimunTl: gsap.core.Timeline | null = null;
   let halimunDiam: gsap.core.Timeline | null = null;
   let halimunHpMati = false, fpsDiukur = false;
+  let terbangPanel = false;
+  /* catatan QA: hanya aktif kalau pengujian mengisi window.__petaLog = [] */
+  const catat = (m: string) => (window as any).__petaLog?.push([Math.round(performance.now()), m]);
 
   const B = D.babak;
   const N = D.henti.length;
@@ -550,13 +553,21 @@ export function mulaiPeta(akar: HTMLElement) {
     muatUbin(cur);
     aturLabel();
     mulaiDrift();
-    popupTunda?.kill();
-    if (fase === "henti") popupTunda = gsap.delayedCall(0.15, tampilPopup);
+    // geser kamera karena panel zona: kartu tetap (mengikuti kamera), tidak diletakkan ulang
+    if (fase === "henti" && !terbangPanel) {
+      popupTunda?.kill();
+      popupTunda = gsap.delayedCall(0.15, tampilPopup);
+    }
+    terbangPanel = false;
   }
-  function terbangKe(tujuan: Kam, durasi: number, platTujuan = platAktif, halimunLewat = false) {
+  function terbangKe(tujuan: Kam, durasi: number, platTujuan = platAktif, halimunLewat = false, karenaPanel = false) {
+    catat(`terbang aktif=${aktif} panel=${karenaPanel}`);
     terbang?.kill();
     hentikanDrift();
-    sembunyikanPopup();
+    // panel zona dibuka/ditutup: kamera hanya bergeser, kartu foto tetap ada supaya fokus papan
+    // ketik bisa kembali ke kartu itu saat panel ditutup
+    terbangPanel = karenaPanel;
+    if (!karenaPanel) sembunyikanPopup();
     jepitAktif = false;
     pins.forEach((p) => p.el.classList.remove("berlabel"));
     if (platTujuan !== platAktif) return pindahPlat(tujuan, platTujuan);
@@ -802,15 +813,18 @@ export function mulaiPeta(akar: HTMLElement) {
     return popupSemua.find((e) => +e.dataset.popupHenti! === aktif && e.dataset.popupZona === no);
   }
   function tampilPopup() {
+    catat(`tampil fase=${fase} aktif=${aktif}`);
     if (!popupLapis || fase !== "henti" || aktif < 0 || aktif >= N) return;
     const no = D.henti[aktif].utama;
     const el = kartuZona(no);
     if (!el) return;
     sembunyikanPopup(true);
     el.hidden = false;
+    el.inert = false;
     const kartu = el.querySelector<HTMLElement>(".popup-kartu")!;
     gsap.set(kartu, { opacity: 0, scale: 1 });
     if (!letakPopup(el, no)) {
+      catat("letak gagal");
       el.hidden = true;
       return;
     }
@@ -824,12 +838,14 @@ export function mulaiPeta(akar: HTMLElement) {
     popupTunda = tl;
   }
   function sembunyikanPopup(langsung = false) {
+    catat(`sembunyi langsung=${langsung}`);
     popupTunda?.kill();
     popupTunda = null;
     popupEl = null;
     popupZona = popupAsal = "";
     popupGeser = null;
     const tampak = popupSemua.filter((e) => !e.hidden);
+    tampak.forEach((e) => (e.inert = true)); // kartu yang sedang menghilang tidak bisa difokus
     if (langsung || !tampak.length) {
       tampak.forEach((e) => (e.hidden = true));
       if (popupGaris) gsap.set(popupGaris, { opacity: 0, strokeDashoffset: 1 });
@@ -850,6 +866,8 @@ export function mulaiPeta(akar: HTMLElement) {
     const lama = popupEl;
     const kb = baru.querySelector<HTMLElement>(".popup-kartu")!, kl = lama.querySelector<HTMLElement>(".popup-kartu")!;
     baru.hidden = false;
+    baru.inert = false;
+    lama.inert = true; // fokus papan ketik tidak boleh jatuh ke kartu yang sedang memudar
     baru.style.transform = lama.style.transform;
     kb.style.transformOrigin = kl.style.transformOrigin;
     popupEl = baru;
@@ -1004,6 +1022,7 @@ export function mulaiPeta(akar: HTMLElement) {
     beku = { fase, aktif, lokal: lokalTerakhir };
   }
   function pulihkan() {
+    catat(`pulihkan beku=${!!beku}`);
     if (!beku) return;
     clearTimeout(jamCadangan);
     dapatLenis()?.resize();
@@ -1023,8 +1042,12 @@ export function mulaiPeta(akar: HTMLElement) {
   let tundaUkur = 0;
   const lebarAwal = { w: window.innerWidth, h: window.innerHeight };
   function ubahUkuran() {
+    catat(`ubahUkuran ${window.innerWidth}x${window.innerHeight}`);
     // di HP, bilah alamat yang naik-turun bukan ubah ukuran yang sebenarnya
     if (hp && window.innerWidth === lebarAwal.w && Math.abs(window.innerHeight - lebarAwal.h) < 160) return;
+    // bilah gulir yang hilang-muncul saat panel modal dibuka/ditutup juga bukan ubah ukuran: tanpa
+    // penjaga ini kartu pop-up yang sedang difokus ikut disembunyikan dan fokusnya hilang
+    if (window.innerWidth === lebarAwal.w && window.innerHeight === lebarAwal.h) return;
     lebarAwal.w = window.innerWidth;
     lebarAwal.h = window.innerHeight;
     bekukan();
@@ -1107,7 +1130,7 @@ export function mulaiPeta(akar: HTMLElement) {
       if (sebelumPanel) {
         const balik = sebelumPanel;
         sebelumPanel = null;
-        terbangKe(balik, 0.8);
+        terbangKe(balik, 0.8, platAktif, false, true);
       }
       return;
     }
@@ -1122,7 +1145,7 @@ export function mulaiPeta(akar: HTMLElement) {
     const perluGeser = sx > W - lebarPanel - 40 || sx < 40 || sy < 60 || sy > H - 40;
     if (!perluGeser) return;
     if (!sebelumPanel) sebelumPanel = { ...cur };
-    terbangKe(jepitKam({ ...cur, ax: cur.ax + (tujuanX - sx), ay: cur.ay + (H / 2 - sy) * 0.5 }, platAktif), 0.9);
+    terbangKe(jepitKam({ ...cur, ax: cur.ax + (tujuanX - sx), ay: cur.ay + (H / 2 - sy) * 0.5 }, platAktif), 0.9, platAktif, false, true);
   });
 
   setAktif(-1);
