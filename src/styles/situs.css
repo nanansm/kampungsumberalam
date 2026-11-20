@@ -154,10 +154,13 @@ html:not(.js) .hdr { position: absolute; }
 /* Goresan kampung: empat ilustrasi kuas Katalog versi MOTE (kelapa, kembang, daun teratai,
    rumah panggung), satu warna, satu per tata letak. Bentuknya topeng, warnanya ikut bidang. */
 .goresan { display: block; background: var(--goresan-warna, var(--alam)); -webkit-mask: var(--goresan-mask) center / contain no-repeat; mask: var(--goresan-mask) center / contain no-repeat; pointer-events: none; }
-.goresan--kelapa { --goresan-mask: url("/pola/goresan-kelapa.webp"); aspect-ratio: 210 / 500; }
-.goresan--bunga { --goresan-mask: url("/pola/goresan-bunga.webp"); aspect-ratio: 442 / 390; }
-.goresan--teratai { --goresan-mask: url("/pola/goresan-teratai.webp"); aspect-ratio: 342 / 384; }
-.goresan--rumah { --goresan-mask: url("/pola/goresan-rumah.webp"); aspect-ratio: 500 / 411; }
+/* --tinggi = tinggi/lebar gambar; --keluar-* = pecahan ukuran yang harus keluar tepi supaya ±33% tinta
+   terpotong (diukur dari alfa gambar masker). Goresan utuh dengan jarak aman, atau terpotong tegas;
+   tidak ada potongan tipis "nanggung" seperti ujung kaki saja (aturan Ryan 20 Nov 2026). */
+.goresan--kelapa { --goresan-mask: url("/pola/goresan-kelapa.webp"); aspect-ratio: 210 / 500; --tinggi: 2.381; --keluar-bawah: .62; --keluar-kanan: .38; --keluar-kiri: .39; }
+.goresan--bunga { --goresan-mask: url("/pola/goresan-bunga.webp"); aspect-ratio: 442 / 390; --tinggi: .882; --keluar-bawah: .37; --keluar-kanan: .36; --keluar-kiri: .42; }
+.goresan--teratai { --goresan-mask: url("/pola/goresan-teratai.webp"); aspect-ratio: 342 / 384; --tinggi: 1.123; --keluar-bawah: .31; --keluar-kanan: .31; --keluar-kiri: .44; }
+.goresan--rumah { --goresan-mask: url("/pola/goresan-rumah.webp"); aspect-ratio: 500 / 411; --tinggi: .822; --keluar-bawah: .47; --keluar-kanan: .38; --keluar-kiri: .40; }
 /* goresan "dilukis" dari bawah ke atas saat masuk layar (situs.ts menambah .tergores) */
 html.gerak .goresan { clip-path: inset(100% 0 0 0); transition: clip-path 1.4s var(--ease-out) .15s; }
 html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
@@ -435,9 +438,10 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .cerita { background: var(--krem); }
 .cerita-kepala { position: relative; max-width: 1440px; margin: 0 auto; padding: clamp(64px, 9vw, 128px) var(--pad) clamp(40px, 6vw, 88px); display: grid; gap: 16px; justify-items: start; }
 .cerita-kepala .lbl { color: var(--alam); }
-.cerita-kepala h2 { font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.02; max-width: 14em; text-wrap: balance; padding-right: clamp(56px, 9vw, 120px); }
+.cerita-kepala h2 { font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.02; max-width: 14em; text-wrap: balance; padding-right: calc(clamp(72px, 9vw, 150px) + 16px); }
 .cerita-kepala { overflow: clip; }
-.cerita-kepala .goresan { position: absolute; right: var(--pad); bottom: -1.5vw; width: clamp(72px, 9vw, 150px); }
+/* kelapa utuh di dalam kepala bagian, berjarak dari tepi bawah (latar sesudahnya sama-sama Kertas) */
+.cerita-kepala .goresan { position: absolute; right: var(--pad); bottom: clamp(16px, 2vw, 28px); width: clamp(72px, 9vw, 150px); }
 .babak-daftar { list-style: none; margin: 0; padding: 0; }
 .babak { --bidang: var(--krem); --tinta-babak: var(--tinta); --aksen: var(--alam); --goresan-warna: var(--alam); position: relative; background: var(--bidang); color: var(--tinta-babak); }
 .bidang-alam { --bidang: var(--alam); --tinta-babak: var(--krem); --aksen: var(--udara); --goresan-warna: var(--pohon); }
@@ -456,15 +460,16 @@ html.gerak [data-judul] .baris { will-change: transform; }
 /* goresan besar di bidang solid (Creative Direction 2027: 8–20% lebar bidang, boleh terpotong tepi):
    duduk di pojok bawah bidang, di sisi teks tetapi di bawahnya, tidak pernah menimpa teks */
 .babak { overflow: clip; }
-.goresan-babak { position: absolute; z-index: 0; pointer-events: none; right: -2.5vw; bottom: -3vw; width: clamp(120px, 15vw, 240px); }
-.babak--balik .goresan-babak { right: auto; left: -2.5vw; }
-.goresan-babak.goresan--kelapa { width: clamp(80px, 8vw, 128px); bottom: -2vw; right: 3vw; }
-.babak--balik .goresan-babak.goresan--kelapa { left: 3vw; }
+/* tenggelam tegas di tepi bawah bidang (±33% tinta), utuh dan berjarak dari tepi layar di samping;
+   bidang sesudah tiap babak berlatar atau berfoto lain, jadi potongannya terbaca disengaja */
+.goresan-babak { --lb: clamp(120px, 15vw, 240px); position: absolute; z-index: 0; pointer-events: none; width: var(--lb); right: clamp(24px, 3vw, 48px); bottom: calc(var(--lb) * var(--tinggi) * var(--keluar-bawah) * -1); }
+.babak--balik .goresan-babak { right: auto; left: clamp(24px, 3vw, 48px); }
+.goresan-babak.goresan--kelapa { --lb: clamp(80px, 8vw, 128px); }
 .babak-teks, .babak-media { position: relative; z-index: 1; }
 @media (max-width: 899px) {
   .babak:has(.goresan-babak) { padding-bottom: 150px; }
-  .goresan-babak, .babak--balik .goresan-babak { left: auto; right: -24px; bottom: -36px; width: 150px; }
-  .goresan-babak.goresan--kelapa, .babak--balik .goresan-babak.goresan--kelapa { right: 18px; bottom: -40px; width: 64px; }
+  .goresan-babak, .babak--balik .goresan-babak { --lb: 150px; left: auto; right: 24px; }
+  .goresan-babak.goresan--kelapa, .babak--balik .goresan-babak.goresan--kelapa { --lb: 64px; right: 18px; }
 }
 /* foto: tegak, teks di sampingnya, ruang kosong lega */
 .babak--foto { display: grid; gap: 28px; padding-bottom: clamp(64px, 10vw, 120px); }
@@ -502,7 +507,8 @@ html.gerak [data-judul] .baris { will-change: transform; }
 /* beranda: prolog tanpa tombol, cara menginap, penutup bergoresan */
 .cara-in { position: relative; }
 .cara { overflow: clip; }
-.cara .goresan { position: absolute; right: calc(-1 * var(--pad) - 2vw); top: -6vw; width: clamp(120px, 18vw, 280px); --goresan-warna: var(--alam); }
+/* rumah keluar tegas dari tepi kanan layar (±33% tinta), utuh di atas */
+.cara .goresan { --lb: clamp(120px, 18vw, 280px); position: absolute; right: calc(-1 * var(--pad) - var(--lb) * var(--keluar-kanan)); top: -6vw; width: var(--lb); --goresan-warna: var(--alam); }
 .cara h2 { padding-right: clamp(110px, 18vw, 260px); text-wrap: balance; position: relative; }
 .cara-bawah { margin-top: 22px; display: grid; gap: 6px; }
 .cara-bawah .catatan { margin-top: 0; max-width: 60ch; }

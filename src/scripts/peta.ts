@@ -229,6 +229,8 @@ export function mulaiPeta(akar: HTMLElement) {
       const x = p.x * s + tx, y = p.y * s + ty;
       if (dalamArea(x, y, batasLihat)) kepalaTerlihat.push({ x, y: y - 26 });
     }
+    // ukuran kepala titik mengikuti peta.css: fase tutup diperkecil 0,6, titik bukan pemberhentian 0,74
+    const faseKini = seksi.dataset.fase;
     for (const p of pins) {
       if (p.plat !== platAktif) continue;
       let x = p.x * s + tx, y = p.y * s + ty, tepi = false;
@@ -247,6 +249,10 @@ export function mulaiPeta(akar: HTMLElement) {
       }
       p.el.classList.toggle("di-tepi", tepi);
       if (tepi) p.el.classList.add("berlabel");
+      // titik tampil utuh atau tidak sama sekali: kepala yang terpotong tepi bingkai disembunyikan
+      const sk = faseKini === "tutup" ? 0.6 : faseKini === "henti" && p.henti !== aktif ? 0.74 : 1;
+      const rk = 15 * sk;
+      p.el.classList.toggle("terpotong", !tepi && (x - rk < 0 || x + rk > W || y - 41 * sk < 0 || y + 3 > H));
       p.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
     }
     for (const p of lain) {

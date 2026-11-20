@@ -63,28 +63,41 @@ function pasangProgres() {
   });
 }
 
+/* ---------- Judul per baris: naik dari balik masker ----------
+   SplitText membungkus tiap baris dengan overflow: clip setinggi kotak baris. Judul display
+   memakai line-height 1.02–1.08, jadi ekor huruf (g, j, p, y), aksen, dan tonjolan sisi huruf
+   serif keluar dari kotak itu dan terpotong rata. Pembungkus diganti klip clip-path yang melebar
+   ke semua sisi (tata letak tidak bergeser), dan baris berangkat dari bawah tepi klip yang sudah
+   melebar itu supaya tetap tersembunyi sebelum naik. */
+const LEGA = { atas: 0.3, bawah: 0.36, sisi: 0.3 }; // em, mengikuti ukuran huruf judul
+
+function judulPerBaris(el: HTMLElement) {
+  SplitText.create(el, {
+    type: "lines",
+    mask: "lines",
+    linesClass: "baris",
+    autoSplit: true,
+    onSplit(self) {
+      (self.masks as HTMLElement[]).forEach((m) => {
+        m.style.overflow = "visible";
+        m.style.clipPath = `inset(-${LEGA.atas}em -${LEGA.sisi}em -${LEGA.bawah}em -${LEGA.sisi}em)`;
+      });
+      gsap.set(el, { opacity: 1 });
+      return gsap.from(self.lines, {
+        y: (_i: number, baris: HTMLElement) => baris.offsetHeight + parseFloat(getComputedStyle(baris).fontSize) * (LEGA.atas + LEGA.bawah),
+        duration: 1.2,
+        ease: "ksa",
+        stagger: 0.09,
+        scrollTrigger: { trigger: el, start: "top 88%", once: true },
+      });
+    },
+  });
+}
+
 /* ---------- Reveal: judul per baris, teks naik pelan, gambar tersingkap ---------- */
 function pasangReveal() {
   if (!gerak) return;
-  // judul: baris naik dari balik masker
-  document.querySelectorAll<HTMLElement>("[data-judul]").forEach((el) => {
-    SplitText.create(el, {
-      type: "lines",
-      mask: "lines",
-      linesClass: "baris",
-      autoSplit: true,
-      onSplit(self) {
-        gsap.set(el, { opacity: 1 });
-        return gsap.from(self.lines, {
-          yPercent: 105,
-          duration: 1.2,
-          ease: "ksa",
-          stagger: 0.09,
-          scrollTrigger: { trigger: el, start: "top 88%", once: true },
-        });
-      },
-    });
-  });
+  document.querySelectorAll<HTMLElement>("[data-judul]").forEach(judulPerBaris);
   // teks & blok kecil: naik 14px sambil muncul, berurutan per kelompok
   ScrollTrigger.batch("[data-muncul]", {
     start: "top 90%",
@@ -109,16 +122,7 @@ function pasangHalamanDalam() {
   hal.querySelectorAll<HTMLElement>(".judul-seksi").forEach((el) => {
     if (el.closest("[data-jalan]")) return;
     el.setAttribute("data-judul", "");
-    SplitText.create(el, {
-      type: "lines",
-      mask: "lines",
-      linesClass: "baris",
-      autoSplit: true,
-      onSplit(self) {
-        gsap.set(el, { opacity: 1 });
-        return gsap.from(self.lines, { yPercent: 105, duration: 1.2, ease: "ksa", stagger: 0.09, scrollTrigger: { trigger: el, start: "top 88%", once: true } });
-      },
-    });
+    judulPerBaris(el);
   });
   const blok = [...hal.querySelectorAll<HTMLElement>(".seksi > *")].filter((el) => !el.closest("[data-jalan]") && !el.matches(".judul-seksi"));
   ScrollTrigger.batch(blok, {

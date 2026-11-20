@@ -219,6 +219,8 @@ html.gerak .peta[data-fase="henti"] .pin { opacity: 1; visibility: visible; tran
 html.gerak .peta[data-fase="henti"] .pin:not(.di-henti) .pin-isi { transform: scale(.74); opacity: .82; }
 html.gerak .peta[data-fase="tutup"] .pin { opacity: 1; visibility: visible; transition: opacity .4s var(--ease-ui), visibility 0s; }
 html.gerak .peta[data-fase="tutup"] .pin .pin-isi { transform: scale(.6); }
+/* titik yang kepalanya terpotong tepi bingkai: tidak ditampilkan setengah (peta.ts menandai .terpotong) */
+html.gerak .peta[data-fase] .pin.terpotong { opacity: 0; visibility: hidden; transition: opacity .25s var(--ease-ui), visibility 0s linear .25s; }
 html.gerak .titik-lain, html.gerak .pintu { opacity: 0; transition: opacity .4s var(--ease-ui); }
 html.gerak .peta[data-fase="henti"] .titik-lain.di-henti, html.gerak .peta[data-fase="henti"] .pintu.di-henti { opacity: 1; }
 
