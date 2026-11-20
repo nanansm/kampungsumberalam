@@ -114,17 +114,20 @@ html:not(.js) .hdr { position: absolute; }
 .logo img { height: 40px; width: auto; }
 
 /* Menu layar penuh — popover native, nol JavaScript */
-.menu { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; padding: 0; background: #fff; color: var(--tinta); }
+/* menu layar penuh: bisa digulir sendiri bila isinya lebih tinggi dari layar (data-lenis-prevent di
+   Situs.astro supaya Lenis tidak menahan roda/trackpad; gulir halaman di belakangnya tetap terkunci) */
+.menu { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; padding: 0; background: #fff; color: var(--tinta); overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .menu-in { min-height: 100%; display: flex; flex-direction: column; padding: 0 var(--pad) 40px; }
 .menu-top { display: flex; justify-content: space-between; align-items: center; height: 60px; }
 .menu-top button { background: none; border: 0; color: var(--tinta); font: 500 .75rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; min-height: 44px; cursor: pointer; }
-.menu-badan { display: grid; gap: 40px; margin-top: 6vh; }
+.menu-badan { display: grid; gap: 40px; margin-top: min(6vh, 48px); }
 .menu nav { display: grid; gap: 4px; align-content: start; }
 .menu-samping { display: none; }
 @media (min-width: 900px) {
-  .menu-badan { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 6vw, 112px); margin-top: 4vh; }
+  .menu-badan { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 6vw, 112px); margin-top: min(4vh, 40px); }
   .menu-samping { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 2.4vw, 36px); align-items: end; }
-  .menu-foto { margin: 0; aspect-ratio: 2 / 3; overflow: hidden; background: var(--udara); }
+  /* foto ikut tinggi layar: di layar pendek mengecil, tidak terpotong tepi bawah */
+  .menu-foto { margin: 0; aspect-ratio: 2 / 3; max-height: calc(100vh - 230px); max-height: calc(100dvh - 230px); overflow: hidden; background: var(--udara); }
   .menu-foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
 }
 .menu-kontak { position: relative; display: grid; gap: 12px; align-content: end; justify-items: start; }
@@ -133,8 +136,11 @@ html:not(.js) .hdr { position: absolute; }
 .menu-kontak dt { color: var(--tinta-2); margin-top: 12px; font-size: .68rem; }
 .menu-kontak dd { margin: 0; max-width: 26ch; }
 .menu-kontak dd a { text-decoration: none; border-bottom: 1px solid var(--garis); }
-.menu-kontak .goresan { width: 110px; margin-top: 18px; }
-.menu nav a { font: 400 clamp(2.4rem, 9vw, 4.5rem)/1.15 var(--serif); text-decoration: none; }
+/* goresan utuh di dalam kolom kontak (tidak menyentuh tepi), mengecil di layar pendek */
+.menu-kontak .goresan { width: 110px; width: min(110px, 13vh); width: min(110px, 13dvh); margin-top: 18px; }
+/* ukuran item ikut lebar DAN tinggi layar: sembilan item (+ kepala menu) muat di layar 680 px;
+   lebih pendek lagi, menu bisa digulir */
+.menu nav a { font: 400 4.5rem/1.15 var(--serif); font-size: clamp(1.8rem, min(9vw, 7.2vh), 4.5rem); font-size: clamp(1.8rem, min(9vw, 7.2dvh), 4.5rem); text-decoration: none; }
 .menu nav a:hover { color: var(--alam); }
 .menu .kecil { margin-top: auto; padding-top: 32px; display: flex; flex-wrap: wrap; gap: 12px 28px; }
 .menu .kecil a { text-decoration: none; }
@@ -555,7 +561,8 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .cara-in { position: relative; }
 .cara { overflow: clip; }
 /* rumah keluar tegas dari tepi kanan layar (±33% tinta), utuh di atas */
-.cara .goresan { --lb: clamp(120px, 18vw, 280px); position: absolute; right: calc(-1 * var(--pad) - var(--lb) * var(--keluar-kanan)); top: -6vw; width: var(--lb); --goresan-warna: var(--alam); }
+/* top paling tinggi 16 px di bawah tepi atas seksi (padding atas seksi = clamp(64px, 9vw, 120px)) */
+.cara .goresan { --lb: clamp(120px, 18vw, 280px); position: absolute; right: calc(-1 * var(--pad) - var(--lb) * var(--keluar-kanan)); top: max(-6vw, calc(16px - clamp(64px, 9vw, 120px))); width: var(--lb); --goresan-warna: var(--alam); }
 .cara h2 { padding-right: clamp(110px, 18vw, 260px); text-wrap: balance; position: relative; }
 .cara-bawah { margin-top: 22px; display: grid; gap: 6px; }
 .cara-bawah .catatan { margin-top: 0; max-width: 60ch; }
