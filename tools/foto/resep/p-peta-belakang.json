@@ -1,0 +1,50 @@
+{
+ "k": 0.8,
+ "malam": false,
+ "tone": {
+  "s05": 0.1384313702583313,
+  "s50": 0.4953223764896393,
+  "s95": 0.8237451314926147,
+  "t05": 0.1262664104572364,
+  "t50": 0.48,
+  "t95": 0.8684615743160248,
+  "putih": 0.985
+ },
+ "wb": {
+  "shadow": [
+   -2.431616477835451,
+   -3.196742460730197
+  ],
+  "mid": [
+   -4.08,
+   -2.803558322548145
+  ],
+  "high": [
+   -4.012665336781283,
+   -3.429322507286092
+  ]
+ },
+ "daun": {
+  "geser": 12.0,
+  "sat": 0.9
+ },
+ "sat": 1.15,
+ "ukur_sumber": {
+  "p05": 0.1384313702583313,
+  "p50": 0.4953223764896393,
+  "p95": 0.8237451314926147,
+  "sat": 0.22013066709041595,
+  "n_shadow": 55784,
+  "a_shadow": -0.9326199889183044,
+  "b_shadow": 1.1237109899520874,
+  "n_mid": 176232,
+  "a_mid": -0.14040890336036682,
+  "b_mid": 0.30043503642082214,
+  "n_high": 48764,
+  "a_high": 0.5827404260635376,
+  "b_high": 3.6025917530059814,
+  "daun_hue": 83.40320587158203,
+  "daun_sat": 0.468021035194397
+ },
+ "catatan": "Fit per plat untuk plat belakang (video 0088, siang mendung, tegak lurus): turunan p-peta-setel.json. Arah warna (wb, daun.geser, sat) sama; titik jangkar kurva diukur ulang dari plat belakang sesudah normalisasi (median 0,495, lebih terang dari plat utama 0,409), target median 0,48, dan daun.sat 0,90 supaya saturasi daun <= 0,46. Dengan setelan umum plat ini jatuh di median 0,542 dan saturasi daun 0,495 (gagal gerbang butir 7)."
+}

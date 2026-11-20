@@ -1,6 +1,7 @@
 {
- "status": "FINAL v2 (03.27): hero dan 6 klip zona sudah diperbaiki sesuai QA Fable 5.2. Nama dan jalur berkas tetap.",
- "diperbarui": "2026-11-20T03:27+07:00",
+ "status": "FINAL v3 (20 Nov): semua klip dirender ulang dari sumber dengan toning butir 7 (normalisasi A2 + look ksa-sejuk-drone-setel.cube, setelan per shot hanya untuk shot di luar gerbang). Nama, ukuran, durasi, dan frame tetap sama dengan v2.",
+ "diperbarui": "2026-11-20T09:40+07:00",
+ "grade": "Look satu .cube yang bisa diganti sekali jalan: python3 tools/foto/drone_video.py --look <berkas.cube>. Resep sekarang: tools/foto/resep/ksa-sejuk-drone-setel.cube (spek revisi 20 Nov butir 7).",
  "catatan_pemakaian": "Semua video tanpa audio. Hero: <video muted loop playsinline autoplay preload='metadata' poster=...>. Klip zona: <video muted playsinline autoplay preload='metadata' poster=...> TANPA loop; video diputar sekali lalu berhenti di frame terakhir, dan frame terakhir tiap klip sudah dicek layak ditahan (gerak rata, tidak sedang mengerem atau berbelok). Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; diuji terbaca AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280). Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi.",
  "hero": {
   "desktop": {

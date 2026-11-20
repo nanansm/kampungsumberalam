@@ -6,8 +6,9 @@ src/data/lensa-udara.json (letak titik di dalam potongan, persen), karena potong
 tepi foto digeser supaya tetap di dalam bingkai.
 
 Pakai: python3 -I tools/peta/lensa_udara.py
+      python3 -I tools/peta/lensa_udara.py --hanya-gambar   (webp saja, data titik tidak ditulis)
 """
-import json
+import json, sys
 from pathlib import Path
 from PIL import Image
 
@@ -21,6 +22,9 @@ def jpg_terbesar(berkas):
     return max(jpg, key=lambda b: b["w"]) if jpg else max(berkas.values(), key=lambda b: b["w"])
 
 def main():
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print(__doc__)
+        return
     j = json.loads((FU / "zona.json").read_text("utf-8"))
     # kontrak versi 2: plat = [{id, berkas}]; versi 1: satu plat di ukuran.berkas
     plat = {p["id"]: p.get("berkas") or p.get("ukuran", {}).get("berkas") for p in j.get("plat", [])} or {"utama": j["ukuran"]["berkas"]}
@@ -44,7 +48,15 @@ def main():
         no = str(z["no"]).zfill(2)
         kotak.save(REPO / f"public/peta/lensa-udara-{no}.webp", quality=80, method=6)
         hasil[no] = {"x": round((cx - x0) / pw * 100, 2), "y": round((cy - y0) / ph * 100, 2)}
-    (REPO / "src/data/lensa-udara.json").write_text(json.dumps(hasil, indent=1), "utf-8")
+    data = REPO / "src/data/lensa-udara.json"
+    teks = json.dumps(hasil, indent=1)
+    if "--hanya-gambar" in sys.argv:
+        # dipanggil sesudah plat di-grade ulang (tools/peta/plat_udara.py): letak titik tidak berubah,
+        # jadi berkas data tidak ditulis; cukup lapor kalau ternyata berbeda.
+        lama = data.read_text("utf-8") if data.exists() else ""
+        print(len(hasil), "lensa (gambar saja);", "data sama" if lama == teks else "DATA BERBEDA, jalankan tanpa --hanya-gambar")
+        return
+    data.write_text(teks, "utf-8")
     print(len(hasil), "lensa")
 
 if __name__ == "__main__":

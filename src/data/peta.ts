@@ -147,7 +147,8 @@ export const ZONA: Zona[] = [
       { id: "Free Parking Area", en: "Free Parking Area" },
       { id: "Gerbang: lajur masuk di sisi barat, lajur keluar di sisi timur", en: "Gate: entry lane on the west side, exit lane on the east" },
     ],
-    cta: "wa",
+    cta: "wa", foto: "zona-06-parkir",
+    fotoAlt: { id: "Area Parkir berlantai paving di depan Lobby beratap ijuk", en: "The paved car park in front of the thatched Lobby" },
   }),
   z("01", 0, {
     slug: "lobby", nama: "Lobby", label: "Lobby", kelompok: "kedatangan", henti: 0, arah: "kanan",
@@ -159,7 +160,8 @@ export const ZONA: Zona[] = [
       { id: "Check-in 14.00 WIB · check-out 12.00 WIB", en: "Check-in 2 pm · check-out 12 noon" },
       { id: "24 Hour Concierge", en: "24 Hour Concierge" },
     ],
-    cta: "wa",
+    cta: "wa", foto: "zona-01-lobby",
+    fotoAlt: { id: "Lobby Kampung Sumber Alam dengan lantai bawah bata merah, lantai atas papan kayu, dan atap ijuk bertingkat", en: "The Kampung Sumber Alam Lobby: red brick below, timber boards above, and a tiered ijuk roof" },
   }),
   z("05", 0, {
     slug: "saung-sunyaruri", nama: "Saung Sunyaruri", label: "Saung Sunyaruri", kelompok: "fasilitas", henti: 0, arah: "bawah",
@@ -279,8 +281,8 @@ export const ZONA: Zona[] = [
       jarak("100"),
       { id: "Kelas kamar: Thermal Pool Suite", en: "Room class: Thermal Pool Suite" },
     ],
-    kamar: "suite-room", cta: "wa", foto: "suite-room",
-    fotoAlt: { id: "Suite Room beratap ijuk di antara pepohonan", en: "Suite Room under its thatched roof among the trees" },
+    kamar: "suite-room", cta: "wa", foto: "zona-11-suite-whirlpool",
+    fotoAlt: { id: "Private whirlpool berbentuk ginjal di Suite Room", en: "The kidney-shaped private whirlpool at Suite Room" },
   }),
   z("12", 0, {
     slug: "taman-sangkuriang", nama: "Taman Sangkuriang", label: "Taman Sangkuriang", kelompok: "fasilitas", henti: 2, arah: "atas",
@@ -432,8 +434,8 @@ const SEMUA_HENTI: Henti[] = [
       en: "You turn in from Jl. Raya Cipanas, park in front of the Lobby and walk up to its terrace. Kawung and Pondok Kalapa are only ±60–70 m from the Lobby.",
     },
     cx: 395, cy: 1396, vw: 520, vh: 330,
-    foto: "henti-datang", utama: "01",
-    fotoAlt: { id: "Tamu menarik koper di jalan setapak di atas balong menuju bungalow", en: "Guests pull their luggage along a path over the balong towards a bungalow" },
+    foto: "zona-01-lobby", utama: "01",
+    fotoAlt: { id: "Lobby Kampung Sumber Alam dengan lantai bawah bata merah, lantai atas papan kayu, dan atap ijuk bertingkat", en: "The Kampung Sumber Alam Lobby: red brick below, timber boards above, and a tiered ijuk roof" },
   },
   {
     id: "berendam",
