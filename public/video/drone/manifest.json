@@ -1,8 +1,8 @@
 {
  "status": "FINAL v3 (20 Nov): semua klip dirender ulang dari sumber dengan toning butir 7 (normalisasi A2 + look ksa-sejuk-drone-setel.cube, setelan per shot hanya untuk shot di luar gerbang). Nama, ukuran, durasi, dan frame tetap sama dengan v2.",
- "diperbarui": "2026-11-20T09:40+07:00",
+ "diperbarui": "2026-11-20T16:40+07:00",
  "grade": "Look satu .cube yang bisa diganti sekali jalan: python3 tools/foto/drone_video.py --look <berkas.cube>. Resep sekarang: tools/foto/resep/ksa-sejuk-drone-setel.cube (spek revisi 20 Nov butir 7).",
- "catatan_pemakaian": "Semua video tanpa audio. Hero: <video muted loop playsinline autoplay preload='metadata' poster=...>. Klip zona: <video muted playsinline autoplay preload='metadata' poster=...> TANPA loop; video diputar sekali lalu berhenti di frame terakhir, dan frame terakhir tiap klip sudah dicek layak ditahan (gerak rata, tidak sedang mengerem atau berbelok). Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; diuji terbaca AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280). Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi.",
+ "catatan_pemakaian": "Semua video tanpa audio. Hero: <video muted loop playsinline autoplay preload='metadata' poster=...>. Klip zona: <video muted playsinline autoplay preload='metadata' poster=...> TANPA loop; video diputar sekali lalu berhenti di frame terakhir, dan frame terakhir tiap klip sudah dicek layak ditahan (gerak rata, tidak sedang mengerem atau berbelok). Urutan <source>: webm lalu mp4, dengan type lengkap: type='video/webm; codecs=\"vp9\"' dan type='video/mp4; codecs=\"avc1.640028\"' (H.264 High@4.0, faststart; diuji terbaca AVFoundation, mesin video Safari). Hero desktop: 1920 untuk layar >= 1440 px, 1280 di bawahnya. Hero HP tegak 9:16 (720x1280). Klip zona: desktop 16:9 (1280x720), HP 4:5 (720x900). Poster = frame pertama video masing-masing (JPG dan AVIF), jadi tidak ada lompatan gambar saat video mulai. Untuk prefers-reduced-motion: tampilkan poster saja. Semua 29,97 fps, BT.709. Zona dengan yakin=false (Babakan Siluhur) jangan dikaitkan ke satu nomor zona sebelum KSA mengonfirmasi. Klip Cerita (manifest `cerita`: pembuka, air, penutup): ukuran, format, dan perilaku sama dengan klip zona, yaitu main sekali lalu diam di frame terakhir.",
  "hero": {
   "desktop": {
    "mp4": "/video/drone/hero-dk-1920.mp4",
@@ -217,5 +217,82 @@
    "catatan": "Kompleksnya pasti Babakan Siluhur (GPS jatuh di antara Babakan Siluhur 1 dan 2, area belakang), tetapi belum pasti zona 17 (Babakan Siluhur 1) atau 18 (Babakan Siluhur 2): letak kedua kompleks di peta Data Master berkeyakinan rendah-sedang. Konfirmasi ke KSA sebelum dikaitkan ke satu nomor.",
    "catatan_v2": "Segmen dipindah ke bagian yang geraknya rata (tanpa percepatan di awal). Desktop dan HP dipotong dari bingkai yang sama, digeser ke kanan supaya unit AC di sisi rumah tidak masuk."
   }
- ]
+ ],
+ "cerita": {
+  "pembuka": {
+   "desktop": {
+    "mp4": "/video/drone/cerita-pembuka-dk.mp4",
+    "webm": "/video/drone/cerita-pembuka-dk.webm",
+    "poster": "/video/drone/cerita-pembuka-dk.jpg",
+    "poster_avif": "/video/drone/cerita-pembuka-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 4.004
+   },
+   "hp": {
+    "mp4": "/video/drone/cerita-pembuka-hp.mp4",
+    "webm": "/video/drone/cerita-pembuka-hp.webm",
+    "poster": "/video/drone/cerita-pembuka-hp.jpg",
+    "poster_avif": "/video/drone/cerita-pembuka-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 4.004
+   },
+   "poster": "/video/drone/cerita-pembuka-dk.jpg",
+   "isi": "Deret rumah kayu bergaya Sunda beratap ijuk berdiri di antara pohon kelapa, dengan lereng Gunung Guntur di kejauhan; kamera bergeser pelan di ketinggian 11 m.",
+   "isi_en": "A row of thatched, Sundanese-style wooden houses stands among coconut palms, with the slopes of Mount Guntur in the distance; the camera glides slowly at 11 m.",
+   "sumber": "DJI_20261117141217_0080_D 00:11.00-00:15.00 (klip tegak 9:16)",
+   "catatan": "Klip pembuka Cerita (naskah pembuka 20 Nov). Bukan shot hero dan bukan shot penutup; diambil dari arah lain supaya tidak mengulang hero 0084 yang tepat di atasnya. Potongan desktop (x 0,16-0,86, y 0,41-0,63 bingkai tegak) dan HP (x 0,35-0,80, y 0,42-0,74) membuang unit AC dan sangkar burung di lantai bawah rumah kiri, batang kelapa di tepi kiri, kolam keruh, dan sebagian besar rumah warga beratap merah di kiri. Sisa: atap merah kota yang kecil di balik deret rumah, dan pohon di tepi kanan pada detik terakhir. Gerak rata sepanjang klip; frame terakhir layak ditahan."
+  },
+  "air": {
+   "desktop": {
+    "mp4": "/video/drone/cerita-air-dk.mp4",
+    "webm": "/video/drone/cerita-air-dk.webm",
+    "poster": "/video/drone/cerita-air-dk.jpg",
+    "poster_avif": "/video/drone/cerita-air-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 6.006
+   },
+   "hp": {
+    "mp4": "/video/drone/cerita-air-hp.mp4",
+    "webm": "/video/drone/cerita-air-hp.webm",
+    "poster": "/video/drone/cerita-air-hp.jpg",
+    "poster_avif": "/video/drone/cerita-air-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 6.006
+   },
+   "poster": "/video/drone/cerita-air-dk.jpg",
+   "isi": "Kolam renang air panas bertenda putih di antara atap ijuk dan pohon kelapa, diputari pelan dari udara pada pagi cerah.",
+   "isi_en": "A hot-spring swimming pool under a white canopy, surrounded by thatched roofs and coconut palms, circled slowly from the air on a clear morning.",
+   "sumber": "DJI_20261117085245_0005_D 00:08.00-00:14.00",
+   "catatan": "Klip babak 1 (Air) Cerita. Segmen sama dengan zona-02 (zona-02 tidak diubah), bingkai dipotong: desktop x 0,09-0,95, y 0-0,86 membuang 4 motor dan 1 mobil parkir di pojok kiri bawah serta unit AC di tepi kanan; HP x 0,30-0,69, y 0-0,86 membuang atap mobil dan bak beton servis di kaki pohon kelapa. Sekitar 7 orang di tepi kanan kolam (dengan galah sikat, jaring, dan selang; tampak seperti kolam sedang dibersihkan) masih terlihat kecil dan tidak bisa dibuang lewat potongan."
+  },
+  "penutup": {
+   "desktop": {
+    "mp4": "/video/drone/cerita-penutup-dk.mp4",
+    "webm": "/video/drone/cerita-penutup-dk.webm",
+    "poster": "/video/drone/cerita-penutup-dk.jpg",
+    "poster_avif": "/video/drone/cerita-penutup-dk.avif",
+    "w": 1280,
+    "h": 720,
+    "durasi": 4.505
+   },
+   "hp": {
+    "mp4": "/video/drone/cerita-penutup-hp.mp4",
+    "webm": "/video/drone/cerita-penutup-hp.webm",
+    "poster": "/video/drone/cerita-penutup-hp.jpg",
+    "poster_avif": "/video/drone/cerita-penutup-hp.avif",
+    "w": 720,
+    "h": 900,
+    "durasi": 4.505
+   },
+   "poster": "/video/drone/cerita-penutup-dk.jpg",
+   "isi": "Deret rumah panggung beratap ijuk berdiri di atas balong berteratai dan dihubungkan titian kayu, dilihat miring dari udara; kamera bergeser pelan sambil sedikit mundur dan naik.",
+   "isi_en": "Thatched-roof stilt bungalows stand over a lotus pond, linked by a wooden boardwalk, seen at an angle from the air; the camera drifts slowly while easing back and up.",
+   "sumber": "DJI_20261117141815_0084_D 00:15.00-00:19.50",
+   "catatan": "Klip penutup Cerita, menggantikan zona-08 (tegak lurus) di cerita; zona-08 tetap dipakai panel zona 08. Hero memakai klip yang sama di detik 02-06 dengan potongan rapat ke teras; klip ini lebar. Unit AC bungalow tengah tertutup rumput sejak detik 12; potongan desktop (x 0-0,80, y 0,08-0,88) membuang rumah warga di pojok kanan atas. Gerak rata (bukan ramp); frame terakhir layak ditahan."
+  }
+ }
 }

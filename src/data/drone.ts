@@ -1,5 +1,5 @@
 /**
- * Video drone untuk hero dan panel zona, dibaca dari kontrak
+ * Video drone untuk hero, panel zona, dan klip Cerita beranda, dibaca dari kontrak
  * public/video/drone/manifest.json (diisi Penyunting Video) SAAT BUILD.
  *
  * Aturan: satu berkas baru dipakai kalau berkasnya benar-benar ada di public/.
@@ -76,4 +76,15 @@ for (const z of Array.isArray(M?.zona) ? M.zona : []) {
   const hp = klip(z.hp);
   if (!desktop && !hp) continue;
   KLIP_ZONA[no] = { desktop, hp, poster: ada(z.poster) ? z.poster : desktop?.poster ?? hp?.poster };
+}
+
+/** Klip Cerita beranda, dikunci nama di manifest `cerita` ("pembuka", "penutup"). Hanya yang berkasnya sudah ada.
+ *  Terpisah dari KLIP_ZONA: klip zona tetap dipakai panel peta kawasan. */
+export const KLIP_CERITA: Record<string, { desktop?: Klip; hp?: Klip; poster?: string }> = {};
+const CERITA = M?.cerita && typeof M.cerita === "object" && !Array.isArray(M.cerita) ? M.cerita : {};
+for (const [nama, c] of Object.entries(CERITA as Record<string, any>)) {
+  const desktop = klip(c?.desktop);
+  const hp = klip(c?.hp);
+  if (!desktop && !hp) continue;
+  KLIP_CERITA[nama] = { desktop, hp, poster: ada(c?.poster) ? c.poster : desktop?.poster ?? hp?.poster };
 }

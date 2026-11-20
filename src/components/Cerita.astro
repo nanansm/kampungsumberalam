@@ -12,7 +12,7 @@
  * posternya saja.
  */
 import { Picture } from "astro:assets";
-import { KLIP_ZONA } from "../data/drone";
+import { KLIP_ZONA, KLIP_CERITA } from "../data/drone";
 import { rapiIsi, lekat, lekatJudul, kelompokJudul } from "../data/rag";
 import KlipCerita from "./KlipCerita.astro";
 /* sementara: foto malam lama sampai foto malam butir 5 lulus gerbang */
@@ -36,18 +36,21 @@ type Babak = {
   halus?: boolean;
 };
 const BABAK: Babak[] = [
-  { n: 1, jenis: "klip", bidang: "alam", klip: KLIP_ZONA["02"], goresan: "teratai" },
+  /* klip Air khusus Cerita: segmen zona-02 dengan potongan tanpa motor, mobil, dan unit AC */
+  { n: 1, jenis: "klip", bidang: "alam", klip: KLIP_CERITA["air"] ?? KLIP_ZONA["02"], goresan: "teratai" },
   { n: 2, jenis: "foto", bidang: "kertas", foto: fotoRest, goresan: "rumah" },
   { n: 3, jenis: "foto", bidang: "petang", foto: fotoMalam, goresan: "bunga", halus: true },
   { n: 4, jenis: "foto", bidang: "udara", foto: fotoPulang },
 ];
 /* Aturan Ryan 20 Nov: dua media penuh lebar tidak boleh bersentuhan, dan tiap klip harus menjelaskan
-   teks di dekatnya. Klip pembuka (zona-19, setengah tegak lurus) menempel langsung pada klip babak Air,
-   jadi dilepas dulu; klip pembuka baru dipilih bersama narasi pembuka yang sedang diajukan ke Ryan.
-   Klip penutup duduk SEBELUM coda: kampungnya terlihat dulu, lalu teks menyebut namanya, dan coda
-   memisahkannya dari foto udara peta kawasan. */
-const KLIP_BUKA: Klip | undefined = undefined;
-const KLIP_TUTUP = KLIP_ZONA["08"];
+   teks di dekatnya (klip tegak lurus yang abstrak diganti). Klip Cerita punya berkas sendiri
+   (manifest `cerita`), terpisah dari klip zona yang dipakai panel peta:
+   - pembuka: deret rumah kayu beratap ijuk dengan lereng Guntur (0080), duduk di antara judul dan isi
+     pembuka, jadi isi memisahkannya dari klip babak Air;
+   - penutup: rumah panggung beratap ijuk di atas balong, miring (0084 akhir), duduk SEBELUM coda:
+     kampungnya terlihat dulu, lalu teks menyebut namanya, dan coda memisahkannya dari foto udara peta. */
+const KLIP_BUKA = KLIP_CERITA["pembuka"];
+const KLIP_TUTUP = KLIP_CERITA["penutup"];
 /* kelompok makna judul (ID dan EN): baris hanya patah di antara frasa ini */
 const GRUP: Record<string, string[]> = {
   /* pembuka v3.1 (dipilih Ryan 20 Nov): nama resort utuh, "dari apa yang tamu rasakan" satu kelompok */

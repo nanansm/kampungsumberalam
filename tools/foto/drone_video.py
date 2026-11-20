@@ -26,7 +26,8 @@ yang pipa servisnya sudah dihapus (z08_bersih.py Penyunting); kalau berkas antar
 skrip ini membuatnya ulang dari klip 0006 asli.
 
 Pakai:
-  python3 tools/foto/drone_video.py                          # semua: hero + 6 klip zona -> public/video/drone/
+  python3 tools/foto/drone_video.py                          # semua: hero + 6 klip zona + 3 klip Cerita -> public/video/drone/
+  python3 tools/foto/drone_video.py --hanya cerita-pembuka cerita-air cerita-penutup
   python3 tools/foto/drone_video.py --look tools/foto/resep/X.cube
   python3 tools/foto/drone_video.py --hanya hero zona-08-balong-pondok-kalapa
   python3 tools/foto/drone_video.py --keluar /tmp/uji --kerja /tmp/kerja
@@ -49,7 +50,10 @@ SETELAN = {k: v for k, v in (json.loads(_SETELAN.read_text()) if _SETELAN.exists
 KELUAR = REPO / "public/video/drone"
 FPS = "30000/1001"
 URUT = ["hero", "zona-02-kolam-tasik-madu", "zona-03-restoran-tunjung-balebat", "zona-08-balong-pondok-kalapa",
-        "zona-17-18-babakan-siluhur", "zona-19-bungalow-balong-belakang", "zona-21-villa-sibentang"]
+        "zona-17-18-babakan-siluhur", "zona-19-bungalow-balong-belakang", "zona-21-villa-sibentang",
+        # klip Cerita beranda, terpisah dari klip zona: pembuka 0080 detik 11,0-15,0, babak Air 0005 detik 8-14
+        # (potongan zona-02 tanpa kendaraan), penutup 0084 detik 15,0-19,5
+        "cerita-pembuka", "cerita-air", "cerita-penutup"]
 
 
 def penyunting():
