@@ -76,6 +76,8 @@ export type Henti = {
   sisi?: "kiri" | "kanan";
   /** bingkai khusus HP (foto udara): pusat & luas pandang sendiri bila bingkai umum terlalu lebar */
   hp?: { cx: number; cy: number; vw: number; vh: number };
+  /** zona utama: foto pop-up yang tampil begitu kamera mendarat (Lampiran A1 spek 20 Nov) */
+  utama: string;
 };
 
 type Titik = { no: string; x: number; y: number };
@@ -415,7 +417,8 @@ export const ZONA: Zona[] = [
       jarak("250"),
       { id: "Kamar di area belakang: Bungalow Siceeh (twin bed), Junior Suite, Babakan Siluhur 1 dan 2", en: "Rooms at the back: Bungalow Siceeh (twin beds), Junior Suite, Babakan Siluhur 1 and 2" },
     ],
-    cta: "wa",
+    cta: "wa", foto: "henti-belakang",
+    fotoAlt: { id: "Bungalow Siceeh dua lantai berdiri berhadapan di atas balong", en: "Two-storey Bungalow Siceeh houses facing each other over the balong" },
   }),
 ];
 
@@ -429,7 +432,7 @@ const SEMUA_HENTI: Henti[] = [
       en: "You turn in from Jl. Raya Cipanas, park in front of the Lobby and walk up to its terrace. Kawung and Pondok Kalapa are only ±60–70 m from the Lobby.",
     },
     cx: 395, cy: 1396, vw: 520, vh: 330,
-    foto: "henti-datang",
+    foto: "henti-datang", utama: "01",
     fotoAlt: { id: "Tamu menarik koper di jalan setapak di atas balong menuju bungalow", en: "Guests pull their luggage along a path over the balong towards a bungalow" },
   },
   {
@@ -441,7 +444,7 @@ const SEMUA_HENTI: Henti[] = [
       en: "Kolam Renang Tasik Madu sits behind the Lobby, with Restoran Tunjung Balebat on its edge. Of all the rooms, Suite Couple is closest to the pool and Kamar Rendam.",
     },
     cx: 688, cy: 1350, vw: 420, vh: 300,
-    foto: "henti-berendam",
+    foto: "kolam-tasik-madu", utama: "02",
     fotoAlt: { id: "Kolam Renang Tasik Madu berkanopi dengan Gunung Guntur di belakangnya", en: "Kolam Renang Tasik Madu under its canopy, with Mount Guntur behind it" },
   },
   {
@@ -453,7 +456,7 @@ const SEMUA_HENTI: Henti[] = [
       en: "Balong is the Sundanese word for a fish pond. The timber bungalows of Kampung Sumber Alam stand over the balong, and every room has a soaking tub fed by natural hot spring water from Mount Guntur.",
     },
     cx: 985, cy: 1440, vw: 430, vh: 420,
-    foto: "henti-balong",
+    foto: "henti-balong", utama: "10",
     fotoAlt: { id: "Bungalow kayu beratap ijuk berdiri di atas balong berdaun teratai", en: "A thatched timber bungalow standing over a balong covered in lily pads" },
   },
   {
@@ -465,8 +468,8 @@ const SEMUA_HENTI: Henti[] = [
       en: "Villa Sibentang is nine private villas, each with a private pool of natural hot spring water. Rates and bookings for its packages, including Thermal Reset 2D1N, are handled through the Villa Sibentang WhatsApp line.",
     },
     cx: 889, cy: 1010, vw: 380, vh: 260,
-    foto: "henti-sibentang",
-    fotoAlt: { id: "Tamu duduk di tepi private pool Villa Sibentang", en: "A guest sitting at the edge of a Villa Sibentang private pool" },
+    foto: "villa-sibentang", utama: "21",
+    fotoAlt: { id: "Villa Sibentang dengan private pool di halaman depannya", en: "A Villa Sibentang with the private pool in its front yard" },
   },
   {
     id: "kumpul",
@@ -477,7 +480,7 @@ const SEMUA_HENTI: Henti[] = [
       en: "Groups play fun games on Tegal Pangulinan. Meetings and meals happen under one roof, because Purba Dewata and Restoran Ligar Wangi share a building in the middle of the grounds.",
     },
     cx: 1310, cy: 1078, vw: 400, vh: 370,
-    foto: "henti-kumpul",
+    foto: "henti-kumpul", utama: "16",
     fotoAlt: { id: "Keluarga berjalan di jalan setapak taman Kampung Sumber Alam", en: "A family walking along a garden path at Kampung Sumber Alam" },
   },
   {
@@ -489,7 +492,7 @@ const SEMUA_HENTI: Henti[] = [
       en: "The back holds 26 bungalows (Bungalow 15–40), Junior Suite, and Babakan Siluhur 1 and 2 for extended families or office teams.",
     },
     cx: 1455, cy: 876, vw: 700, vh: 430,
-    foto: "henti-belakang",
+    foto: "henti-belakang", utama: "19",
     fotoAlt: { id: "Bungalow Siceeh dua lantai berdiri berhadapan di atas balong", en: "Two-storey Bungalow Siceeh houses facing each other over the balong" },
   },
 ];

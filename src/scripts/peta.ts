@@ -20,7 +20,7 @@ type Data = {
   babak: { buka: number; henti: number; tutup: number };
   plat: PlatData[];
   awal: { cx: number; cy: number; vw: number; vh: number };
-  henti: { id: string; cx: number; cy: number; vw: number; vh: number; plat: number; sisi: "kiri" | "kanan"; hp?: { cx: number; cy: number; vw: number; vh: number } }[];
+  henti: { id: string; cx: number; cy: number; vw: number; vh: number; plat: number; sisi: "kiri" | "kanan"; utama: string; hp?: { cx: number; cy: number; vw: number; vh: number } }[];
   teksTutup: string;
 };
 type Kotak = { l: number; t: number; r: number; b: number };
@@ -83,6 +83,22 @@ export function mulaiPeta(akar: HTMLElement) {
   const navNo = akar.querySelector<HTMLElement>("[data-nav-no]")!;
   const navNama = akar.querySelector<HTMLElement>("[data-nav-nama]")!;
   const lewati = akar.querySelector<HTMLAnchorElement>("[data-lewati]")!;
+  /* halimun & foto pop-up (butir 3): elemen dan status, dideklarasikan di atas karena gambar()
+     sudah dipanggil saat awal */
+  const halimunA = akar.querySelector<HTMLElement>(".halimun-a");
+  const halimunB = akar.querySelector<HTMLElement>(".halimun-b");
+  const popupLapis = akar.querySelector<HTMLElement>("[data-popup]");
+  const popupGaris = popupLapis?.querySelector<SVGLineElement>(".popup-garis line") ?? null;
+  const popupSemua = [...akar.querySelectorAll<HTMLElement>("[data-popup-zona]")];
+  const hdr = document.querySelector<HTMLElement>(".hdr");
+  let popupEl: HTMLElement | null = null; // kartu yang sedang tampil
+  let popupZona = ""; // zona yang fotonya tampil
+  let popupAsal = ""; // zona tempat kartu diletakkan (zona utama henti)
+  let popupGeser: { dx: number; dy: number; w: number; h: number } | null = null;
+  let popupTunda: gsap.core.Animation | null = null;
+  let halimunTl: gsap.core.Timeline | null = null;
+  let halimunDiam: gsap.core.Timeline | null = null;
+  let halimunHpMati = false, fpsDiukur = false;
 
   const B = D.babak;
   const N = D.henti.length;
@@ -268,6 +284,7 @@ export function mulaiPeta(akar: HTMLElement) {
       }
       p.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
     }
+    if (popupEl && popupGeser) ikutiPopup();
   }
   pins.forEach((p) => p.el.classList.toggle("plat-lain", p.plat !== 0));
   lain.forEach((p) => p.el.classList.toggle("plat-lain", p.plat !== 0));
@@ -501,10 +518,13 @@ export function mulaiPeta(akar: HTMLElement) {
   function hentikanDrift() {
     drift?.kill();
     drift = null;
+    halimunDiam?.kill();
+    halimunDiam = null;
   }
   function mulaiDrift() {
     hentikanDrift();
     if (fase !== "henti" || aktif < 0 || aktif >= N) return;
+    halimunDrift();
     const dasarKam = { ...cur };
     const o = { t: 0 };
     drift = gsap.to(o, {
@@ -530,10 +550,13 @@ export function mulaiPeta(akar: HTMLElement) {
     muatUbin(cur);
     aturLabel();
     mulaiDrift();
+    popupTunda?.kill();
+    if (fase === "henti") popupTunda = gsap.delayedCall(0.15, tampilPopup);
   }
-  function terbangKe(tujuan: Kam, durasi: number, platTujuan = platAktif) {
+  function terbangKe(tujuan: Kam, durasi: number, platTujuan = platAktif, halimunLewat = false) {
     terbang?.kill();
     hentikanDrift();
+    sembunyikanPopup();
     jepitAktif = false;
     pins.forEach((p) => p.el.classList.remove("berlabel"));
     if (platTujuan !== platAktif) return pindahPlat(tujuan, platTujuan);
@@ -541,6 +564,7 @@ export function mulaiPeta(akar: HTMLElement) {
     const lebarPandang = W / Math.min(dari.s, tujuan.s);
     const jarak = Math.hypot(tujuan.cx - dari.cx, tujuan.cy - dari.cy) / lebarPandang;
     const lekuk = Math.min(0.42, jarak * 0.5);
+    if (halimunLewat) halimunTerbang(dari, tujuan, durasi, jarak);
     const o = { t: 0 };
     muatUbin(tujuan);
     terbang = gsap.to(o, {
@@ -571,7 +595,12 @@ export function mulaiPeta(akar: HTMLElement) {
       cur = { ...tujuan };
       return selesaiTerbang();
     }
-    const uap = kabut.querySelector(".kabut-uap");
+    const uap = kabut.querySelector<HTMLElement>(".kabut-uap");
+    if (uap) acakUbin(uap);
+    halimunTl?.kill();
+    halimunTl = null;
+    const lapis = [halimunA, halimunB].filter((l): l is HTMLElement => !!l);
+    if (lapis.length) gsap.to(lapis, { opacity: 0, duration: 0.2, ease: "power1.out" });
     const o = { t: 0 };
     muatUbin(tujuan, pl);
     terbang = gsap.timeline({ onComplete: selesaiTerbang })
@@ -597,6 +626,260 @@ export function mulaiPeta(akar: HTMLElement) {
         },
       }, "<");
   }
+
+  /* ---------- halimun pindah henti (butir 3) ----------
+     Dua lapis tipis melintas searah terbang selama 1,4 dtk; puncak opacity mengikuti jarak terbang
+     (dalam lebar pandang). Ganti plat tetap memakai kabut dasar yang menutup penuh. */
+  function puncakHalimun(jarak: number) {
+    const p = jarak < 0.6 ? 0.28 : jarak >= 1.2 ? 0.55 : 0.28 + ((jarak - 0.6) / 0.6) * 0.27;
+    return hp ? p * 0.8 : p;
+  }
+  function acakUbin(el: HTMLElement) {
+    const u = hp ? 1024 : 1536; // titik awal ubin diacak: kabut tidak pernah sama dua kali
+    el.style.backgroundPosition = `${Math.round(Math.random() * u)}px ${Math.round(Math.random() * u)}px`;
+  }
+  function halimunTerbang(dari: Kam, tujuan: Kam, d: number, jarak: number) {
+    if (!halimunA) return;
+    halimunDiam?.kill();
+    halimunDiam = null;
+    halimunTl?.kill();
+    const lapis = hp || !halimunB ? [halimunA] : [halimunA, halimunB];
+    // gulir cepat melewati beberapa henti: lapis lama turun ke 0 dulu, kabut tidak menumpuk
+    const t0 = Math.max(...lapis.map((l) => Number(gsap.getProperty(l, "opacity")))) > 0.01 ? 0.2 : 0;
+    let vx = tujuan.cx - dari.cx, vy = tujuan.cy - dari.cy;
+    const n = Math.hypot(vx, vy) || 1;
+    vx /= n;
+    vy /= n;
+    const pA = puncakHalimun(jarak), pB = pA * 0.7;
+    const tl = gsap.timeline();
+    if (t0) tl.to(lapis, { opacity: 0, duration: 0.2, ease: "power1.out" }, 0);
+    tl.add(() => lapis.forEach(acakUbin), t0)
+      .fromTo(halimunA, { xPercent: vx * 12, yPercent: vy * 12, scale: 1.05 }, { xPercent: -vx * 12, yPercent: -vy * 12, scale: 1.18, duration: d, ease: "none", immediateRender: false }, t0)
+      .fromTo(halimunA, { opacity: 0 }, { opacity: pA, duration: d * 0.45, ease: "power2.in", immediateRender: false }, t0)
+      .to(halimunA, { opacity: 0, duration: d * 0.45, ease: "power2.out" }, t0 + d * 0.55);
+    if (lapis.length > 1 && halimunB) {
+      tl.fromTo(halimunB, { xPercent: vx * 22, yPercent: vy * 22, scale: 1.1 }, { xPercent: -vx * 22, yPercent: -vy * 22, scale: 1.32, duration: d, ease: "none", immediateRender: false }, t0)
+        .fromTo(halimunB, { opacity: 0 }, { opacity: pB, duration: d * 0.37, ease: "power2.in", immediateRender: false }, t0 + d * 0.08)
+        .to(halimunB, { opacity: 0, duration: d * 0.37, ease: "power2.out" }, t0 + d * 0.55);
+    }
+    halimunTl = tl;
+  }
+  /* diam di henti: halimun belakang tetap ada tipis (0,06) dan bergeser 3% bolak-balik mengikuti drift;
+     di HP dimatikan kalau laju gambar di bawah 50 fps */
+  function halimunDrift() {
+    if (!halimunA || (hp && halimunHpMati)) return;
+    if (hp && !fpsDiukur) {
+      fpsDiukur = true;
+      let n = 0;
+      const mulai = performance.now();
+      const hitung = (t: number) => {
+        n++;
+        if (t - mulai < 1000) return requestAnimationFrame(hitung);
+        if ((n * 1000) / (t - mulai) < 50) {
+          halimunHpMati = true;
+          halimunDiam?.kill();
+          gsap.to(halimunA, { opacity: 0, duration: 0.4 });
+        }
+      };
+      requestAnimationFrame(hitung);
+    }
+    halimunDiam?.kill();
+    acakUbin(halimunA);
+    gsap.set(halimunA, { xPercent: -3, yPercent: 0, scale: 1.05 });
+    halimunDiam = gsap.timeline()
+      .to(halimunA, { opacity: 0.06, duration: 1.2, ease: "power1.out" }, 0)
+      .to(halimunA, { xPercent: 3, duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1 }, 0);
+  }
+
+  /* ---------- foto pop-up di titik zona (butir 3) ---------- */
+  const kecil = () => W < 600;
+  function kepalaZona(no: string) {
+    const p = pins.find((q) => q.el.dataset.zona === no && q.plat === platAktif);
+    if (!p) return null;
+    if (p.el.classList.contains("di-tepi")) {
+      // zona di luar bingkai: kartu menunjuk chip berpanah di tepi layar yang mewakilinya
+      const c = p.el.querySelector(".pin-label")?.getBoundingClientRect();
+      const pr = panggung.getBoundingClientRect();
+      return c && c.width ? { x: c.left + c.width / 2 - pr.left, y: c.top + c.height / 2 - pr.top } : null;
+    }
+    const { cx, cy, s, ax, ay } = cur;
+    return { x: p.x * s + ax - cx * s, y: p.y * s + ay - cy * s - 26 };
+  }
+  function kotakPanggung(el: Element | null | undefined, pr: DOMRect): Kotak | null {
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    return { l: r.left - pr.left, t: r.top - pr.top, r: r.right - pr.left, b: r.bottom - pr.top };
+  }
+  function rintangan(): Kotak[] {
+    const pr = panggung.getBoundingClientRect();
+    const out = [kotak[aktif], navDaftar, navRingkas, lewati, hdr && !hdr.classList.contains("sembunyi") ? hdr : null].map((el) => kotakPanggung(el, pr));
+    akar.querySelectorAll(".pin.di-henti .pin-kepala, .pin.berlabel .pin-label, .tepi-arah.di-henti .tepi-isi").forEach((el) => out.push(kotakPanggung(el, pr)));
+    return out.filter((x): x is Kotak => !!x);
+  }
+  function garisKe(P: { x: number; y: number }, x: number, y: number, w: number, h: number) {
+    if (!popupGaris) return;
+    const pojok = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].sort((a, b) => Math.hypot(a[0] - P.x, a[1] - P.y) - Math.hypot(b[0] - P.x, b[1] - P.y))[0];
+    const dx = pojok[0] - P.x, dy = pojok[1] - P.y, d = Math.hypot(dx, dy) || 1;
+    popupGaris.setAttribute("x1", (P.x + (dx / d) * 16).toFixed(1));
+    popupGaris.setAttribute("y1", (P.y + (dy / d) * 16).toFixed(1));
+    popupGaris.setAttribute("x2", pojok[0].toFixed(1));
+    popupGaris.setAttribute("y2", pojok[1].toFixed(1));
+    return pojok;
+  }
+  /* letak kartu: sisi berlawanan dengan kotak keterangan; coba kanan-atas, kanan-bawah, kiri-atas,
+     atas (dicerminkan bila kotak di kanan); tidak boleh beririsan dengan kotak, navigasi, tombol,
+     label aktif, dan tepi layar (16 px). Gagal semua: slot tetap di bawah "Lewati peta". */
+  function letakPopup(el: HTMLElement, no: string) {
+    const kartu = el.querySelector<HTMLElement>(".popup-kartu")!;
+    const w = kartu.offsetWidth, h = kartu.offsetHeight;
+    const pr = panggung.getBoundingClientRect();
+    if (kecil()) {
+      const kr = kotak[aktif]?.getBoundingClientRect();
+      if (!kr) return false;
+      // menjorok ke dalam kotak paling banyak separuh kartu, tetapi tidak melewati baris label:
+      // judul dan isi kotak tidak pernah tertutup dan kotak tidak bertambah tinggi
+      const lbl = kotak[aktif].querySelector(".lbl")?.getBoundingClientRect();
+      const masuk = Math.max(0, Math.min(h / 2, lbl ? lbl.bottom - kr.top + 2 : h / 2));
+      const x = kr.right - pr.left - w - 12, y = kr.top - pr.top - h + masuk;
+      el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+      kartu.style.transformOrigin = "100% 100%";
+      popupGeser = null;
+      return true;
+    }
+    const P = kepalaZona(no);
+    if (!P) return false;
+    const g = 22, aman = 16;
+    const kotakKiri = (D.henti[aktif]?.sisi ?? "kiri") === "kiri";
+    const kanan = [{ x: P.x + g, y: P.y - g - h }, { x: P.x + g, y: P.y + g }];
+    const kiri = [{ x: P.x - g - w, y: P.y - g - h }, { x: P.x - g - w, y: P.y + g }];
+    const atas = { x: P.x - w / 2, y: P.y - 15 - g - h };
+    const calon = kotakKiri ? [...kanan, kiri[0], atas] : [...kiri, kanan[0], atas];
+    const rin = rintangan();
+    const bebas = (c: { x: number; y: number }) => {
+      const k = { l: c.x - 8, t: c.y - 8, r: c.x + w + 8, b: c.y + h + 8 };
+      return c.x >= aman && c.y >= aman && c.x + w <= W - aman && c.y + h <= H - aman && !rin.some((r) => luasTimpa(k, r) > 0);
+    };
+    let pilih = calon.find(bebas);
+    if (!pilih) {
+      // keempat letak utama tertutup label/kotak: cari letak bebas terdekat ke titik zona di kisi 24 px,
+      // dengan sisi yang berlawanan dengan kotak keterangan didahulukan
+      let skor = Infinity;
+      for (let y = aman; y + h <= H - aman; y += 24) {
+        for (let x = aman; x + w <= W - aman; x += 24) {
+          if (!bebas({ x, y })) continue;
+          const mx = x + w / 2, my = y + h / 2;
+          const sisiKotak = kotakKiri ? mx < P.x - w * 0.25 : mx > P.x + w * 0.25;
+          const d = Math.hypot(mx - P.x, my - P.y) + (sisiKotak ? 400 : 0);
+          if (d < skor) {
+            skor = d;
+            pilih = { x, y };
+          }
+        }
+      }
+    }
+    if (!pilih) {
+      const lr = lewati.getBoundingClientRect();
+      pilih = { x: W - aman - w, y: lr.bottom - pr.top + aman };
+    }
+    popupGeser = { dx: pilih.x - P.x, dy: pilih.y - P.y, w, h };
+    el.style.transform = `translate3d(${pilih.x.toFixed(1)}px,${pilih.y.toFixed(1)}px,0)`;
+    const pojok = garisKe(P, pilih.x, pilih.y, w, h);
+    if (pojok) kartu.style.transformOrigin = `${pojok[0] > pilih.x + w / 2 ? 100 : 0}% ${pojok[1] > pilih.y + h / 2 ? 100 : 0}%`;
+    return true;
+  }
+  /* kartu mengikuti drift kamera; garis menunjuk zona yang fotonya sedang tampil */
+  function ikutiPopup() {
+    if (!popupEl || !popupGeser) return;
+    const A = kepalaZona(popupAsal);
+    if (!A) return;
+    const x = A.x + popupGeser.dx, y = A.y + popupGeser.dy;
+    popupEl.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+    const P = kepalaZona(popupZona) ?? A;
+    garisKe(P, x, y, popupGeser.w, popupGeser.h);
+  }
+  function kartuZona(no: string) {
+    return popupSemua.find((e) => +e.dataset.popupHenti! === aktif && e.dataset.popupZona === no);
+  }
+  function tampilPopup() {
+    if (!popupLapis || fase !== "henti" || aktif < 0 || aktif >= N) return;
+    const no = D.henti[aktif].utama;
+    const el = kartuZona(no);
+    if (!el) return;
+    sembunyikanPopup(true);
+    el.hidden = false;
+    const kartu = el.querySelector<HTMLElement>(".popup-kartu")!;
+    gsap.set(kartu, { opacity: 0, scale: 1 });
+    if (!letakPopup(el, no)) {
+      el.hidden = true;
+      return;
+    }
+    popupEl = el;
+    popupZona = popupAsal = no;
+    const foto = kartu.querySelector("img");
+    const tl = gsap.timeline();
+    if (popupGaris && !kecil()) tl.fromTo(popupGaris, { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" });
+    tl.fromTo(kartu, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.55, ease: "ksa" });
+    if (foto) tl.fromTo(foto, { scale: 1.08 }, { scale: 1, duration: 0.55, ease: "ksa" }, "<");
+    popupTunda = tl;
+  }
+  function sembunyikanPopup(langsung = false) {
+    popupTunda?.kill();
+    popupTunda = null;
+    popupEl = null;
+    popupZona = popupAsal = "";
+    popupGeser = null;
+    const tampak = popupSemua.filter((e) => !e.hidden);
+    if (langsung || !tampak.length) {
+      tampak.forEach((e) => (e.hidden = true));
+      if (popupGaris) gsap.set(popupGaris, { opacity: 0, strokeDashoffset: 1 });
+      return;
+    }
+    const kartu = tampak.map((e) => e.querySelector(".popup-kartu")).filter((k): k is Element => !!k);
+    const tl = gsap.timeline({ onComplete: () => tampak.forEach((e) => e !== popupEl && (e.hidden = true)) })
+      .to(kartu, { opacity: 0, scale: 0.96, duration: 0.22, ease: "power2.in" }, 0);
+    if (popupGaris) tl.to(popupGaris, { opacity: 0, duration: 0.18, ease: "power2.in" }, 0);
+    popupTunda = tl;
+  }
+  /* arahkan kursor / fokus papan ketik ke titik atau chip zona lain di henti ini: foto dan keterangan
+     berganti (pudar-silang 0,3 dtk); kartu tetap di tempatnya, garis pindah ke zona itu */
+  function gantiPopup(no: string) {
+    if (!popupEl || no === popupZona || fase !== "henti") return;
+    const baru = kartuZona(no);
+    if (!baru) return;
+    const lama = popupEl;
+    const kb = baru.querySelector<HTMLElement>(".popup-kartu")!, kl = lama.querySelector<HTMLElement>(".popup-kartu")!;
+    baru.hidden = false;
+    baru.style.transform = lama.style.transform;
+    kb.style.transformOrigin = kl.style.transformOrigin;
+    popupEl = baru;
+    popupZona = no;
+    popupTunda?.kill();
+    gsap.set(kb, { scale: 1 });
+    popupTunda = gsap.timeline({ onComplete: () => { if (popupEl !== lama) lama.hidden = true; } })
+      .fromTo(kb, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0)
+      .to(kl, { opacity: 0, duration: 0.3, ease: "power1.out" }, 0);
+    if (popupGaris && !kecil()) gsap.set(popupGaris, { opacity: 1, strokeDashoffset: 0 });
+    ikutiPopup();
+  }
+  const fokusPapan = (el: Element) => { try { return el.matches(":focus-visible"); } catch { return true; } };
+  akar.querySelectorAll<HTMLElement>(".kotak-chip [data-buka]").forEach((b) => {
+    const no = b.dataset.buka!;
+    b.addEventListener("pointerenter", (e) => { if ((e as PointerEvent).pointerType === "mouse") gantiPopup(no); });
+    b.addEventListener("focus", () => { if (fokusPapan(b)) gantiPopup(no); });
+    // HP: ketuk chip zona lain mengganti foto; ketuk kartu (atau chip zona yang sedang tampil) membuka panel
+    b.addEventListener("click", (e) => {
+      if (!kecil() || !popupEl || no === popupZona || !kartuZona(no)) return;
+      e.stopPropagation();
+      e.preventDefault();
+      gantiPopup(no);
+    });
+  });
+  pins.forEach((p) => {
+    const no = p.el.dataset.zona!;
+    p.el.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse" && p.henti === aktif) gantiPopup(no); });
+    p.el.addEventListener("focus", () => { if (p.henti === aktif && fokusPapan(p.el)) gantiPopup(no); });
+  });
 
   /* ---------- uap & judul pembuka (scrub) ---------- */
   const uapKiri = akar.querySelector(".uap-kiri");
@@ -640,6 +923,7 @@ export function mulaiPeta(akar: HTMLElement) {
         terbang?.kill();
         terbang = null;
         hentikanDrift();
+        sembunyikanPopup();
         jepitAktif = false;
         setAktif(-1);
       }
@@ -657,7 +941,7 @@ export function mulaiPeta(akar: HTMLElement) {
         ukur();
         areaCache = null;
         sasaran = kamHenti(i);
-        terbangKe(sasaran, dulu === -1 ? 0.7 : 1.4, D.henti[i].plat);
+        terbangKe(sasaran, dulu === -1 ? 0.7 : 1.4, D.henti[i].plat, dulu !== -1);
       }
       const bar = progres[i];
       if (bar) bar.style.transform = `scaleX(${jepit(lokal).toFixed(3)})`;
@@ -730,6 +1014,7 @@ export function mulaiPeta(akar: HTMLElement) {
       beku = null;
       perbarui(st.progress);
       aturLabel();
+      if (fase === "henti" && !terbang && popupEl) tampilPopup();
     }, 160);
   }
   ScrollTrigger.addEventListener("refreshInit", bekukan);
@@ -747,6 +1032,7 @@ export function mulaiPeta(akar: HTMLElement) {
     terbang?.kill();
     terbang = null;
     hentikanDrift();
+    sembunyikanPopup(true);
     areaCache = null;
     if (kabut) gsap.set(kabut, { opacity: 0 });
     if (aktif >= 0 && aktif < N) {
@@ -769,6 +1055,7 @@ export function mulaiPeta(akar: HTMLElement) {
       muatUbin(cur);
       aturLabel();
       mulaiDrift();
+      if (fase === "henti" && !terbang) tampilPopup();
     }, 260);
     // cadangan kalau ScrollTrigger tidak menghitung ulang (mis. ubah tinggi kecil)
     clearTimeout(jamCadangan);
@@ -841,7 +1128,7 @@ export function mulaiPeta(akar: HTMLElement) {
   setAktif(-1);
   perbarui(st.progress);
   // jejak untuk uji otomatis (dibaca skrip QA, tidak dipakai situs)
-  (window as any).__peta = { kam: () => ({ ...cur }), fokus: () => ({ ...fokus, W, H, hp }), aktif: () => aktif, plat: () => platAktif, beku: () => beku, fase: () => fase };
+  (window as any).__peta = { kam: () => ({ ...cur }), fokus: () => ({ ...fokus, W, H, hp }), aktif: () => aktif, plat: () => platAktif, beku: () => beku, fase: () => fase, jeda: (ya: boolean) => (ya ? gsap.globalTimeline.pause() : gsap.globalTimeline.resume()) };
 }
 
 /* ======================================================================

@@ -68,9 +68,21 @@ const dataSkrip = {
   babak: BABAK,
   plat: PLAT.map((p) => ({ lebar: p.lebar, tinggi: p.tinggi, foto: p.foto, ubin: p.ubin, kolom: p.kolom, baris: p.baris, tajam: p.tajam })),
   awal: PANDANG_AWAL,
-  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0, sisi: h.sisi ?? "kiri", ...(h.hp ? { hp: h.hp } : {}) })),
+  henti: HENTI.map((h) => ({ id: h.id, cx: h.cx, cy: h.cy, vw: h.vw, vh: h.vh, plat: h.plat ?? 0, sisi: h.sisi ?? "kiri", utama: h.utama, ...(h.hp ? { hp: h.hp } : {}) })),
   teksTutup: L(TX.tutupNav),
 };
+/* Foto pop-up (butir 3): satu kartu per zona di tiap pemberhentian. Zona utama memakai foto
+   pemberhentian (Lampiran A1), zona lain foto zonanya (Lampiran A2); zona tanpa foto darat
+   memakai potongan foto udara yang pasti menunjuk tempat yang benar. */
+const KARTU = HENTI.flatMap((h, i) =>
+  ZONA.filter((zn) => zn.henti === i && !zn.hilang).map((zn) => {
+    const utama = zn.no === h.utama;
+    const src = utama ? h.foto : zn.foto;
+    return { henti: i, zn, utama, src, alt: utama ? h.fotoAlt : zn.fotoAlt };
+  }),
+);
+const lensaSrc = (no: string) => (LENSA_U[no] ? `/peta/lensa-udara-${no}.webp` : `/peta/lensa-${no}.webp`);
+const TX_UDARA = { id: "Foto dari udara", en: "Aerial view" };
 /* gambar dasar tiap plat: HP selalu versi HP/1600 (tidak ikut DPR), desktop 2560 */
 const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avif;
 ---
@@ -126,6 +138,28 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
           </article>
         );
       })}
+    </div>
+
+    <!-- Foto pop-up: menempel di titik zona (desktop) atau di tepi atas kotak (HP); membuka panel zona -->
+    <div class="peta-popup" data-popup>
+      <svg class="popup-garis" aria-hidden="true"><line x1="0" y1="0" x2="0" y2="0" pathLength="1" /></svg>
+      {KARTU.map((k) => (
+        <div class="popup-letak" data-popup-henti={k.henti} data-popup-zona={k.zn.no} hidden>
+          <button type="button" class="popup-kartu" data-buka={k.zn.no} aria-haspopup="dialog" aria-label={lang === "en" ? `See photo and details of ${k.zn.label}` : `Lihat foto dan keterangan ${k.zn.label}`}>
+            <span class="popup-foto">
+              {k.src ? (
+                <Picture src={foto(k.src)} formats={["avif", "webp"]} widths={[264, 440, 600]} sizes="(min-width: 900px) 300px, (min-width: 600px) 220px, 132px" quality={60} alt={k.alt ? L(k.alt) : ""} loading="lazy" decoding="async" />
+              ) : (
+                <>
+                  <img src={lensaSrc(k.zn.no)} width="720" height="540" alt={lang === "en" ? `${k.zn.label} seen from the air` : `${k.zn.label} dilihat dari udara`} loading="lazy" decoding="async" />
+                  <span class="popup-udara">{L(TX_UDARA)}</span>
+                </>
+              )}
+            </span>
+            <span class="popup-ket"><span class="popup-no">{k.zn.no}</span><span class="popup-nama">{k.zn.label}</span></span>
+          </button>
+        </div>
+      ))}
     </div>
 
     <div class="peta-penutup">
@@ -204,9 +238,15 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
     {PLAT.length > 1 && (
       <div class="peta-kabut" aria-hidden="true">
         <span class="kabut-dasar"></span>
-        <img class="kabut-uap" src="/peta/uap-tengah.webp" alt="" width="1200" height="900" decoding="async" loading="lazy" />
+        <span class="kabut-uap"></span>
       </div>
     )}
+
+    <!-- Halimun yang melintas tipis searah terbang di setiap perpindahan pemberhentian (butir 3) -->
+    <div class="peta-halimun" aria-hidden="true">
+      <span class="halimun halimun-a"></span>
+      <span class="halimun halimun-b"></span>
+    </div>
 
     <!-- Uap air panas yang tersibak saat digulir -->
     <div class="peta-uap" aria-hidden="true">
@@ -245,6 +285,7 @@ const imgDasar = (p: (typeof PLAT)[number]) => p.dk.webp ?? p.dk.jpg ?? p.dk.avi
                     <>
                       <img src={`/peta/lensa-udara-${zn.no}.webp`} width="720" height="540" alt={lang === "en" ? `${zn.label} seen from the air` : `${zn.label} dilihat dari udara`} loading="lazy" decoding="async" />
                       <span class="lensa-titik" aria-hidden="true" style={`left:${LENSA_U[zn.no].x}%;top:${LENSA_U[zn.no].y}%`}>{zn.no}</span>
+                      <span class="lensa-ket">{L(TX_UDARA)}</span>
                     </>
                   ) : (
                     <>

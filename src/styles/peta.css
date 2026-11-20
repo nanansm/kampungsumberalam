@@ -210,7 +210,54 @@ html.gerak .pin.plat-lain, html.gerak .titik-lain.plat-lain, html.gerak .tepi-ar
 .peta-kabut { display: none; }
 html.gerak .peta-kabut { display: block; position: absolute; inset: 0; z-index: 2; opacity: 0; pointer-events: none; overflow: hidden; }
 html.gerak .kabut-dasar { position: absolute; inset: 0; background: var(--krem); opacity: .92; }
-html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; }
+html.gerak .kabut-uap { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; background: url("/peta/halimun-a.webp") repeat 0 0 / 1536px 1536px; }
+@media (max-width: 899px) { html.gerak .kabut-uap { background-image: url("/peta/halimun-a-hp.webp"); background-size: 1024px 1024px; } }
+
+/* ---------- Halimun pindah pemberhentian (butir 3) ----------
+   Dua lapis tekstur prosedural yang bisa diubin (tools/peta/uap.py), di atas peta dan titik, di bawah
+   kotak, navigasi, dan foto pop-up. Hanya transform dan opacity yang dianimasikan (peta.ts). HP: satu
+   lapis, tekstur 1024. */
+.peta-halimun { display: none; }
+html.gerak .peta-halimun { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+html.gerak .halimun { position: absolute; display: block; opacity: 0; will-change: transform, opacity; background-repeat: repeat; }
+html.gerak .halimun-a { left: -40%; top: -40%; width: 180%; height: 180%; background-image: url("/peta/halimun-a.webp"); background-size: 1536px 1536px; }
+html.gerak .halimun-b { left: -70%; top: -70%; width: 240%; height: 240%; background-image: url("/peta/halimun-b.webp"); background-size: 1536px 1536px; }
+@media (max-width: 899px) {
+  html.gerak .halimun-a { background-image: url("/peta/halimun-a-hp.webp"); background-size: 1024px 1024px; }
+  html.gerak .halimun-b { display: none; }
+}
+
+/* ---------- Foto pop-up di titik zona (butir 3) ----------
+   Kartu 4:3 berbingkai Kertas 6 px dengan pita keterangan; garis penunjuk 1,5 px Kertas dari titik zona
+   ke pojok kartu terdekat. Letak dihitung peta.ts (sisi berlawanan dengan kotak keterangan). HP < 600 px:
+   kartu kecil menempel di tepi atas kotak, tanpa garis. Versi diam: tidak dipakai (foto di daftar). */
+.peta-popup { display: none; }
+html.gerak .peta-popup { display: block; position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+html.gerak .popup-garis { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+html.gerak .popup-garis line { stroke: var(--krem); stroke-width: 1.5px; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 1px rgba(4, 40, 33, .45)); }
+html.gerak .popup-letak { position: absolute; left: 0; top: 0; pointer-events: auto; will-change: transform; }
+html.gerak .popup-letak[hidden] { display: none; }
+.popup-kartu { --fw: 300px; display: block; width: calc(var(--fw) + 12px); padding: 6px 6px 0; margin: 0; border: 0; border-radius: 2px; background: var(--krem); color: var(--petang); box-shadow: 0 6px 18px rgba(4, 40, 33, .22); cursor: pointer; text-align: left; opacity: 0; }
+.popup-kartu:focus-visible { outline: 2px solid var(--alam); outline-offset: 2px; }
+.popup-foto { position: relative; display: block; width: var(--fw); aspect-ratio: 4 / 3; overflow: hidden; background: #e6e4d4; }
+.popup-foto picture, .popup-foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.popup-udara { position: absolute; left: 6px; bottom: 6px; padding: 3px 6px; border-radius: 2px; background: rgba(252, 250, 230, .92); font: 500 .66rem/1.2 var(--sans); color: var(--petang); }
+.popup-ket { display: flex; align-items: center; gap: 8px; min-height: 34px; padding: 6px 2px 8px; font: 500 .8rem/1.2 var(--sans); }
+.popup-no { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--alam); color: #fff; font: 600 .66rem/1 var(--sans); font-variant-numeric: tabular-nums; }
+.popup-nama { min-width: 0; overflow-wrap: anywhere; }
+@media (min-width: 600px) and (max-width: 899px) { .popup-kartu { --fw: 220px; } }
+@media (max-width: 599px) {
+  .popup-kartu { --fw: 132px; padding: 4px 4px 0; width: calc(var(--fw) + 8px); }
+  .popup-ket { min-height: 26px; padding: 4px 1px 5px; gap: 6px; font-size: .7rem; }
+  .popup-no { width: 18px; height: 18px; font-size: .6rem; }
+  .popup-udara { left: 4px; bottom: 4px; font-size: .58rem; padding: 2px 4px; }
+  html.gerak .popup-garis { display: none; }
+  /* kartu menempel di tepi atas kotak: harus di atas kotak keterangan */
+  html.gerak .peta-popup { z-index: 6; }
+}
+
+/* potongan foto udara di panel zona diberi keterangan supaya tidak terbaca sebagai foto gagal dimuat */
+.lensa-ket { position: absolute; left: 10px; bottom: 10px; padding: 4px 8px; border-radius: 2px; background: rgba(252, 250, 230, .92); font: 500 .72rem/1.2 var(--sans); color: var(--petang); }
 html.gerak .ubin { will-change: opacity; }
 html.gerak .pin, html.gerak .titik-lain, html.gerak .pintu { left: 0; top: 0; will-change: transform; }
 html.gerak .peta-titik .pin-kepala { width: 30px; height: 30px; font-size: .72rem; }
@@ -263,7 +310,8 @@ html.gerak .peta-kotak-lapis { display: block; position: absolute; left: var(--t
 html.gerak .peta-kotak { position: absolute; left: 0; bottom: 0; width: var(--kotak-w); background: var(--krem); box-shadow: 0 10px 40px rgba(4, 40, 33, .16); opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }
 @media (min-width: 900px) { html.gerak .peta-kotak.kotak-kanan { left: auto; right: 0; } }
 html.gerak .peta-kotak.aktif { opacity: 1; visibility: visible; transform: none; transition: opacity .55s var(--ease-out) .3s, transform .8s var(--ease-out) .3s, visibility 0s; }
-html.gerak .kotak-foto { aspect-ratio: 2 / 1; }
+/* foto henti pindah ke kartu pop-up di titik zona (butir 3); versi diam tetap memakai foto kotak */
+html.gerak .kotak-foto { display: none; }
 html.gerak .kotak-teks { padding: 18px 22px 20px; gap: 9px; }
 html.gerak .peta-kotak h3 { font-size: 1.62rem; }
 html.gerak .kotak-isi { font-size: .9rem; line-height: 1.5; }
@@ -271,7 +319,6 @@ html.gerak .kotak-chip button { min-height: 30px; font-size: .76rem; padding-rig
 html.gerak .kotak-chip button span { width: 22px; height: 22px; }
 html.gerak .kotak-progres { display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(4, 40, 33, .08); }
 html.gerak .kotak-progres span { display: block; height: 100%; background: var(--alam); transform-origin: 0 50%; transform: scaleX(0); }
-@media (max-height: 860px) and (min-width: 900px) { html.gerak .kotak-foto { display: none; } }
 
 html.gerak .peta-penutup { position: absolute; left: 50%; bottom: var(--tepi); z-index: 5; width: min(560px, calc(100% - 2 * var(--tepi))); padding: 28px 28px 30px; background: var(--krem); box-shadow: 0 10px 40px rgba(4, 40, 33, .16); opacity: 0; visibility: hidden; transform: translate(-50%, 16px); transition: opacity .3s var(--ease-ui), transform .3s var(--ease-ui), visibility 0s linear .3s; }
 html.gerak .peta[data-fase="tutup"] .peta-penutup { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .6s var(--ease-out) .5s, transform .9s var(--ease-out) .5s, visibility 0s; }
@@ -288,7 +335,6 @@ html.gerak .peta-wadah { overflow-anchor: none; }
   .peta { --kotak-w: auto; --tepi: 12px; }
   html.gerak .peta-kotak-lapis { left: var(--tepi); right: var(--tepi); width: auto; bottom: calc(var(--tepi) + 100lvh - 100svh); }
   html.gerak .peta-kotak { width: 100%; }
-  html.gerak .kotak-foto { display: none; }
   html.gerak .kotak-teks { padding: 16px 16px 18px; gap: 8px; }
   html.gerak .peta-kotak h3 { font-size: 1.36rem; }
   html.gerak .kotak-isi { font-size: .88rem; line-height: 1.5; }
