@@ -1,88 +1,93 @@
 ---
 /**
- * Cerita beranda: konsep -> rasa -> bukti (spek revisi Ryan 20 Nov 2026, butir 6).
+ * Cerita beranda (naskah v3, disetujui Ryan 20 Nov 2026), diturunkan dari Our Story situs resmi:
+ * keyakinan KSA (yang dirasakan tamu) -> air -> Rest -> Recover -> Rejuvenate -> janji dan nama
+ * konsep. Teks persis dari naskah (src/i18n); kalau tidak muat, yang disesuaikan tata letaknya.
  *
- * Kepala bagian memasang pertanyaan ("Mengapa bungalow berdiri di atas kolam ikan?"),
- * babak 1 menjawabnya dengan asal kampung (bungalow di atas balong supaya balong tetap
- * ada, Data Master 09 §9.6), babak 2 menyatakan yang diyakini kampung ini (Our Story:
- * diukur dari apa yang tamu rasakan), lalu babak 3-5 membuktikannya lewat tiga prinsip
- * KSA: Rest, Recover, Rejuvenate (Data Master 01 §4.3). Penutup mengikat ke nama
- * "Sundanese Thermal Escape Village". Harga dan tawaran sengaja tidak ada di sini.
- *
- * Tiap babak satu bidang warna rata (Creative Direction 2027). Babak 1 memakai klip
- * drone yang main sekali lalu diam di frame terakhir; babak 2 tanpa foto (keyakinan tidak
- * punya foto yang jujur); tanpa JS / gerak dikurangi, poster dan teksnya saja.
+ * Pembuka: penanda + judul + isi, lalu klip drone lebar kampung beratap ijuk (gerak pelan).
+ * Babak: satu bidang warna rata per babak (Creative Direction 2027). Jumlah babak mengikuti
+ * daftar BABAK (4-6 bisa), jenisnya klip, foto, atau teks. Penutup: judul, isi, tagline, lalu
+ * klip drone yang naik menjauh dari kampung, mengantar ke peta foto udara di bawahnya.
+ * Klip main sekali saat 45% terlihat lalu diam di frame terakhir; tanpa JS / gerak dikurangi,
+ * posternya saja.
  */
 import { Picture } from "astro:assets";
 import { KLIP_ZONA } from "../data/drone";
-import { rapi as lekat, rapiIsi, lekatJudul } from "../data/rag";
-import fotoDatang from "../assets/cerita/cerita-datang.jpg";
-/* sementara: foto malam lama sampai cerita-malam.jpg (butir 5) siap */
+import { rapiIsi, lekatJudul, kelompokJudul } from "../data/rag";
+import KlipCerita from "./KlipCerita.astro";
+/* sementara: foto malam lama sampai foto malam butir 5 lulus gerbang */
 import fotoMalam from "../assets/images/hero-2-malam.webp";
 import fotoPulang from "../assets/cerita/cerita-pulang.jpg";
-import fotoBalong from "../assets/peta/henti-balong.jpg";
+/* sementara: foto bungalow di atas balong sampai frame drone 0085 setinggi mata (butir 7) siap */
+import fotoRest from "../assets/peta/henti-balong.jpg";
 
 interface Props { t: (k: string) => string }
 const { t } = Astro.props;
 
+type Klip = (typeof KLIP_ZONA)[string];
 type Babak = {
   n: number;
   jenis: "klip" | "teks" | "foto";
   bidang: "kertas" | "alam" | "petang" | "udara";
   foto?: ImageMetadata;
-  klip?: (typeof KLIP_ZONA)[string];
-  cadangan?: ImageMetadata;
+  klip?: Klip;
   goresan?: "kelapa" | "bunga" | "teratai" | "rumah";
   /** singkap halus: foto 1,06 -> 1 selama 1,4 dtk (babak malam) */
   halus?: boolean;
 };
 const BABAK: Babak[] = [
-  { n: 1, jenis: "klip", bidang: "kertas", klip: KLIP_ZONA["08"], cadangan: fotoBalong },
-  { n: 2, jenis: "teks", bidang: "alam", goresan: "teratai" },
-  { n: 3, jenis: "foto", bidang: "kertas", foto: fotoDatang, goresan: "rumah" },
-  { n: 4, jenis: "foto", bidang: "petang", foto: fotoMalam, goresan: "bunga", halus: true },
-  { n: 5, jenis: "foto", bidang: "udara", foto: fotoPulang },
+  { n: 1, jenis: "klip", bidang: "alam", klip: KLIP_ZONA["02"], goresan: "teratai" },
+  { n: 2, jenis: "foto", bidang: "kertas", foto: fotoRest, goresan: "rumah" },
+  { n: 3, jenis: "foto", bidang: "petang", foto: fotoMalam, goresan: "bunga", halus: true },
+  { n: 4, jenis: "foto", bidang: "udara", foto: fotoPulang },
 ];
+const KLIP_BUKA = KLIP_ZONA["19"];
+const KLIP_TUTUP = KLIP_ZONA["08"];
+/* kelompok makna judul (ID dan EN): baris hanya patah di antara frasa ini */
+const GRUP: Record<string, string[]> = {
+  "cerita.judul": ["Liburan yang menenangkan", "tidak harus dicari", "di tempat yang sepi.", "A restful holiday", "does not have to be", "a lonely one."],
+  "cerita.1.judul": ["Air panasnya sudah mengalir", "jauh sebelum", "resor ini berdiri.", "The hot springs were flowing", "long before", "the resort was built."],
+  "cerita.2.judul": ["Tamu memakai", "hari pertamanya", "untuk berhenti", "dari urusan", "yang biasa dikejar.", "The first day is for", "stepping away", "from the usual chase."],
+  "cerita.3.judul": ["Air hangat", "dan sambutan yang tulus", "membuat badan", "kembali segar.", "Warm water", "and a sincere welcome", "bring the body back."],
+  "cerita.4.judul": ["Tamu pulang", "dengan tenaga baru", "dan cerita bersama", "orang terdekat.", "Guests leave", "with fresh energy", "and stories shared", "with the people", "closest to them."],
+  "cerita.coda.judul": ["Kampung Sumber Alam", "mengajak tamunya", "menepi sebentar,", "berkumpul lagi,", "lalu pulang", "lebih segar.", "invites its guests", "to step away", "for a while,", "gather again,", "and go home refreshed."],
+  "cerita.coda": ["Rest –", "Recover –"],
+};
+const judul = (k: string) => kelompokJudul(t(k), GRUP[k]);
 const no = (n: number) => String(n).padStart(2, "0");
+const adaKlip = (k?: Klip) => !!(k && (k.desktop || k.hp));
 ---
-<section class="cerita" aria-labelledby="h-cerita">
+<section class="cerita" id="cerita" aria-labelledby="h-cerita">
   <header class="cerita-kepala">
     <p class="lbl" data-muncul>{t("cerita.label")}</p>
-    <h2 id="h-cerita" data-judul>{lekat(t("cerita.judul"))}</h2>
+    <h2 id="h-cerita" data-judul>{judul("cerita.judul")}</h2>
+    <p class="cerita-isi" data-nyala>{rapiIsi(t("cerita.isi"))}</p>
     <span class="goresan goresan--kelapa" aria-hidden="true"></span>
   </header>
+  {adaKlip(KLIP_BUKA) && <KlipCerita k={KLIP_BUKA!} alt={t("cerita.alt")} />}
 
   <ol class="babak-daftar">
     {BABAK.map((b) => {
-      const k = b.klip;
-      const video = b.jenis === "klip" && !!(k && (k.desktop || k.hp));
+      const video = b.jenis === "klip" && adaKlip(b.klip);
       const jenis = b.jenis === "teks" ? "babak--teks" : video ? "babak--video" : "babak--foto";
       return (
         <li class:list={["babak", `bidang-${b.bidang}`, jenis, { "babak--balik": b.jenis === "foto" && b.n % 2 === 0 }]} aria-labelledby={`h-babak-${b.n}`}>
           {video && (
             <figure class="babak-media" data-singkap>
-              <picture class="babak-poster">
-                {k!.hp?.posterAvif && <source media="(max-width: 767px)" srcset={k!.hp.posterAvif} type="image/avif" />}
-                {k!.hp?.poster && <source media="(max-width: 767px)" srcset={k!.hp.poster} type="image/jpeg" />}
-                {k!.desktop?.posterAvif && <source srcset={k!.desktop.posterAvif} type="image/avif" />}
-                <img src={k!.desktop?.poster ?? k!.hp?.poster} width={k!.desktop?.w ?? 1280} height={k!.desktop?.h ?? 720} alt={t(`cerita.${b.n}.alt`)} loading="lazy" decoding="async" />
-              </picture>
-              <video class="babak-video" muted playsinline preload="none" aria-hidden="true"
-                data-mp4-dk={k!.desktop?.mp4} data-webm-dk={k!.desktop?.webm}
-                data-mp4-hp={k!.hp?.mp4 ?? k!.desktop?.mp4} data-webm-hp={k!.hp?.webm ?? k!.desktop?.webm}></video>
+              <KlipCerita k={b.klip!} alt={t(`cerita.${b.n}.alt`)} dalam />
             </figure>
           )}
-          {b.jenis !== "teks" && !video && (
+          {b.jenis === "foto" && b.foto && (
             <figure class="babak-media" data-singkap={b.halus ? "halus" : ""}>
-              <Picture src={(b.foto ?? b.cadangan)!} formats={["avif", "webp"]} widths={[480, 720, 960, 1200]} sizes="(min-width: 900px) 38vw, 100vw" quality={52} alt={t(`cerita.${b.n}.alt`)} loading="lazy" decoding="async" />
+              <Picture src={b.foto} formats={["avif", "webp"]} widths={[480, 720, 960, 1200]} sizes="(min-width: 900px) 38vw, 100vw" quality={52} alt={t(`cerita.${b.n}.alt`)} loading="lazy" decoding="async" />
             </figure>
           )}
           <div class="babak-teks">
-            <p class="babak-waktu" data-muncul><span class="babak-no">{no(b.n)}</span><span class="babak-garis" aria-hidden="true"></span><span>{t(`cerita.${b.n}.penanda`)}</span></p>
+            <p class="babak-waktu" data-muncul><span class="babak-no">{no(b.n)}</span><span class="babak-garis" aria-hidden="true"></span><span lang={b.n > 1 ? "en" : undefined}>{t(`cerita.${b.n}.penanda`)}</span></p>
             {b.jenis === "teks" ? (
-              <h3 id={`h-babak-${b.n}`} data-nyala>{lekatJudul(t(`cerita.${b.n}.judul`))}</h3>
+              <h3 id={`h-babak-${b.n}`} data-nyala>{judul(`cerita.${b.n}.judul`)}</h3>
             ) : (
-              <h3 id={`h-babak-${b.n}`} data-judul>{lekatJudul(t(`cerita.${b.n}.judul`))}</h3>
+              <h3 id={`h-babak-${b.n}`} data-judul>{judul(`cerita.${b.n}.judul`)}</h3>
             )}
             {b.jenis === "teks" ? (
               <p class="babak-isi" data-muncul-sesudah={`h-babak-${b.n}`}>{rapiIsi(t(`cerita.${b.n}.isi`))}</p>
@@ -98,9 +103,11 @@ const no = (n: number) => String(n).padStart(2, "0");
   </ol>
 
   <div class="cerita-coda">
-    <p class="coda-kata" data-judul lang="en">{t("cerita.coda")}</p>
+    <h3 class="coda-judul" data-judul>{judul("cerita.coda.judul")}</h3>
     <p class="coda-isi" data-muncul>{rapiIsi(t("cerita.coda.isi"))}</p>
+    <p class="coda-kata" data-judul lang="en">{judul("cerita.coda")}</p>
   </div>
+  {adaKlip(KLIP_TUTUP) && <KlipCerita k={KLIP_TUTUP!} alt={t("cerita.coda.alt")} />}
 </section>
 
 <script>

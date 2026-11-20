@@ -68,6 +68,21 @@ export function duaBaris(t: string, pemisah: string): string {
   const sambung = (x: string) => lekatAngka(x).replace(/ /g, NBSP);
   return `${sambung(a)} ${sambung(b)}`;
 }
+/**
+ * Judul yang patahnya diatur per kelompok makna: spasi di dalam tiap frasa `grup` disambung
+ * spasi tak putus, jadi text-wrap: balance hanya boleh mematahkan baris di antara kelompok.
+ * Kata-katanya tidak berubah. Frasa yang tidak ditemukan diabaikan (teks berganti: jatuh ke lekat).
+ */
+export function kelompokJudul(t: string, grup: string[] = []): string {
+  let r = t;
+  let kena = 0;
+  for (const g of grup) {
+    if (!r.includes(g)) continue;
+    kena++;
+    r = r.replace(g, g.replace(/ /g, NBSP));
+  }
+  return kena ? lekatAngka(r) : lekatJudul(t);
+}
 /** lekat + ekor: untuk judul, keterangan foto, dan baris pendek */
 export const rapi = (t: string) => ekor(lekat(t));
 /** untuk paragraf isi: angka & rentang disambung, nama boleh patah, tanpa kata yatim */

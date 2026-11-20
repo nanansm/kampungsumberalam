@@ -1,0 +1,34 @@
+---
+/**
+ * Klip drone di Cerita: poster (AVIF/JPEG, HP dan desktop) + video yang dimuat saat mendekat dan
+ * main sekali (skrip di Cerita.astro). `dalam`: sudah di dalam figure babak, jadi tanpa pembungkus.
+ */
+import { KLIP_ZONA } from "../data/drone";
+interface Props { k: (typeof KLIP_ZONA)[string]; alt: string; dalam?: boolean }
+const { k, alt, dalam = false } = Astro.props;
+---
+{dalam ? (
+  <>
+    <picture class="babak-poster">
+      {k.hp?.posterAvif && <source media="(max-width: 767px)" srcset={k.hp.posterAvif} type="image/avif" />}
+      {k.hp?.poster && <source media="(max-width: 767px)" srcset={k.hp.poster} type="image/jpeg" />}
+      {k.desktop?.posterAvif && <source srcset={k.desktop.posterAvif} type="image/avif" />}
+      <img src={k.desktop?.poster ?? k.hp?.poster} width={k.desktop?.w ?? 1280} height={k.desktop?.h ?? 720} alt={alt} loading="lazy" decoding="async" />
+    </picture>
+    <video class="babak-video" muted playsinline preload="none" aria-hidden="true"
+      data-mp4-dk={k.desktop?.mp4} data-webm-dk={k.desktop?.webm}
+      data-mp4-hp={k.hp?.mp4 ?? k.desktop?.mp4} data-webm-hp={k.hp?.webm ?? k.desktop?.webm}></video>
+  </>
+) : (
+  <figure class="cerita-klip babak-media" data-singkap>
+    <picture class="babak-poster">
+      {k.hp?.posterAvif && <source media="(max-width: 767px)" srcset={k.hp.posterAvif} type="image/avif" />}
+      {k.hp?.poster && <source media="(max-width: 767px)" srcset={k.hp.poster} type="image/jpeg" />}
+      {k.desktop?.posterAvif && <source srcset={k.desktop.posterAvif} type="image/avif" />}
+      <img src={k.desktop?.poster ?? k.hp?.poster} width={k.desktop?.w ?? 1280} height={k.desktop?.h ?? 720} alt={alt} loading="lazy" decoding="async" />
+    </picture>
+    <video class="babak-video" muted playsinline preload="none" aria-hidden="true"
+      data-mp4-dk={k.desktop?.mp4} data-webm-dk={k.desktop?.webm}
+      data-mp4-hp={k.hp?.mp4 ?? k.desktop?.mp4} data-webm-hp={k.hp?.webm ?? k.desktop?.webm}></video>
+  </figure>
+)}
