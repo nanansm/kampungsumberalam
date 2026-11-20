@@ -102,7 +102,7 @@ function pasangReveal() {
   document.querySelectorAll<HTMLElement>("#lokasi .guntur-isi").forEach((isi) => {
     const redam = isi.querySelectorAll(".lokasi-redam"), garis = isi.querySelectorAll(".lokasi-garis"), logo = isi.querySelector(".lokasi-logo");
     gsap.timeline({ scrollTrigger: { trigger: isi, start: "top 65%", once: true } })
-      .fromTo(redam, { opacity: 0 }, { opacity: 0.55, duration: 0.9, ease: "ksa" }, 0)
+      .fromTo(redam, { opacity: 0 }, { opacity: 0.62, duration: 0.9, ease: "ksa" }, 0)
       .fromTo(garis, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, ease: "ksaIO" }, 0.1)
       .fromTo(logo, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: "ksa" }, 0.7);
   });

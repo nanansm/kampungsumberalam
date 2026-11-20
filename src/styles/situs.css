@@ -462,8 +462,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .lokasi-batas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .lokasi-batas--hp { display: none; }
 @media (max-width: 767px) { .lokasi-batas--desk { display: none; } .lokasi-batas--hp { display: block; } }
-/* .55: batas atas spek; dengan .46 lockup putih hanya 2,9:1 terhadap titik paling terang di bawahnya */
-.lokasi-redam { fill: var(--petang); opacity: .55; }
+/* .62: putusan orkestrator .60 untuk target 4,5:1; diukur, .60 baru 4,38-4,65:1 dan .55 3,75-4,01:1 terhadap titik paling
+   terang di bawahnya; target 4,5:1 */
+.lokasi-redam { fill: var(--petang); opacity: .62; }
 .lokasi-garis { fill: none; stroke: var(--krem); stroke-width: 1.5px; vector-effect: non-scaling-stroke; opacity: .9; stroke-dasharray: 1; stroke-dashoffset: 0; }
 /* lockup putih di sisi yang diredam, di tengah pita redam kiri: dari tepi kiri yang masih terlihat saat
    parallax memperbesar 1,132x (5,8% lebar foto) sampai garis kawasan (+-19,3%). Lebar 10,4vw supaya logo
