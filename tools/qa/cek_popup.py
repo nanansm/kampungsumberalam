@@ -10,10 +10,13 @@ import asyncio, json, os, sys
 from playwright.async_api import async_playwright
 
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
-UKURAN = {"1512": (1512, 830), "1440": (1440, 900), "1280": (1280, 720), "1190": (1190, 680), "390": (390, 844), "844": (844, 390), "1024": (1024, 768)}
+UKURAN = {"1512": (1512, 830), "1440": (1440, 900), "1280": (1280, 720), "1190": (1190, 680), "390": (390, 844), "360": (360, 640), "844": (844, 390), "1024": (1024, 768)}
 JS = r"""(utama) => {
   const pg = document.querySelector('.peta-panggung').getBoundingClientRect();
-  const r = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); return b.width && b.height ? { l: b.left, t: b.top, r: b.right, b: b.bottom } : null; };
+  // rintangan yang tidak terlihat (mis. .nav-daftar di HP: opacity 0 + visibility hidden selama henti) tidak dihitung
+  const tampak = (el) => { for (let e = el; e && e !== document.body; e = e.parentElement) { const cs = getComputedStyle(e);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05) return false; if (e.classList.contains('peta-panggung')) break; } return true; };
+  const r = (el) => { if (!el || !tampak(el)) return null; const b = el.getBoundingClientRect(); return b.width && b.height ? { l: b.left, t: b.top, r: b.right, b: b.bottom } : null; };
   const letak = [...document.querySelectorAll('.popup-letak:not([hidden])')];
   const kartu = letak.map((l) => l.querySelector('.popup-kartu')).filter((k) => parseFloat(getComputedStyle(k).opacity) > 0.9);
   if (!kartu.length) return { ada: false, jumlah: letak.length };
@@ -39,7 +42,7 @@ JS = r"""(utama) => {
 
 async def main():
     mesin = sys.argv[1] if len(sys.argv) > 1 else "chromium"
-    lebar = sys.argv[2:] or ["1512", "1440", "1280", "1190", "390"]
+    lebar = sys.argv[2:] or ["1512", "1440", "1280", "1190", "390", "360"]  # 360x640: HP pendek, kotak tinggi
     gagal = 0
     async with async_playwright() as p:
         b = await getattr(p, mesin).launch()

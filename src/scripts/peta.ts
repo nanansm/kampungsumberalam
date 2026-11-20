@@ -215,31 +215,50 @@ export function mulaiPeta(akar: HTMLElement) {
   }
   /* area layar yang benar-benar terlihat untuk titik: tanpa bilah atas HP dan tanpa kotak keterangan */
   let jepitAktif = false;
-  let areaCache: (Kotak & { kotak?: Kotak }) | null = null;
+  type Area = Kotak & { kotak?: Kotak; kartu?: Kotak };
+  let areaCache: Area | null = null;
   const areaLihat = () => (areaCache ??= ukurAreaLihat());
-  function ukurAreaLihat(): Kotak & { kotak?: Kotak } {
+  function ukurAreaLihat(): Area {
     // HP: di bawah pil nomor pemberhentian dan "Lewati peta", juga saat header ikut turun
     const atas = hp && !lanskap ? 122 : lanskap ? 64 : 54;
     const bawahHp = H - (kotak[aktif]?.offsetHeight ?? 220) - 26;
-    const area: Kotak & { kotak?: Kotak } = { l: 16, t: atas, r: W - 16, b: hp && !lanskap ? Math.max(atas + 48, bawahHp) : H - 14 };
+    const area: Area = { l: 16, t: atas, r: W - 16, b: hp && !lanskap ? Math.max(atas + 48, bawahHp) : H - 14 };
     if ((!hp || lanskap) && aktif >= 0 && aktif < N) {
       const k = kotak[aktif];
       const lp = kotakLapis.getBoundingClientRect();
       const st = panggung.getBoundingClientRect();
       if (k) area.kotak = { l: lp.left - st.left + k.offsetLeft - 14, t: lp.bottom - st.top - k.offsetHeight - 14, r: lp.left - st.left + k.offsetLeft + k.offsetWidth + 14, b: H };
+    } else if (W < 600 && aktif >= 0 && aktif < N && kotak[aktif]) {
+      // layar kecil: kartu foto duduk di pojok kanan atas kotak keterangan (letakPopup). Letak itu
+      // dicatat supaya chip tepi menghindarinya; titik yang terlihat tidak ikut dipindah.
+      const k = kotak[aktif];
+      const st = panggung.getBoundingClientRect();
+      const kr = k.getBoundingClientRect();
+      const lbl = k.querySelector(".lbl")?.getBoundingClientRect();
+      const kartu = popupSemua.find((e) => +e.dataset.popupHenti! === aktif)?.querySelector<HTMLElement>(".popup-kartu");
+      const w = kartu?.offsetWidth || 140, h = kartu?.offsetHeight || 134; // peta.css: --fw 132px + bingkai
+      const masuk = Math.max(0, Math.min(h / 2, lbl ? lbl.bottom - kr.top + 2 : h / 2));
+      area.kartu = { l: kr.right - st.left - w - 12 - 6, t: kr.top - st.top - h + masuk - 6, r: kr.right - st.left - 6, b: kr.top - st.top + masuk };
     }
     return area;
   }
-  const dalamArea = (x: number, y: number, a: Kotak & { kotak?: Kotak }) =>
+  const dalamArea = (x: number, y: number, a: Area) =>
     x >= a.l && x <= a.r && y >= a.t && y <= a.b && !(a.kotak && x > a.kotak.l && x < a.kotak.r && y > a.kotak.t);
+  /* kepala titik (30x30, 11-41 px di atas jangkar) yang jatuh di bawah letak kartu foto layar kecil
+     dianggap tidak terlihat: titik itu tampil sebagai chip tepi di luar kartu, bukan tertutup kartu */
+  const diBawahKartu = (x: number, y: number, a: Area) =>
+    !!a.kartu && x + 15 > a.kartu.l && x - 15 < a.kartu.r && y - 11 > a.kartu.t && y - 41 < a.kartu.b;
+  const terlihat = (x: number, y: number, a: Area) => dalamArea(x, y, a) && !diBawahKartu(x, y, a);
   /* chip (titik di luar bingkai / penanda tepi) diletakkan utuh di dalam area terlihat */
-  function jepitChip(x: number, y: number, w: number, h: number, a: Kotak & { kotak?: Kotak }) {
+  function jepitChip(x: number, y: number, w: number, h: number, a: Area) {
     let nx = Math.min(a.r - w / 2, Math.max(a.l + w / 2, x));
     let ny = Math.min(a.b - h / 2, Math.max(a.t + h / 2, y));
     const k = a.kotak;
     if (k && nx + w / 2 > k.l && nx - w / 2 < k.r && ny + h / 2 > k.t) ny = Math.max(a.t + h / 2, k.t - h / 2 - 8);
     return { x: nx, y: ny };
   }
+  /* geseran vertikal chip tepi yang dicoba, dari yang terdekat: 0, -10, 10, ... -120, 120 */
+  const GESER_CHIP = [0, ...Array.from({ length: 12 }, (_, i) => [-(i + 1) * 10, (i + 1) * 10]).flat()];
   const lebarChip = new WeakMap<HTMLElement, number>();
   function ukurChip(el: HTMLElement, sel: string, cadangan: number) {
     const c = el.querySelector<HTMLElement>(sel);
@@ -262,23 +281,31 @@ export function mulaiPeta(akar: HTMLElement) {
     if (batasLihat) for (const p of pins) {
       if (p.plat !== platAktif || p.henti !== aktif) continue;
       const x = p.x * s + tx, y = p.y * s + ty;
-      if (dalamArea(x, y, batasLihat)) kepalaTerlihat.push({ x, y: y - 26 });
+      if (terlihat(x, y, batasLihat)) kepalaTerlihat.push({ x, y: y - 26 });
     }
     // ukuran kepala titik mengikuti peta.css: fase tutup diperkecil 0,6, titik bukan pemberhentian 0,74
     const faseKini = seksi.dataset.fase;
+    // chip tepi yang sudah dipasang di frame ini: dua titik di luar bingkai yang searah (mis. 13 dan 14
+    // di HP pendek, saat kotak keterangan tinggi) tidak boleh jatuh di tempat yang sama
+    const chipTepi: { x: number; y: number; w: number }[] = [];
     for (const p of pins) {
       if (p.plat !== platAktif) continue;
       let x = p.x * s + tx, y = p.y * s + ty, tepi = false;
-      if (batasLihat && p.henti === aktif && !dalamArea(x, y, batasLihat)) {
+      if (batasLihat && p.henti === aktif && !terlihat(x, y, batasLihat)) {
         // titik di luar bingkai: bukan pin palsu di tempat salah, tetapi chip berpanah ke arah letaknya
         tepi = true;
         const w = ukurChip(p.el, ".pin-label", 150);
+        const kt = batasLihat.kartu;
+        const tabrak = (c: { x: number; y: number }) =>
+          kepalaTerlihat.some((k) => Math.abs(k.x - c.x) < w / 2 + 18 && Math.abs(k.y - c.y) < 34) ||
+          chipTepi.some((q) => Math.abs(q.x - c.x) < (w + q.w) / 2 + 6 && Math.abs(q.y - c.y) < 38) ||
+          (!!kt && c.x + w / 2 > kt.l && c.x - w / 2 < kt.r && c.y + 16 > kt.t && c.y - 16 < kt.b);
         let j = jepitChip(x, y, w, 32, batasLihat);
-        for (const dy of [0, -40, 40, -80, 80]) {
+        for (const dy of GESER_CHIP) {
           const c = jepitChip(x, y + dy, w, 32, batasLihat);
-          const kena = kepalaTerlihat.some((k) => Math.abs(k.x - c.x) < w / 2 + 18 && Math.abs(k.y - c.y) < 34);
-          if (!kena) { j = c; break; }
+          if (!tabrak(c)) { j = c; break; }
         }
+        chipTepi.push({ x: j.x, y: j.y, w });
         p.el.style.setProperty("--sudut", `${Math.atan2(y - j.y, x - j.x).toFixed(3)}rad`);
         x = j.x; y = j.y;
       }
@@ -407,6 +434,9 @@ export function mulaiPeta(akar: HTMLElement) {
       const r = el.getBoundingClientRect();
       if (r.width) halangan.push(rel(r));
     }
+    // layar kecil: letak kartu foto di pojok kanan atas kotak (letakPopup) tidak boleh ditimpa label
+    const kartuKecil = jepitAktif ? areaLihat().kartu : undefined;
+    if (kartuKecil) halangan.push(kartuKecil);
     // chip titik luar bingkai dan penanda tepi ikut jadi halangan label
     const chipRect: Kotak[] = [];
     for (const el of akar.querySelectorAll<HTMLElement>(".pin.di-tepi .pin-label, .tepi-arah.di-henti .tepi-isi")) {
