@@ -98,6 +98,14 @@ function judulPerBaris(el: HTMLElement) {
 function pasangReveal() {
   if (!gerak) return;
   document.querySelectorAll<HTMLElement>("[data-judul]").forEach(judulPerBaris);
+  // lokasi (butir 2): luar kawasan meredup, garis batas digambar, lalu logo muncul
+  document.querySelectorAll<HTMLElement>("#lokasi .guntur-isi").forEach((isi) => {
+    const redam = isi.querySelectorAll(".lokasi-redam"), garis = isi.querySelectorAll(".lokasi-garis"), logo = isi.querySelector(".lokasi-logo");
+    gsap.timeline({ scrollTrigger: { trigger: isi, start: "top 65%", once: true } })
+      .fromTo(redam, { opacity: 0 }, { opacity: 0.55, duration: 0.9, ease: "ksa" }, 0)
+      .fromTo(garis, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, ease: "ksaIO" }, 0.1)
+      .fromTo(logo, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: "ksa" }, 0.7);
+  });
   // pita bilik: tersingkap dari kiri sekali, marka logo muncul di akhir (butir 4)
   document.querySelectorAll<HTMLElement>("main .bilik, .ftr .bilik").forEach((el) => {
     const marka = el.querySelector(".bilik-marka");
@@ -183,7 +191,7 @@ function pasangParallax() {
   mm.add("(hover: hover) and (pointer: fine)", () => {
     document.querySelectorAll<HTMLElement>("[data-parallax]").forEach((el) => {
       const kuat = Number(el.dataset.parallax) || 8;
-      const isi = el.querySelector("picture, video, img") ?? el;
+      const isi = el.querySelector("[data-parallax-isi]") ?? el.querySelector("picture, video, img") ?? el;
       // diperbesar sedikit supaya tepi gambar tidak pernah terlihat saat bergeser
       gsap.set(isi, { scale: 1 + (kuat * 2.2) / 100, transformOrigin: "50% 50%" });
       gsap.fromTo(isi, { yPercent: -kuat }, {

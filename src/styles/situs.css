@@ -449,6 +449,22 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .jalan + .guntur { margin-top: 0; }
+/* ---------- Lokasi: luar kawasan diredam, garis batas, logo di bagian yang diredam (butir 2) ----------
+   Poligon dari src/data/lokasi-batas.ts (desktop dan HP memakai potongan foto yang berbeda). Semuanya
+   di dalam .guntur-isi yang ikut parallax, jadi tidak pernah bergeser dari fotonya. */
+.guntur-isi { position: relative; }
+.lokasi-batas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.lokasi-batas--hp { display: none; }
+@media (max-width: 767px) { .lokasi-batas--desk { display: none; } .lokasi-batas--hp { display: block; } }
+/* .55: batas atas spek; dengan .46 lockup putih hanya 2,9:1 terhadap titik paling terang di bawahnya */
+.lokasi-redam { fill: var(--petang); opacity: .55; }
+.lokasi-garis { fill: none; stroke: var(--krem); stroke-width: 1.5px; vector-effect: non-scaling-stroke; opacity: .9; stroke-dasharray: 1; stroke-dashoffset: 0; }
+/* lockup putih di sisi yang diredam, di tengah pita redam kiri: dari tepi kiri yang masih terlihat saat
+   parallax memperbesar 1,132x (5,8% lebar foto) sampai garis kawasan (+-19,3%). Lebar 10,4vw supaya logo
+   plus ruang kosong setinggi huruf S lockup di kedua sisi (0,094 x lebar) muat di pita itu.
+   Dipusatkan dengan margin (bukan transform) supaya gerak masuk GSAP tidak menimpa letaknya. */
+.guntur .lokasi-logo { --lw: min(10.4vw, 190px); position: absolute; top: 50%; left: 12.6%; width: var(--lw); height: auto; margin: calc(var(--lw) / -2.79) 0 0 calc(var(--lw) / -2); pointer-events: none; }
+@media (max-width: 767px) { .guntur .lokasi-logo { --lw: 128px; left: 28%; top: 12%; } }
 
 /* ---------- Cerita: satu hari di kampung (beranda) ---------- */
 .cerita { background: var(--krem); }

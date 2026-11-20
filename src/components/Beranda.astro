@@ -14,6 +14,7 @@ import PetaPerjalanan from "./PetaPerjalanan.astro";
 import { HERO_VIDEO } from "../data/drone";
 import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, KAMAR, DAY_VISIT, waLink } from "../data/content";
 import { lekat, rapi, rapiIsi, duaBaris } from "../data/rag";
+import { BATAS_LOKASI, titikPoligon } from "../data/lokasi-batas";
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
 
@@ -180,12 +181,28 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
   <!-- Guntur + lokasi -->
   <section id="lokasi" class="guntur cv" aria-labelledby="h-lokasi">
     <div class="guntur-gbr" data-parallax="6">
+      <!-- satu pembungkus yang ikut parallax: foto, lapis redam di luar kawasan, garis batas, logo -->
+      <div class="guntur-isi" data-parallax-isi>
       <picture>
         <source media="(min-width: 768px)" srcset={(await getImage({ src: lokasiDesk, widths: [768, 1280, 1920], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
         <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "avif", quality: 45 })).srcSet.attribute} sizes="100vw" type="image/avif" />
         <source media="(max-width: 767px)" srcset={(await getImage({ src: lokasiHp, widths: [400, 614], format: "webp", quality: 65 })).srcSet.attribute} sizes="100vw" type="image/webp" />
         <img src={(await getImage({ src: lokasiDesk, width: 1280, format: "webp", quality: 70 })).src} alt={t("alt.lokasi")} width={lokasiDesk.width} height={lokasiDesk.height} loading="lazy" decoding="async" />
       </picture>
+      {(["desk", "hp"] as const).map((v) => (
+        <svg class:list={["lokasi-batas", `lokasi-batas--${v}`]} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <mask id={`lokasi-lubang-${v}`} maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+              <rect width="100" height="100" fill="#fff" />
+              {BATAS_LOKASI[v].map((c) => <polygon points={titikPoligon(c)} fill="#000" />)}
+            </mask>
+          </defs>
+          <rect class="lokasi-redam" width="100" height="100" mask={`url(#lokasi-lubang-${v})`} />
+          {BATAS_LOKASI[v].map((c) => <polygon class="lokasi-garis" points={titikPoligon(c)} pathLength="1" />)}
+        </svg>
+      ))}
+      <img class="lokasi-logo" src="/logo/lockup-putih.svg" alt="" width="1948" height="1396" loading="lazy" decoding="async" />
+      </div>
     </div>
     <div class="kotak" data-muncul>
       <p class="lbl">{t("lokasi.label")}</p>
