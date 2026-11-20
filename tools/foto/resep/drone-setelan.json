@@ -1,0 +1,4 @@
+{
+ "_catatan": "Setelan tambahan per klip, dipasang di normalisasi (sebelum look). sorot = geser p95 luma, putih = titik putih. QA Fable putaran 4 (20 Nov 2026): zona-08 pucat, highlight diturunkan.",
+ "zona-08-balong-pondok-kalapa": {"sorot": -0.07, "putih": 0.96}
+}

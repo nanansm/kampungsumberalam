@@ -43,6 +43,9 @@ PY = HASIL / "_sumber/py"          # skrip Penyunting: grade.py (A2), render.py,
 EDL = HASIL / "_sumber/edl"
 MENTAH = BANK / "_mentah-drive"
 LOOK = Path(__file__).resolve().parent / "resep/ksa-sejuk-drone-setel.cube"
+# setelan tambahan per klip (sebelum look), mis. sorot diturunkan untuk klip yang pucat (QA Fable putaran 4)
+_SETELAN = Path(__file__).resolve().parent / "resep/drone-setelan.json"
+SETELAN = {k: v for k, v in (json.loads(_SETELAN.read_text()) if _SETELAN.exists() else {}).items() if not k.startswith("_")}
 KELUAR = REPO / "public/video/drone"
 FPS = "30000/1001"
 URUT = ["hero", "zona-02-kolam-tasik-madu", "zona-03-restoran-tunjung-balebat", "zona-08-balong-pondok-kalapa",
@@ -133,7 +136,7 @@ def _setel(y, adj):
     return _sejuk().terapkan_campur(y, adj)
 
 
-def pas_gerbang(P, edl, sh, o, src, lut):
+def pas_gerbang(P, edl, sh, o, src, lut, tambahan=None):
     """Setelan normalisasi tambahan per shot per keluaran supaya hasil SESUDAH look masuk gerbang drone butir 7.
     Look (.cube) satu untuk semua; yang disetel hanya normalisasi shot ini (dipanggang ke LUT dasar shot itu).
     Campur tangan sekecil mungkin: yang sudah di dalam gerbang tidak diubah, yang di luar dibawa ke tepi
@@ -143,6 +146,8 @@ def pas_gerbang(P, edl, sh, o, src, lut):
       daun        : pengali saturasi daun (hue 55–165), kalau saturasi daun > DAUN_SAT_MAKS
       tint        : G di ruang log (trim A2), kalau a* netral di luar PITA_A
       bk          : pendalaman hitam (trim A2), kalau p05 naik lebih dari 0,008 dari versi lama (gerbang +0,01)
+      tambahan    : setelan per klip dari resep/drone-setelan.json, mis. {"sorot": -0.06, "putih": 0.97} untuk klip
+                    yang pucat: p95 dan titik putih diturunkan sebelum look; median tetap dijaga di gerbang.
     Diukur di 3 frame (awal, tengah, akhir shot) pada potongan keluaran. Mengembalikan (trim, setelan, ukuran)."""
     import numpy as np
     from kubus import terapkan_cube
@@ -193,19 +198,24 @@ def pas_gerbang(P, edl, sh, o, src, lut):
 
     lama = ukur(False, False)      # versi lama (normalisasi tanpa look) = 'sumber' untuk gerbang p05
     awal = ukur(True, False)       # look saja, trim EDL
+    pre = ukur(False, False)
+    s05, s50, s95 = pre["p05"], pre["p50"], pre["p95"]
+    tb = tambahan or {}
+    t95 = float(min(max(s95 + tb.get("sorot", 0.0), s50 + 0.05), 0.99))
+    putih = float(tb.get("putih", 1.0))
+
+    def atur(t50):
+        ds = adj.get("daun", {"geser": 0.0, "sat": 1.0})
+        adj.clear()
+        adj.update({"tone": {"s05": s05, "s50": s50, "s95": s95, "t05": s05, "t50": t50, "t95": t95, "putih": putih},
+                    "daun": ds, "sat": 1.0})
+    if tb:
+        atur(s50)                  # sorot/putih diturunkan dulu; median diperiksa di bawah
     for _ in range(2):
         m = ukur()
         if not PITA_MEDIAN[0] <= m["p50"] <= PITA_MEDIAN[1]:
             tepi = min(max(m["p50"], PITA_MEDIAN[0]), PITA_MEDIAN[1])
-            pre = ukur(False, False)
-            s05, s50, s95 = pre["p05"], pre["p50"], pre["p95"]
-            ds = adj.get("daun", {"geser": 0.0, "sat": 1.0})
-
-            def atur(t50):
-                adj.clear()
-                adj.update({"tone": {"s05": s05, "s50": s50, "s95": s95, "t05": s05, "t50": t50, "t95": s95, "putih": 1.0},
-                            "daun": ds, "sat": 1.0})
-            bagi(atur, s05 + 0.03, s95 - 0.03, lambda m: m["p50"] < tepi)
+            bagi(atur, s05 + 0.03, min(s95, t95) - 0.03, lambda m: m["p50"] < tepi)
         m = ukur()
         if m["daun_sat"] is not None and m["daun_sat"] > DAUN_SAT_MAKS:
             adj.setdefault("daun", {"geser": 0.0, "sat": 1.0})
@@ -298,7 +308,7 @@ def render_edl(P, edl, keluar, kerja, look, vp9_kali=1.0, simpan_antara=False, p
             src = src or klip(sh["id"])
             g = None
             if lut is not None:
-                g, adj, uk = pas_gerbang(P, edl, sh, o, src, lut)
+                g, adj, uk = pas_gerbang(P, edl, sh, o, src, lut, SETELAN.get(edl["nama"]))
                 hasil.setdefault("trim_gerbang", {})[f"{o['tag']}/{k}/{sh['id']}"] = {"trim": g, "setelan": adj, "ukur": uk}
                 print(" ", edl["nama"], o["tag"], sh["id"], "tint/bk", (g["tint"], g["bk"]), "setelan",
                       None if not adj else {"t50": adj.get("tone", {}).get("t50"), "s50": adj.get("tone", {}).get("s50"),
