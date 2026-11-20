@@ -13,7 +13,7 @@
  */
 import { Picture } from "astro:assets";
 import { KLIP_ZONA } from "../data/drone";
-import { rapiIsi, lekatJudul, kelompokJudul } from "../data/rag";
+import { rapiIsi, lekat, lekatJudul, kelompokJudul } from "../data/rag";
 import KlipCerita from "./KlipCerita.astro";
 /* sementara: foto malam lama sampai foto malam butir 5 lulus gerbang */
 import fotoMalam from "../assets/images/hero-2-malam.webp";
@@ -41,11 +41,17 @@ const BABAK: Babak[] = [
   { n: 3, jenis: "foto", bidang: "petang", foto: fotoMalam, goresan: "bunga", halus: true },
   { n: 4, jenis: "foto", bidang: "udara", foto: fotoPulang },
 ];
-const KLIP_BUKA = KLIP_ZONA["19"];
+/* Aturan Ryan 20 Nov: dua media penuh lebar tidak boleh bersentuhan, dan tiap klip harus menjelaskan
+   teks di dekatnya. Klip pembuka (zona-19, setengah tegak lurus) menempel langsung pada klip babak Air,
+   jadi dilepas dulu; klip pembuka baru dipilih bersama narasi pembuka yang sedang diajukan ke Ryan.
+   Klip penutup duduk SEBELUM coda: kampungnya terlihat dulu, lalu teks menyebut namanya, dan coda
+   memisahkannya dari foto udara peta kawasan. */
+const KLIP_BUKA: Klip | undefined = undefined;
 const KLIP_TUTUP = KLIP_ZONA["08"];
 /* kelompok makna judul (ID dan EN): baris hanya patah di antara frasa ini */
 const GRUP: Record<string, string[]> = {
-  "cerita.judul": ["Liburan yang menenangkan", "tidak harus dicari", "di tempat yang sepi.", "A restful holiday", "does not have to be", "a lonely one."],
+  /* pembuka v3.1 (dipilih Ryan 20 Nov): nama resort utuh, "dari apa yang tamu rasakan" satu kelompok */
+  "cerita.judul": ["Kampung Sumber Alam", "mengukur liburan", "dari apa yang tamu rasakan.", "measures a holiday", "by how its guests feel."],
   "cerita.1.judul": ["Air panasnya sudah mengalir", "jauh sebelum", "resor ini berdiri.", "The hot springs were flowing", "long before", "the resort was built."],
   "cerita.2.judul": ["Tamu memakai", "hari pertamanya", "untuk berhenti", "dari urusan", "yang biasa dikejar.", "The first day is for", "stepping away", "from the usual chase."],
   "cerita.3.judul": ["Air hangat", "dan sambutan yang tulus", "membuat badan", "kembali segar.", "Warm water", "and a sincere welcome", "bring the body back."],
@@ -59,13 +65,20 @@ const no = (n: number) => String(n).padStart(2, "0");
 const adaKlip = (k?: Klip) => !!(k && (k.desktop || k.hp));
 ---
 <section class="cerita" id="cerita" aria-labelledby="h-cerita">
+  {/* Pembuka: judul -> klip kampung -> isi. Isi berdiri di antara klip pembuka dan klip babak Air,
+      jadi dua klip penuh lebar itu tidak bersentuhan; tanpa klip, isi kembali di bawah judul. */}
   <header class="cerita-kepala">
     <p class="lbl" data-muncul>{t("cerita.label")}</p>
     <h2 id="h-cerita" data-judul>{judul("cerita.judul")}</h2>
-    <p class="cerita-isi" data-nyala>{rapiIsi(t("cerita.isi"))}</p>
+    {!adaKlip(KLIP_BUKA) && <p class="cerita-isi" data-nyala>{lekat(t("cerita.isi"))}</p>}
     <span class="goresan goresan--kelapa" aria-hidden="true"></span>
   </header>
-  {adaKlip(KLIP_BUKA) && <KlipCerita k={KLIP_BUKA!} alt={t("cerita.alt")} />}
+  {adaKlip(KLIP_BUKA) && (
+    <>
+      <KlipCerita k={KLIP_BUKA!} alt={t("cerita.alt")} />
+      <div class="cerita-lede"><p class="cerita-isi" data-nyala>{lekat(t("cerita.isi"))}</p></div>
+    </>
+  )}
 
   <ol class="babak-daftar">
     {BABAK.map((b) => {
@@ -103,12 +116,12 @@ const adaKlip = (k?: Klip) => !!(k && (k.desktop || k.hp));
     })}
   </ol>
 
+  {adaKlip(KLIP_TUTUP) && <KlipCerita k={KLIP_TUTUP!} alt={t("cerita.coda.alt")} />}
   <div class="cerita-coda">
     <h3 class="coda-judul" data-judul>{judul("cerita.coda.judul")}</h3>
     <p class="coda-isi" data-muncul>{rapiIsi(t("cerita.coda.isi"))}</p>
     <p class="coda-kata" data-judul lang="en">{judul("cerita.coda")}</p>
   </div>
-  {adaKlip(KLIP_TUTUP) && <KlipCerita k={KLIP_TUTUP!} alt={t("cerita.coda.alt")} />}
 </section>
 
 <script>

@@ -550,6 +550,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .cerita-kepala .lbl { color: var(--alam); }
 /* isi pembuka: menyala kata demi kata (data-nyala), +-56 huruf per baris (45ch Albert Sans) */
 .cerita-isi { margin: 8px 0 0; max-width: 45ch; font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.6; color: var(--tinta-2); text-wrap: pretty; }
+/* isi pembuka di bawah klip kampung: ruang Kertas di atas dan bawahnya memisahkan klip pembuka dari klip babak Air */
+.cerita-lede { max-width: 1440px; margin: 0 auto; padding: clamp(40px, 5vw, 72px) var(--pad) clamp(64px, 9vw, 128px); }
+.cerita-lede .cerita-isi { margin: 0; }
 /* klip drone selebar layar di pembuka dan penutup cerita */
 .cerita-klip { margin: 0; aspect-ratio: 4 / 5; }
 /* selebar layar di semua ukuran: tinggi mengikuti 16:9 tetapi paling tinggi 92svh, isi di-cover
@@ -562,9 +565,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 /* HP: kelapa turun ke bawah teks (utuh, rata kanan) supaya judul tidak terjepit di kolom 6 em */
 @media (max-width: 599px) {
   .cerita-kepala .goresan { position: static; justify-self: end; width: 56px; margin-top: 4px; }
-  /* kelompok terpanjang "Liburan yang menenangkan" 9,39 em: huruf mengikuti lebar kolom (kolom / 9,6)
+  /* kelompok terpanjang "dari apa yang tamu rasakan." 9,44 em: huruf mengikuti lebar kolom (kolom / 9,8)
      supaya kelompok itu muat; kalau tidak, lajur grid melebar dan kelapa terdorong ke tepi layar */
-  .cerita-kepala h2 { padding-right: 0; font-size: min(2.3rem, calc((100vw - 2 * var(--pad)) / 9.6)); }
+  .cerita-kepala h2 { padding-right: 0; font-size: min(2.3rem, calc((100vw - 2 * var(--pad)) / 9.8)); }
 }
 .babak-daftar { list-style: none; margin: 0; padding: 0; }
 .babak { --bidang: var(--krem); --tinta-babak: var(--tinta); --aksen: var(--alam); --goresan-warna: var(--alam); position: relative; background: var(--bidang); color: var(--tinta-babak); }
