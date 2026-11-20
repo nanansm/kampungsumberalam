@@ -113,11 +113,24 @@ function pasangReveal() {
       gsap.fromTo(els, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, ease: "ksa", stagger: 0.07, overwrite: true }),
   });
   // gambar: tersingkap dari bawah, isi sedikit membesar lalu turun ke ukuran asli
+  // data-singkap="halus" (babak malam): foto hanya 1,06 -> 1 selama 1,4 dtk, tanpa efek lain
   document.querySelectorAll<HTMLElement>("[data-singkap]").forEach((el) => {
     const isi = el.querySelector("img, video") ?? el;
+    const halus = el.dataset.singkap === "halus";
     gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", once: true } })
       .fromTo(el, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: "ksa" }, 0)
-      .fromTo(isi, { scale: 1.12 }, { scale: 1, duration: 1.6, ease: "ksa", clearProps: "transform" }, 0);
+      .fromTo(isi, { scale: halus ? 1.06 : 1.12 }, { scale: 1, duration: halus ? 1.4 : 1.6, ease: "ksa", clearProps: "transform" }, 0);
+  });
+  // isi yang menunggu judulnya selesai menyala kata demi kata (babak keyakinan): muncul saat
+  // tepi bawah judul mencapai 45% layar, titik akhir gulir data-nyala
+  document.querySelectorAll<HTMLElement>("[data-muncul-sesudah]").forEach((el) => {
+    const judul = document.getElementById(el.dataset.munculSesudah || "") ?? el;
+    ScrollTrigger.create({
+      trigger: judul,
+      start: "bottom 45%",
+      once: true,
+      onEnter: () => gsap.fromTo(el, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, ease: "ksa" }),
+    });
   });
 }
 

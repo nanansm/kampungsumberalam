@@ -91,13 +91,15 @@ JS = r"""
     while ((m = re.exec(t))) {
       const rg = document.createRange();
       rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length);
-      for (const rc of rg.getClientRects()) {
-        if (rc.width < 0.5 || rc.height < 0.5) continue;
+      const rcs = [...rg.getClientRects()].filter((rc) => rc.width >= 0.5 && rc.height >= 0.5);
+      for (const rc of rcs) {
         kata++;
         const mt = ukur(font, m[0]);
         const fh = mt.fa + mt.fd;
         const dasar = rc.top + (fh ? rc.height * mt.fa / fh : rc.height * 0.8);
-        const ink = { t: dasar - mt.a, b: dasar + mt.d, l: rc.left - mt.l, r: rc.left + mt.r };
+        // kata yang patah ke baris berikutnya (tanda hubung, break-all) punya beberapa kotak:
+        // lebar tinta tiap potongan = kotaknya sendiri, bukan lebar kata utuh
+        const ink = rcs.length > 1 ? { t: dasar - mt.a, b: dasar + mt.d, l: rc.left, r: rc.right } : { t: dasar - mt.a, b: dasar + mt.d, l: rc.left - mt.l, r: rc.left + mt.r };
         for (const k of ks) {
           const c = k.r, tol = 0.75;
           if (!(ink.r > c.l && ink.l < c.r && ink.b > c.t && ink.t < c.b)) continue; // di luar penuh: tersembunyi, bukan terpotong

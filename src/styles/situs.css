@@ -348,7 +348,7 @@ html.gerak .hero-gulir { animation: muncul-saja 1s var(--ease-out) both 1.5s; }
 .kata-nyala { will-change: opacity; }
 
 /* ---------- Reveal (hanya saat gerak boleh) ---------- */
-html.gerak [data-muncul], html.gerak [data-judul] { opacity: 0; }
+html.gerak [data-muncul], html.gerak [data-judul], html.gerak [data-muncul-sesudah] { opacity: 0; }
 html.gerak [data-judul] .baris { will-change: transform; }
 [data-singkap] { overflow: hidden; }
 
@@ -494,6 +494,14 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .babak--video { padding-bottom: clamp(56px, 8vw, 104px); }
 .babak--video .babak-media { aspect-ratio: 4 / 5; }
 .babak--video .babak-teks { padding-top: 32px; }
+/* babak keyakinan (butir 6): tanpa foto, satu bidang Alam selebar layar setinggi >= 80% layar.
+   Judul +-28 karakter per baris (Instrument Serif rata-rata 0,36 em per huruf, jadi 11 em),
+   isi paling lebar 56 karakter; sisanya bidang kosong. Ritme yang berbeda menandai inti cerita. */
+.babak--teks { min-height: 80svh; display: grid; align-content: center; padding: clamp(96px, 12vw, 168px) var(--pad) clamp(150px, 16vw, 220px); }
+.babak--teks .babak-teks { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0; gap: clamp(18px, 2vw, 28px); }
+.babak--teks h3 { font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: 1.06; max-width: 11em; color: var(--krem); text-align: left; }
+/* 45ch Albert Sans = +-56 huruf nyata (ch diukur dari angka 0 yang lebar) */
+.babak--teks .babak-isi { max-width: 45ch; font-size: clamp(1.05rem, 1.2vw, 1.2rem); color: color-mix(in srgb, var(--krem) 88%, transparent); }
 .babak-video { position: absolute; inset: 0; opacity: 0; transition: opacity .9s var(--ease-ui); }
 .babak-video.main { opacity: 1; }
 @media (min-width: 768px) { .babak--video .babak-media { aspect-ratio: 16 / 9; max-height: 92svh; } }
@@ -509,14 +517,10 @@ html.gerak [data-judul] .baris { will-change: transform; }
   .babak--video .babak-waktu, .babak--video h3 { grid-column: 1; }
   .babak--video .babak-isi { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
 }
-.cerita-coda { position: relative; text-align: center; padding: 0 0 0; display: grid; justify-items: center; gap: clamp(28px, 4vw, 48px); }
-.coda-kata { padding: clamp(24px, 4vw, 56px) var(--pad) 0; font: 400 clamp(2.6rem, 7vw, 6.2rem)/1 var(--serif); letter-spacing: -.01em; color: var(--alam); text-wrap: balance; }
-.coda-arti { list-style: none; margin: 0; padding: 0 var(--pad) clamp(24px, 4vw, 56px); display: grid; gap: 22px; max-width: 1100px; text-align: left; }
-.coda-arti li { display: grid; gap: 6px; border-top: 1px solid var(--garis); padding-top: 14px; }
-.coda-kunci { font: 400 1.5rem/1.1 var(--serif); color: var(--alam); }
-.coda-arti li > p:last-child { color: var(--tinta-2); max-width: 34ch; margin: 0; }
-.coda-kunci { margin: 0; }
-@media (min-width: 900px) { .coda-arti { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; } }
+.cerita-coda { position: relative; text-align: center; padding: clamp(64px, 9vw, 120px) var(--pad) clamp(56px, 8vw, 104px); display: grid; justify-items: center; gap: clamp(22px, 3vw, 36px); }
+.coda-kata { margin: 0; font: 400 clamp(2.6rem, 7vw, 6.2rem)/1 var(--serif); letter-spacing: -.01em; color: var(--alam); text-wrap: balance; }
+/* satu paragraf arti nama, rata tengah, paling lebar 58 karakter (butir 6) */
+.coda-isi { margin: 0; max-width: 47ch; color: var(--tinta-2); font-size: 1.08rem; line-height: 1.65; text-wrap: pretty; }
 
 /* beranda: prolog tanpa tombol, cara menginap, penutup bergoresan */
 .cara-in { position: relative; }
