@@ -86,8 +86,16 @@ function pasangProgres() {
    melebar itu supaya tetap tersembunyi sebelum naik. */
 const LEGA = { atas: 0.3, bawah: 0.36, sisi: 0.3 }; // em, mengikuti ukuran huruf judul
 
+/* SplitText bawaan merapatkan spasi dengan /\s+/, dan \s di JavaScript juga mencocokkan NBSP.
+   Akibatnya kelompok makna (kelompokJudul, lekat, ekor) hilang begitu gerak aktif: "Kampung Sumber
+   Alam" bisa patah, kata terakhir paragraf bisa yatim. Spasi biasa dirapatkan sendiri, NBSP dibiarkan,
+   jadi satu kelompok terbaca sebagai satu "kata" oleh SplitText dan baris patah di tempat yang sama
+   dengan versi tanpa gerak. */
+const JAGA_NBSP = { reduceWhiteSpace: false, prepareText: (t: string) => t.replace(/[ \t\n\r\f\v]+/g, " ") };
+
 function judulPerBaris(el: HTMLElement) {
   SplitText.create(el, {
+    ...JAGA_NBSP,
     type: "lines",
     mask: "lines",
     linesClass: "baris",
@@ -184,6 +192,7 @@ function pasangNyala() {
   if (!gerak) return;
   document.querySelectorAll<HTMLElement>("[data-nyala]").forEach((el) => {
     SplitText.create(el, {
+      ...JAGA_NBSP,
       type: "words",
       wordsClass: "kata-nyala",
       autoSplit: true,

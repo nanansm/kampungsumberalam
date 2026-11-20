@@ -2,8 +2,8 @@
 
 - #h-lokasi di 1512, 1440, 1280, 1024, 768, 390: 2 baris, baris terpanjang <= lebar kolom,
   baris terpendek >= 85% baris terpanjang
-- semua h1-h3 beranda ID dan EN (360-1920): nol judul scrollWidth > clientWidth, nol baris
-  terakhir berisi satu kata
+- semua h1-h3 di 16 rute ID dan EN (360-1920): nol judul scrollWidth > clientWidth, nol baris
+  terakhir berisi satu kata, nama "Kampung Sumber Alam" utuh satu baris, nol kata terbelah di tengah
 
 Pakai: KSA_BASE=... python3 cek_judul.py [mesin]
 """
@@ -33,7 +33,13 @@ JS = r"""() => {
     while ((t2 = tw2.nextNode())) { const re2 = /Kampung[\s\u00a0]+Sumber[\s\u00a0]+Alam/g; let m2;
       while ((m2 = re2.exec(t2.textContent))) { const rg = document.createRange(); rg.setStart(t2, m2.index); rg.setEnd(t2, m2.index + m2[0].length);
         const tops = new Set([...rg.getClientRects()].filter((b) => b.width > 1).map((b) => Math.round(b.top / 6))); if (tops.size > 1) namaPatah = true; } }
-    return { id: el.id || el.className || el.tagName, teks: el.textContent.trim().slice(0, 60), kolom: Math.round(kolom), luber: el.scrollWidth > el.clientWidth + 1, namaPatah,
+    // kata apa pun yang terbelah di tengah (overflow-wrap memecah kata yang tidak muat kolom), kecuali di strip/garis miring
+    const kataBelah = [];
+    const tw3 = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t3;
+    while ((t3 = tw3.nextNode())) { const re3 = /[^\s\u00a0]+/g; let m3;
+      while ((m3 = re3.exec(t3.textContent))) { if (/[-–—\/@·]/.test(m3[0])) continue; const rg = document.createRange(); rg.setStart(t3, m3.index); rg.setEnd(t3, m3.index + m3[0].length);
+        const rs = [...rg.getClientRects()].filter((b) => b.width > 1); if (rs.length > 1 && Math.abs(rs[rs.length - 1].top - rs[0].top) > rs[0].height * 0.5) kataBelah.push(m3[0]); } }
+    return { id: el.id || el.className || el.tagName, teks: el.textContent.trim().slice(0, 60), kolom: Math.round(kolom), luber: el.scrollWidth > el.clientWidth + 1, namaPatah, kataBelah,
       lebar: L.map((x) => Math.round(x.r - x.l)), akhir: L.length > 1 ? L[L.length - 1].w.length : 9, baris: L.map((x) => x.w.join(' ')) }; });
 }"""
 
@@ -58,6 +64,8 @@ async def main():
                         masalah.append("baris akhir satu kata")
                     if j.get("namaPatah"):
                         masalah.append("nama Kampung Sumber Alam terbelah")
+                    if j.get("kataBelah"):
+                        masalah.append("kata terbelah: " + ", ".join(j["kataBelah"]))
                     if j["id"] == "h-lokasi" and vw in (1512, 1440, 1280, 1024, 768, 390):
                         L = j["lebar"]
                         if len(L) != 2:

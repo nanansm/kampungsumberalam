@@ -18,11 +18,15 @@ const pola = new RegExp(NAMA.map((n) => n.replace(/[.*+?^${}()|[\]\\&]/g, "\\$&"
 /** rentang (Minggu–Jumat, 15–40, 60–70 m) tidak boleh patah di tanda pisahnya */
 const WJ = "\u2060";
 const rentang = (t: string) => t.replace(/(\S)–(\S)/g, `$1${WJ}–${WJ}$2`);
+/** kata ulang & kata majemuk berstrip (benar-benar, oleh-oleh, check-in) tidak patah di strip:
+ *  saat gerak aktif SplitText membungkus tiap kata jadi inline-block yang memang tidak bisa patah,
+ *  jadi tanpa ini susunan baris versi diam dan versi gerak berbeda */
+const sambungStrip = (t: string) => t.replace(/(\p{L})-(?=\p{L})/gu, `$1-${WJ}`);
 
 /** angka + satuan dan rentang saja; dipakai untuk paragraf isi di kolom sempit
  *  (menyambung nama panjang di paragraf justru membuat sisi kanan timpang) */
 export function lekatAngka(t: string): string {
-  return rentang(t)
+  return sambungStrip(rentang(t))
     .replace(/(±?\d[\d.,:–\u2060-]*) (m|menit|min|jam|hr|orang|dewasa|adults|unit|units|villa|villas|WIB|am|pm|noon|minutes|minute)\b/g, `$1${NBSP}$2`)
     .replace(/\b(Rp|pukul) (\d)/g, `$1${NBSP}$2`)
     .replace(/ · /g, `${NBSP}· `);
@@ -42,7 +46,7 @@ export function ekor(t: string): string {
   const i = t.lastIndexOf(" ");
   if (i < 0 || t.lastIndexOf(NBSP) > i) return t; // sudah tersambung: jangan menyambung kata ketiga
   const akhir = t.slice(i + 1);
-  if (akhir.length > 14) return t;
+  if (akhir.replace(/\u2060/g, "").length > 14) return t; // penyambung strip (WJ) tidak dihitung
   return t.slice(0, i) + NBSP + akhir;
 }
 /**

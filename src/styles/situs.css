@@ -190,9 +190,12 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 /* ---------- Pita foto penuh + judul dengan garis rambut ---------- */
 .pita { position: relative; color: var(--krem); }
 .pita-img img { width: 100%; height: auto; }
-.judul-garis { display: flex; align-items: flex-end; gap: 20px; min-width: 0; }
-.judul-garis h2 { font-size: clamp(2.3rem, 4.6vw, 4.2rem); line-height: 1.05; max-width: 16ch; min-width: 0; overflow-wrap: break-word; }
-.judul-garis::after { content: ""; flex: 1; min-width: 32px; height: 1px; background: currentColor; opacity: .6; margin-bottom: .45em; }
+/* kolom judul 8,2 em: nama resort yang terikat (7,97 em di Instrument Serif) muat satu baris.
+   16ch (7,36 em) membuat "Alam" terbelah di tengah kata lewat overflow-wrap. Di HP huruf ikut lebar
+   layar (9,6vw, paling besar 2,3rem) dan jarak + garis menyempit, jadi kolom itu tetap muat di 360 px. */
+.judul-garis { display: flex; align-items: flex-end; gap: clamp(12px, 2.6vw, 20px); min-width: 0; }
+.judul-garis h2 { font-size: min(4.2rem, max(min(2.3rem, 9.6vw), 4.6vw)); line-height: 1.05; max-width: 8.2em; min-width: 0; overflow-wrap: break-word; }
+.judul-garis::after { content: ""; flex: 1; min-width: clamp(20px, 4vw, 32px); height: 1px; background: currentColor; opacity: .6; margin-bottom: .45em; }
 
 .berendam { background: var(--putih); color: var(--tinta); }
 .berendam .kepala { padding: clamp(48px, 7vw, 96px) var(--pad) 0; max-width: 1440px; margin: 0 auto; }
@@ -561,7 +564,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 }
 .cerita-coda { position: relative; text-align: center; padding: clamp(64px, 9vw, 120px) var(--pad) clamp(56px, 8vw, 104px); display: grid; justify-items: center; gap: clamp(22px, 3vw, 36px); }
 /* penutup (naskah v3): judul janji, isi arti nama konsep, lalu tagline sebagai kata penutup */
-.coda-judul { margin: 0; max-width: 14em; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.06; color: var(--tinta); text-wrap: balance; }
+/* satu klausa per baris: kelompok terpanjang ("Kampung Sumber Alam", "to step away for a while,") +-8 em muat,
+   pasangan klausa terpendek ("menepi sebentar, berkumpul lagi,") 11,1 em tidak muat -> 15-25 huruf per baris */
+.coda-judul { margin: 0; max-width: 9.5em; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.06; color: var(--tinta); text-wrap: balance; }
 /* tagline 9,34 em: 8,6vw membuatnya tetap satu baris sampai layar 340 px */
 .coda-kata { margin: 0; font: 400 clamp(1.9rem, 8.6vw, 5rem)/1 var(--serif); letter-spacing: -.01em; color: var(--alam); text-wrap: balance; }
 /* satu paragraf arti nama, rata tengah, paling lebar 58 karakter (butir 6) */

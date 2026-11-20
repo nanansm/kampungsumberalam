@@ -50,7 +50,8 @@ const GRUP: Record<string, string[]> = {
   "cerita.2.judul": ["Tamu memakai", "hari pertamanya", "untuk berhenti", "dari urusan", "yang biasa dikejar.", "The first day is for", "stepping away", "from the usual chase."],
   "cerita.3.judul": ["Air hangat", "dan sambutan yang tulus", "membuat badan", "kembali segar.", "Warm water", "and a sincere welcome", "bring the body back."],
   "cerita.4.judul": ["Tamu pulang", "dengan tenaga baru", "dan cerita bersama", "orang terdekat.", "Guests leave", "with fresh energy", "and stories shared", "with the people", "closest to them."],
-  "cerita.coda.judul": ["Kampung Sumber Alam", "mengajak tamunya", "menepi sebentar,", "berkumpul lagi,", "lalu pulang", "lebih segar.", "invites its guests", "to step away", "for a while,", "gather again,", "and go home refreshed."],
+  /* coda: satu klausa per baris (lihat .coda-judul di situs.css), tiga baris terakhir = tiga gerak Rest, Recover, Rejuvenate */
+  "cerita.coda.judul": ["Kampung Sumber Alam", "mengajak tamunya", "menepi sebentar,", "berkumpul lagi,", "lalu pulang lebih segar.", "invites its guests", "to step away for a while,", "gather again,", "and go home refreshed."],
   "cerita.coda": ["Rest –", "Recover –"],
 };
 const judul = (k: string) => kelompokJudul(t(k), GRUP[k]);
