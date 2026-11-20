@@ -55,6 +55,19 @@ export function lekatJudul(t: string): string {
   if (r.includes(" ") || r.length <= 18) return r;
   return lekatAngka(t.replace(pola, (m) => m.replace(/ /g, NBSP)));
 }
+/**
+ * Judul dua baris menurut makna: semua spasi di tiap kelompok disambung, satu titik patah
+ * tersisa tepat sesudah `pemisah`. "Kampung Sumber Alam" / "berada di Cipanas, Garut".
+ * Kalau pemisah tidak ditemukan, jatuh ke lekat() biasa.
+ */
+export function duaBaris(t: string, pemisah: string): string {
+  const i = t.indexOf(pemisah);
+  if (i < 0) return lekat(t);
+  const a = t.slice(0, i + pemisah.length).trim(), b = t.slice(i + pemisah.length).trim();
+  if (!b) return lekat(t);
+  const sambung = (x: string) => lekatAngka(x).replace(/ /g, NBSP);
+  return `${sambung(a)} ${sambung(b)}`;
+}
 /** lekat + ekor: untuk judul, keterangan foto, dan baris pendek */
 export const rapi = (t: string) => ekor(lekat(t));
 /** untuk paragraf isi: angka & rentang disambung, nama boleh patah, tanpa kata yatim */

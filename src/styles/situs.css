@@ -241,9 +241,11 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 .guntur img { width: 100%; height: auto; }
 .guntur .kotak { background: var(--krem); color: var(--tinta); padding: 28px var(--pad); }
 @media (min-width: 900px) {
-  .guntur .kotak { position: absolute; right: var(--pad); bottom: var(--pad); max-width: 380px; padding: 30px; }
+  /* 440 px: kolom teks 380 px memuat "Kampung Sumber Alam" dan "berada di Cipanas, Garut" masing-masing satu baris (butir 1) */
+  .guntur .kotak { position: absolute; right: var(--pad); bottom: var(--pad); max-width: 440px; padding: 30px; }
 }
-.guntur h2 { font-size: clamp(1.9rem, 3vw, 2.6rem); margin: 10px 0 12px; }
+/* max 12em: di kotak selebar layar (< 900 px) judul tetap patah sesudah "Alam", bukan satu baris panjang */
+.guntur h2 { font-size: clamp(1.9rem, 3vw, 2.6rem); margin: 10px 0 12px; max-width: 12em; }
 
 /* ---------- Ulasan ---------- */
 .ulasan { background: var(--putih); color: var(--tinta); padding: clamp(56px, 8vw, 100px) var(--pad); }

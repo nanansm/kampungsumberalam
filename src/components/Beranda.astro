@@ -13,7 +13,7 @@ import PetaKawasan from "./peta/PetaKawasan.astro";
 import PetaPerjalanan from "./PetaPerjalanan.astro";
 import { HERO_VIDEO } from "../data/drone";
 import { BOOKING_URL, SIBENTANG_URL, MAPS_URL, ULASAN, TELEPON, TELEPON_TAMPIL, KAMAR, DAY_VISIT, waLink } from "../data/content";
-import { lekat, rapi, rapiIsi } from "../data/rag";
+import { lekat, rapi, rapiIsi, duaBaris } from "../data/rag";
 import id from "../i18n/id.json";
 import en from "../i18n/en.json";
 
@@ -189,7 +189,7 @@ const kamarHal = lang === "en" ? "/en/accommodation/" : "/accommodation/";
     </div>
     <div class="kotak" data-muncul>
       <p class="lbl">{t("lokasi.label")}</p>
-      <h2 id="h-lokasi">{L("lokasi.judul")}</h2>
+      <h2 id="h-lokasi">{duaBaris(t("lokasi.judul"), "Alam")}</h2>
       <p>{I("lokasi.p1")}</p>
       <p style="margin-top:12px">{rapiIsi(p2[0])}{p2.length > 1 && <><a href={telHref} style="white-space:nowrap">{TELEPON_TAMPIL}</a>{p2[1]}</>}</p>
       <a class="btn" href={MAPS_URL} rel="noopener" style="margin-top:20px"><span class="btn-tx">{t("lokasi.tombol")}</span></a>
