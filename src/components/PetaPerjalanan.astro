@@ -1,104 +1,141 @@
 ---
 /**
- * Peta perjalanan: seberapa jauh tempat di sekitar dari Kampung Sumber Alam.
- * Adaptasi "The Faraway Nearby" (bedah ownprimland.com), jujur pada data:
- * bukan peta geografis. Panjang garis sebanding waktu tempuh (Data Master
- * bab 02 §6); arah garis sengaja tidak bermakna dan disebut di catatan.
+ * Peta waktu tempuh: jalan dari Kampung Sumber Alam ke dua belas tempat di sekitar Garut.
  *
- * Desktop: kipas garis dari logo KSA + daftar di kanan. HP: daftar dengan
- * batang waktu di tiap baris. Garis tergambar (DrawSVG) saat tujuan dipilih.
+ * Peta geografis (utara ke atas, 1 satuan = 10 m). Peta dasar dan garis rute dibangun dari
+ * OpenStreetMap (ODbL) dan relief SRTM oleh alat peta-landmark (bangun.py), lalu disalin ke
+ * src/assets/peta-tempuh/peta-dasar.svg dan src/data/peta-tempuh.json. Menit SELALU dibaca dari
+ * JARAK_TEMPUH (content.ts); rute dicocokkan lewat nama yang persis sama, jadi nama yang berubah
+ * di content.ts menggagalkan build, bukan diam-diam kehilangan garis.
+ *
+ * Kamera cukup mengganti viewBox SVG yang di-inline. Garis peta dasar memakai
+ * vector-effect: non-scaling-stroke supaya tetap tipis. Garis rute terpilih TIDAK memakainya: kalau
+ * memakainya, dash DrawSVG mengikuti ruang layar dan garis berhenti di tengah. Tebalnya diatur per
+ * frame (3 / skala).
+ *
+ * Tata letak lapisan dihitung tiap frame supaya nama tempat, pin, logo, label, dan garis terpilih
+ * tidak saling menimpa: logo KSA mengecil kalau menutupi >12% garis (rute pendek), skala pindah ke
+ * kiri atas kalau kiri bawah dipakai pin/garis, label boleh dua baris kalau itu jauh lebih dekat ke
+ * pinnya. Gerbangnya: tools/qa/cek_peta_tempuh.py.
+ *
+ * HP: peta lengket di atas daftar, turun setinggi header saat header tampil. Desktop: peta kiri,
+ * daftar kanan. Atribusi OpenStreetMap wajib tetap terlihat (ODbL).
  */
 import { JARAK_TEMPUH } from "../data/content";
-import { lekat } from "../data/rag";
+import { lekat, kelompokJudul } from "../data/rag";
+import PETA from "../data/peta-tempuh.json";
+import petaDasar from "../assets/peta-tempuh/peta-dasar.svg?raw";
 
 interface Props { lang: "id" | "en"; judulTingkat?: "h2" | "h3" }
 const { lang, judulTingkat = "h2" } = Astro.props;
 const Judul = judulTingkat;
 
-const MAKS = 90; // menit, cincin terluar
-const VB = { w: 1000, h: 580 };
-const O = { x: 500, y: 532 };
-const R0 = 40; // jari-jari lingkar logo
-const R = 476; // ujung 90 menit
+type Rute = { d: string; bbox: number[]; titik: number[]; sambung?: string };
+const RUTE = PETA.tujuan as Record<string, Rute>;
+const [, , W, H] = PETA.viewBox;
 
-const urut = [...JARAK_TEMPUH].sort((a, b) => a.menit - b.menit);
-/* sebar garis pendek dan panjang bergantian supaya titik ujung tidak bertumpuk:
-   urutan sudut = permutasi bit-balik dari urutan waktu */
-const n = urut.length;
-const bitBalik = (i: number, bit: number) => parseInt(i.toString(2).padStart(bit, "0").split("").reverse().join(""), 2);
-const BIT = Math.ceil(Math.log2(n));
-const posisi = [...Array(2 ** BIT).keys()].map((i) => bitBalik(i, BIT)).filter((i) => i < n);
-const sudut = (slot: number) => Math.PI - (Math.PI * 0.04) - (slot / (n - 1)) * Math.PI * 0.92;
-
-const garis = urut.map((t, i) => {
-  const slot = posisi.indexOf(i);
-  const a = sudut(slot);
-  const r = R0 + (t.menit / MAKS) * (R - R0);
-  const x1 = O.x + Math.cos(a) * R0, y1 = O.y - Math.sin(a) * R0;
-  const x2 = O.x + Math.cos(a) * r, y2 = O.y - Math.sin(a) * r;
-  return { ...t, no: i + 1, x1, y1, x2, y2, px: (x2 / VB.w) * 100, py: (y2 / VB.h) * 100, kanan: x2 > O.x };
-});
-const cincin = [15, 30, 60, 90].map((m) => ({ m, r: R0 + (m / MAKS) * (R - R0) }));
 const waktu = (m: number) => {
   const j = Math.floor(m / 60), s = m % 60;
   if (lang === "en") return j ? `${j} hr${s ? ` ${s} min` : ""}` : `${s} min`;
   return j ? `${j} jam${s ? ` ${s} menit` : ""}` : `${s} menit`;
 };
-const pilihAwal = garis.findIndex((g) => g.nama === "Kaki Gunung Guntur");
+
+const tujuan = [...JARAK_TEMPUH].sort((a, b) => a.menit - b.menit).map((t, i) => {
+  const r = RUTE[t.nama];
+  if (!r) throw new Error(`peta-tempuh.json tidak punya rute untuk "${t.nama}". Kunci rute harus persis sama dengan nama di JARAK_TEMPUH.`);
+  return { ...t, ...r, no: i + 1 };
+});
+const pilihAwal = Math.max(0, tujuan.findIndex((t) => t.nama === "Kaki Gunung Guntur"));
+
+/* Isi peta dasar tanpa elemen <svg> akarnya: akar ditulis sendiri di bawah supaya kelasnya tidak
+   bentrok dengan .peta-dasar milik peta kawasan di beranda. <title> dibuang karena di SVG inline
+   ia muncul sebagai tooltip setiap kursor diam di atas peta; atribusinya sudah tertulis di peta. */
+const isiPeta = petaDasar
+  .replace(/^[\s\S]*?<svg\b[^>]*>/, "")
+  .replace(/<\/svg>\s*$/, "")
+  .replace(/<title>[\s\S]*?<\/title>/, "");
+
 const T = {
   penanda: { id: "Di sekitar Kampung Sumber Alam", en: "Around Kampung Sumber Alam" },
   judul: { id: "Kaki Gunung Guntur hanya 15 menit dari Kampung Sumber Alam", en: "The foot of Mount Guntur is only 15 minutes from Kampung Sumber Alam" },
-  teks: { id: "Panjang tiap garis mengikuti waktu tempuh dari Kampung Sumber Alam. Pilih satu tujuan untuk menelusuri garisnya.", en: "Each line is as long as the travel time from Kampung Sumber Alam. Pick a place to trace its line." },
-  catatan: { id: "Arah garis tidak menunjukkan arah mata angin.", en: "Line direction is not compass direction." },
+  teks: {
+    id: "Peta ini menunjukkan jalan dari Kampung Sumber Alam ke dua belas tempat di sekitar Garut. Pilih satu tujuan untuk melihat rutenya.",
+    en: "This map shows the roads from Kampung Sumber Alam to twelve places around Garut. Select a destination to see its route.",
+  },
   daftar: { id: "Waktu tempuh", en: "Travel time" },
+  catatan: {
+    id: "Waktu tempuh dari katalog Kampung Sumber Alam. Garis rute mengikuti jalan di peta OpenStreetMap.",
+    en: "Travel times come from the Kampung Sumber Alam catalogue. The route lines follow the roads as mapped in OpenStreetMap.",
+  },
+  utara: { id: "U", en: "N" },
+  relief: { id: "relief SRTM", en: "SRTM relief" },
 };
 const L = (d: { id: string; en: string }) => lekat(d[lang]);
+/* Paragraf seksi: patah baris hanya di antara kelompok makna (nama, "di sekitar Garut", "Garis rute"),
+   lalu text-wrap: balance (CSS) meratakan panjang barisnya. Frasa terakhir ikut disambung: tanpa kata yatim. */
+const GRUP = {
+  teks: {
+    id: ["dari Kampung Sumber Alam", "ke dua belas tempat", "di sekitar Garut.", "satu tujuan", "melihat rutenya."],
+    en: ["from Kampung Sumber Alam", "to twelve places around Garut.", "Select a destination to see its route."],
+  },
+  catatan: {
+    id: ["Waktu tempuh", "Kampung Sumber Alam.", "Garis rute", "di peta OpenStreetMap."],
+    en: ["Travel times come", "from the Kampung Sumber Alam catalogue.", "The route lines follow the roads", "as mapped in OpenStreetMap."],
+  },
+};
+const K = (k: "teks" | "catatan") => kelompokJudul(T[k][lang], GRUP[k][lang]);
 ---
 <section class="jalan" aria-labelledby="h-jalan" data-jalan>
   <div class="jalan-in">
     <div class="jalan-kepala">
       <p class="lbl" data-muncul>{L(T.penanda)}</p>
       <Judul id="h-jalan" class="jalan-judul" data-judul>{L(T.judul)}</Judul>
-      <p class="jalan-teks" data-muncul>{L(T.teks)}</p>
+      <p class="jalan-teks" data-muncul>{K("teks")}</p>
     </div>
 
-    <div class="jalan-kipas" aria-hidden="true">
-      <svg viewBox={`0 0 ${VB.w} ${VB.h}`} preserveAspectRatio="xMidYMid meet">
-        {cincin.map((c) => (
-          <g class="cincin">
-            <path d={`M ${O.x - c.r} ${O.y} A ${c.r} ${c.r} 0 0 1 ${O.x + c.r} ${O.y}`} />
-            <text x={O.x - c.r} y={O.y + 24} text-anchor="middle">{waktu(c.m)}</text>
+    <div class="jalan-peta">
+      <div class="jalan-bingkai" data-bingkai>
+        <svg class="jalan-dasar" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+          <Fragment set:html={isiPeta} />
+          <g class="pd-rute">
+            {tujuan.map((t) => <path class="rute rute-latar" d={t.d} />)}
+            {tujuan.map((t, i) => (
+              <Fragment>
+                <path class="rute rute-halo" data-i={i} d={t.d} />
+                <path class="rute rute-isi" data-i={i} d={t.d} />
+                {t.sambung && <path class="rute rute-sambung" data-i={i} d={t.sambung} />}
+              </Fragment>
+            ))}
           </g>
-        ))}
-        <line class="dasar" x1={O.x - R - 10} y1={O.y} x2={O.x + R + 10} y2={O.y} />
-        {garis.map((g, i) => (
-          <line class="sinar" data-i={i} x1={g.x1.toFixed(1)} y1={g.y1.toFixed(1)} x2={g.x2.toFixed(1)} y2={g.y2.toFixed(1)} />
-        ))}
-      </svg>
-      <img class="jalan-logo" src="/logo/logogram-color.svg" alt="" width="64" height="64" style={`left:${(O.x / VB.w) * 100}%;top:${(O.y / VB.h) * 100}%`} />
-      {garis.map((g, i) => (
-        <span class:list={["jalan-titik", { kanan: g.kanan }]} data-i={i} style={`left:${g.px.toFixed(2)}%;top:${g.py.toFixed(2)}%`}>
-          <span class="titik-no">{g.no}</span>
-          <span class="titik-ket"><b>{g.nama}</b> {waktu(g.menit)}</span>
-        </span>
-      ))}
+        </svg>
+        <div class="jalan-lapis" aria-hidden="true">
+          {PETA.tempat.map((p) => <span class={`tempat ${p.k}`} data-p={p.p.join(" ")}>{p.n}</span>)}
+          <span class="ksa" data-p={PETA.ksa.join(" ")}><span class="ksa-isi"><img src="/logo/logogram-color.svg" alt="" width="30" height="30" /></span></span>
+          {tujuan.map((t, i) => (
+            <span class="titik" data-i={i} data-p={t.titik.join(" ")} data-bbox={t.bbox.join(" ")} data-nama={t.nama} data-waktu={waktu(t.menit)}>{t.no}</span>
+          ))}
+          <span class="ket" data-ket></span>
+        </div>
+        <svg class="kompas" viewBox="0 0 30 40" aria-hidden="true" focusable="false"><path d="M15 3 L21 22 L15 18 L9 22 Z" /><text x="15" y="36" text-anchor="middle">{T.utara[lang]}</text></svg>
+        <div class="jalan-kaki" aria-hidden="true"><div class="skala" data-skala><span>1 km</span><i></i></div></div>
+        <p class="atribusi">© <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors · {T.relief[lang]}</p>
+      </div>
     </div>
 
     <div class="jalan-daftar">
-      <p class="lbl">{L(T.daftar)}</p>
-      <ol>
-        {garis.map((g, i) => (
+      <p class="lbl" id="lbl-waktu">{L(T.daftar)}</p>
+      <ol aria-labelledby="lbl-waktu">
+        {tujuan.map((t, i) => (
           <li>
             <button type="button" data-i={i} aria-pressed={i === pilihAwal ? "true" : "false"}>
-              <span class="baris-no">{g.no}.</span>
-              <span class="baris-nama">{g.nama}{g.ket && <small>{L(g.ket)}</small>}</span>
-              <span class="baris-waktu">{waktu(g.menit)}</span>
-              <span class="baris-batang" aria-hidden="true" style={`--p:${(g.menit / MAKS).toFixed(3)}`}><span></span></span>
+              <span class="baris-no">{t.no}.</span>
+              <span class="baris-nama">{t.nama}{t.ket && <small>{L(t.ket)}</small>}</span>
+              <span class="baris-waktu">{waktu(t.menit)}</span>
             </button>
           </li>
         ))}
       </ol>
-      <p class="jalan-catatan">{L(T.catatan)}</p>
+      <p class="jalan-catatan">{K("catatan")}</p>
     </div>
   </div>
 </section>
@@ -106,55 +143,376 @@ const L = (d: { id: string; en: string }) => lekat(d[lang]);
 <script>
   import { gsap, ScrollTrigger, gerakBoleh, bermouse } from "../scripts/gerak";
   import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-  gsap.registerPlugin(DrawSVGPlugin);
+  import { CustomEase } from "gsap/CustomEase";
+  gsap.registerPlugin(DrawSVGPlugin, CustomEase);
+  /* kamera: in-out lembut 0,9 dtk, sama dengan prototipe peta-landmark (cubic-bezier(.65,0,.35,1)) */
+  CustomEase.create("ksaKamera", "0.65,0,0.35,1");
+
+  type Kotak = [number, number, number, number];
+  type Titik = [number, number];
+  type Kamera = { x: number; y: number; s: number };
+
+  const angka = (s?: string | null) => (s ?? "").trim().split(/\s+/).map(Number);
+  const titikD = (d?: string | null): Titik[] => (d ? d.slice(1).split("L").map((q) => angka(q) as Titik) : []);
+  const tabrak = (a: Kotak, b: Kotak) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+  /* titik-titik garis (layar) yang jatuh di dalam kotak, diperlebar m px */
+  const kena = (pts: Titik[], k: Kotak, m: number) => pts.filter(([a, b]) => a > k[0] - m && a < k[2] + m && b > k[1] - m && b < k[3] + m).length;
 
   document.querySelectorAll<HTMLElement>("[data-jalan]").forEach((akar) => {
-    const sinar = [...akar.querySelectorAll<SVGLineElement>(".sinar")];
-    const titik = [...akar.querySelectorAll<HTMLElement>(".jalan-titik")];
+    const bingkai = akar.querySelector<HTMLElement>("[data-bingkai]");
+    const svg = akar.querySelector<SVGSVGElement>(".jalan-dasar");
+    const ksa = akar.querySelector<HTMLElement>(".ksa");
+    const ket = akar.querySelector<HTMLElement>("[data-ket]");
+    const skala = akar.querySelector<HTMLElement>("[data-skala]");
+    if (!bingkai || !svg || !ksa || !ket || !skala) return;
+    const skalaTeks = skala.querySelector("span")!;
+    const kompas = akar.querySelector<SVGSVGElement>(".kompas");
+    const atribusi = akar.querySelector<HTMLElement>(".atribusi");
     const tombol = [...akar.querySelectorAll<HTMLButtonElement>(".jalan-daftar button")];
-    const gerak = gerakBoleh();
-    let pilih = tombol.findIndex((b) => b.getAttribute("aria-pressed") === "true");
-    let sudahMasuk = false;
+    const titik = [...akar.querySelectorAll<HTMLElement>(".jalan-lapis .titik")];
+    const halo = [...svg.querySelectorAll<SVGPathElement>(".rute-halo")];
+    const isi = [...svg.querySelectorAll<SVGPathElement>(".rute-isi")];
+    const sambung = titik.map((_, i) => svg.querySelector<SVGPathElement>(`.rute-sambung[data-i="${i}"]`));
+    const tempat = [...akar.querySelectorAll<HTMLElement>(".jalan-lapis .tempat")].map((el) => ({ el, p: angka(el.dataset.p) as Titik }));
+    const [, , W, H] = angka(svg.getAttribute("viewBox"));
+    const KSA = angka(ksa.dataset.p) as Titik;
+    const T = titik.map((el, i) => ({
+      titik: angka(el.dataset.p) as Titik,
+      bbox: angka(el.dataset.bbox) as Kotak,
+      pts: titikD(isi[i]?.getAttribute("d")),
+      sPts: titikD(sambung[i]?.getAttribute("d")),
+      nama: el.dataset.nama ?? "",
+      waktu: el.dataset.waktu ?? "",
+    }));
+    if (!T.length || tombol.length !== T.length) return;
 
-    function setPilih(i: number, gambar = true) {
-      const lama = pilih;
-      pilih = i;
+    const gerak = gerakBoleh();
+    let pilih = Math.max(0, tombol.findIndex((b) => b.getAttribute("aria-pressed") === "true"));
+    let cam: Kamera | null = null;
+    let tweenKamera: gsap.core.Tween | null = null;
+    let tundaKet: gsap.core.Tween | null = null;
+    let sudahMasuk = !gerak; // garis awal digambar saat peta masuk layar
+    let kecil = false;
+    let skalaAtas = false;
+    let cw = 0, ch = 0;
+    let kotakKompas: Kotak | null = null, kotakAtribusi: Kotak | null = null;
+    let aman: Kotak[] = [];
+
+    /* header menempel: peta lengket di HP turun setinggi header saat header tampil (CSS: --hdr) */
+    const hdr = document.querySelector<HTMLElement>(".hdr");
+    if (hdr) {
+      const setHdr = () => akar.style.setProperty("--hdr", `${hdr.offsetHeight}px`);
+      setHdr();
+      new ResizeObserver(setHdr).observe(hdr);
+    }
+
+    /* ---------- ukuran & kotak yang tidak boleh ditimpa ---------- */
+    function ukur() {
+      const b = bingkai!.getBoundingClientRect();
+      cw = b.width; ch = b.height;
+      const relatif = (el: Element | null): Kotak | null => { if (!el) return null; const r = el.getBoundingClientRect(); return [r.left - b.left, r.top - b.top, r.right - b.left, r.bottom - b.top]; };
+      const k = relatif(kompas), a = relatif(atribusi);
+      kotakKompas = k && [k[0] - 6, 0, cw, k[3] + 6];
+      kotakAtribusi = a && [a[0] - 6, a[1] - 6, cw, ch];
+      aman = kotakAman(skalaAtas);
+    }
+    /* skala di kiri bawah; pindah ke kiri atas kalau kiri bawah dibutuhkan pin atau garis (mis. Papandayan
+       di HP, pinnya di pojok kiri bawah cakupan peta). Lebar terbesar skala ±150 px. */
+    const kotakAman = (atas: boolean) =>
+      [atas ? [0, 0, 160, 36] : [0, ch - 36, 160, ch], kotakKompas, kotakAtribusi].filter(Boolean) as Kotak[];
+    const dalam = (k: Kotak, m = 6) => k[0] >= m && k[1] >= m && k[2] <= cw - m && k[3] <= ch - m;
+
+    /* ---------- kamera ---------- */
+    const layar = (c: Kamera, x: number, y: number): Titik => [(x - c.x) * c.s + cw / 2, (y - c.y) * c.s + ch / 2];
+    function sampel(c: Kamera, P: Titik[], jarak: number, out: Titik[] = []) {
+      for (let n = 0; n < P.length - 1; n++) {
+        const [a, b] = layar(c, ...P[n]), [x, y] = layar(c, ...P[n + 1]);
+        const m = Math.max(1, Math.ceil(Math.hypot(x - a, y - b) / jarak));
+        for (let j = 0; j < m; j++) out.push([a + ((x - a) * j) / m, b + ((y - b) * j) / m]);
+      }
+      if (P.length) out.push(layar(c, ...P[P.length - 1]));
+      return out;
+    }
+    const ruteLayar = (i: number, c: Kamera, jarak = 3) => sampel(c, T[i].sPts, jarak, sampel(c, T[i].pts, jarak));
+    const PD = { l: 34, r: 34, t: 58, b: 46 }; // ruang label, skala, kompas
+    function jepit(c: Kamera): Kamera {
+      const hw = cw / 2 / c.s, hh = ch / 2 / c.s;
+      return { s: c.s, x: Math.min(Math.max(c.x, hw), W - hw), y: Math.min(Math.max(c.y, hh), H - hh) };
+    }
+    /* kamera yang mentok di tepi peta bisa mendorong pin, logo KSA, atau garis ke bawah kompas, skala, atau
+       atribusi (mis. Candi Cangkuang di HP: logo di pojok kiri bawah menimpa skala) */
+    function bentrokUI(i: number, c: Kamera, kotak: Kotak[]) {
+      const [x, y] = layar(c, ...T[i].titik), [kx, ky] = layar(c, ...KSA);
+      const benda: Kotak[] = [[x - 16, y - 16, x + 16, y + 16], [kx - 25, ky - 25, kx + 25, ky + 25]];
+      if (benda.some((b) => !dalam(b, 0) || kotak.some((a) => tabrak(b, a)))) return true;
+      return ruteLayar(i, c, 4).some(([a, b]) => a < 4 || b < 4 || a > cw - 4 || b > ch - 4 || kotak.some((k) => a > k[0] - 5 && a < k[2] + 5 && b > k[1] - 5 && b < k[3] + 5));
+    }
+    function pas(i: number): { c: Kamera; atas: boolean } {
+      const t = T[i];
+      let [x0, y0, x1, y1] = t.bbox;
+      for (const [x, y] of [KSA, t.titik]) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+      const bw = Math.max(x1 - x0, 1), bh = Math.max(y1 - y0, 1);
+      const sMin = Math.max(cw / W, ch / H);                  // paling jauh: seluruh cakupan peta
+      const sMaks = Math.max(sMin, Math.min(cw, ch) / 380);   // paling dekat: ±3,8 km di sisi pendek
+      const ke = (s: number) => jepit({ x: (x0 + x1) / 2 + (PD.r - PD.l) / 2 / s, y: (y0 + y1) / 2 + (PD.b - PD.t) / 2 / s, s });
+      let cadangan: { c: Kamera; atas: boolean } | null = null;
+      for (const atas of [false, true]) {
+        const kotak = kotakAman(atas);
+        let s = Math.max(sMin, Math.min((cw - PD.l - PD.r) / bw, (ch - PD.t - PD.b) / bh, sMaks));
+        let c = ke(s);
+        for (let n = 0; n < 24 && s > sMin && bentrokUI(i, c, kotak); n++) { s = Math.max(sMin, s * 0.92); c = ke(s); }
+        if (!bentrokUI(i, c, kotak)) return { c, atas };
+        cadangan ??= { c, atas };
+      }
+      return cadangan!;
+    }
+    function setSkala(atas: boolean) {
+      skalaAtas = atas;
+      aman = kotakAman(atas);
+      bingkai!.classList.toggle("skala-atas", atas);
+    }
+    /* rute pendek: logo KSA ukuran penuh menutupi pangkal garisnya. Lebih dari 12% panjang garis
+       (di layar) tertutup -> logo mengecil supaya rutenya tetap terlihat. */
+    function perluKecil(i: number, c: Kamera) {
+      const [kx, ky] = layar(c, ...KSA);
+      let total = 0, tutup = 0;
+      const P = T[i].pts;
+      for (let n = 0; n < P.length - 1; n++) {
+        const [a, b] = layar(c, ...P[n]), [x, y] = layar(c, ...P[n + 1]);
+        const L = Math.hypot(x - a, y - b), m = Math.max(1, Math.ceil(L));
+        for (let j = 0; j < m; j++) {
+          const f = (j + 0.5) / m;
+          total += L / m;
+          if (Math.hypot(a + (x - a) * f - kx, b + (y - b) * f - ky) < 24) tutup += L / m;
+        }
+      }
+      return total > 0 && tutup / total > 0.12;
+    }
+    function setKecil(v: boolean) { kecil = v; ksa!.classList.toggle("kecil", v); }
+
+    /* ---------- tata letak lapisan (tiap frame) ---------- */
+    const ukuran = new Map<HTMLElement, [number, number]>();
+    const ukuranEl = (el: HTMLElement) => { let u = ukuran.get(el); if (!u) { u = [el.offsetWidth, el.offsetHeight]; ukuran.set(el, u); } return u; };
+    const ukuranKetMap = new Map<boolean, [number, number]>();
+    function ukuranKet(dua: boolean) {
+      let u = ukuranKetMap.get(dua);
+      if (!u) {
+        const lama = ket!.classList.contains("ket-dua");
+        ket!.classList.toggle("ket-dua", dua);
+        u = [ket!.offsetWidth, ket!.offsetHeight];
+        ket!.classList.toggle("ket-dua", lama);
+        ukuranKetMap.set(dua, u);
+      }
+      return u;
+    }
+
+    function tata(denganKet: boolean) {
+      if (!cam) return;
+      const c = cam;
+      svg!.setAttribute("viewBox", `${c.x - cw / 2 / c.s} ${c.y - ch / 2 / c.s} ${cw / c.s} ${ch / c.s}`);
+      svg!.classList.toggle("jauh", c.s < Math.min(cw, ch) / 1400);
+      const k1 = 1 / c.s;
+      halo[pilih].style.strokeWidth = `${7 * k1}`;
+      isi[pilih].style.strokeWidth = `${3 * k1}`;
+      const sb = sambung[pilih];
+      if (sb) { sb.style.strokeWidth = `${1.6 * k1}`; sb.style.strokeDasharray = `${0.1 * k1} ${5 * k1}`; }
+
+      const rute = ruteLayar(pilih, c, 3);
+      const terisi: Kotak[] = [...aman];
+      const [kx, ky] = layar(c, ...KSA);
+      ksa!.style.transform = `translate(${kx}px, ${ky}px)`;
+      const rk = kecil ? 13 : 24;
+      const kotakKsa: Kotak = [kx - rk, ky - rk, kx + rk, ky + rk];
+      terisi.push(kotakKsa);
+
+      // titik terpilih dulu, lalu yang lain sesuai nomor; titik lain yang menimpa garis terpilih disembunyikan
+      const urut = T.map((_, i) => i).sort((a, b) => Number(b === pilih) - Number(a === pilih) || a - b);
+      const titikLain: [number, Kotak][] = [];
+      for (const i of urut) {
+        const [x, y] = layar(c, ...T[i].titik);
+        const k: Kotak = i === pilih ? [x - 15, y - 15, x + 15, y + 15] : [x - 13, y - 13, x + 13, y + 13];
+        const ok = i === pilih || (dalam(k, 2) && !terisi.some((o) => tabrak(k, o)) && !kena(rute, k, 4));
+        titik[i].style.translate = `${x}px ${y}px`; // transform dipakai CSS untuk membesarkan pin terpilih
+        titik[i].classList.toggle("sembunyi", !ok);
+        if (!ok) continue;
+        terisi.push(k);
+        if (i !== pilih) titikLain.push([i, k]);
+      }
+
+      // label tujuan terpilih: di dalam bingkai, tidak menimpa UI, logo, pinnya, maupun garis; sedekat
+      // mungkin ke pinnya. Pin lain yang tertimpa label disembunyikan (lebih murah daripada label menjauh).
+      if (denganKet) {
+        const [x, y] = layar(c, ...T[pilih].titik);
+        const tetap: Kotak[] = [...aman, kotakKsa, [x - 15, y - 15, x + 15, y + 15]];
+        let terbaik: { nilai: number; k: Kotak; dua: boolean } | null = null;
+        // satu baris dulu; dua baris (nama di atas waktu, lebih ramping) kalau itu membuat label
+        // jauh lebih dekat ke pin, mis. pin di pojok peta HP yang sisi kanannya dilewati garis
+        for (const dua of [false, true]) {
+          const [w, h] = ukuranKet(dua);
+          const coba = (lx: number, ly: number, arah: number) => {
+            // geser ke dalam bingkai (pin di pojok tetap punya calon di sepanjang tepi)
+            lx = Math.min(Math.max(lx, 6), cw - 6 - w);
+            ly = Math.min(Math.max(ly, 6), ch - 6 - h);
+            const k: Kotak = [lx, ly, lx + w, ly + h];
+            const jauh = Math.hypot(Math.max(k[0] - x, 0, x - k[2]), Math.max(k[1] - y, 0, y - k[3]));
+            const nilai = (dalam(k) ? 0 : 1e8) + tetap.filter((o) => tabrak(k, o)).length * 1e7 + kena(rute, k, 4) * 1e4
+              + titikLain.filter(([, o]) => tabrak(k, o)).length * 1e3 + jauh * 15 + arah + (dua ? 240 : 0);
+            if (!terbaik || nilai < terbaik.nilai) terbaik = { nilai, k, dua };
+          };
+          for (const g of [20, 28, 40, 56, 76, 100, 130]) {
+            const cx = x - w / 2, cy = y - h / 2;
+            [[x + g, cy], [x - g - w, cy], [cx, y - g - h + 2], [cx, y + g - 2],
+              [x + g - 6, y - g - h + 4], [x - g - w + 6, y - g - h + 4], [x + g - 6, y + g - 4], [x - g - w + 6, y + g - 4]].forEach(([lx, ly], arah) => coba(lx, ly, arah));
+          }
+        }
+        const pilihan = terbaik as unknown as { k: Kotak; dua: boolean };
+        const kk = pilihan.k;
+        ket!.classList.toggle("ket-dua", pilihan.dua);
+        ket!.style.transform = `translate(${kk[0]}px, ${kk[1]}px)`;
+        titikLain.forEach(([i, k]) => { if (tabrak(k, kk)) titik[i].classList.add("sembunyi"); });
+        terisi.push(kk);
+      }
+
+      // nama tempat: hanya yang tidak menabrak apa pun dan tidak menimpa garis terpilih
+      for (const p of tempat) {
+        const [w, h] = ukuranEl(p.el);
+        const [x, y] = layar(c, ...p.p);
+        const k: Kotak = [x - w / 2, y - h / 2, x + w / 2, y + h / 2];
+        const ok = dalam(k) && !terisi.some((o) => tabrak([k[0] - 4, k[1] - 4, k[2] + 4, k[3] + 4], o)) && !kena(rute, k, 4);
+        p.el.style.transform = `translate(${k[0]}px, ${k[1]}px)`;
+        p.el.classList.toggle("sembunyi", !ok);
+        if (ok) terisi.push(k);
+      }
+
+      // skala
+      const mPerPx = 10 / c.s;
+      const m = [100, 200, 500, 1000, 2000, 5000, 10000].find((v) => v / mPerPx >= 56) ?? 10000;
+      skala!.style.setProperty("--w", `${Math.round(m / mPerPx)}px`);
+      skalaTeks.textContent = m >= 1000 ? `${m / 1000} km` : `${m} m`;
+    }
+
+    /* ---------- gerak ---------- */
+    function terbang(tujuan: Kamera, selesai?: () => void) {
+      tweenKamera?.kill();
+      tweenKamera = null;
+      if (!gerak || !cam) { cam = tujuan; tata(true); selesai?.(); return; }
+      const awal = { ...cam };
+      const ls0 = Math.log(awal.s), ls1 = Math.log(tujuan.s);
+      const o = { p: 0 };
+      tweenKamera = gsap.to(o, {
+        p: 1,
+        duration: 0.9,
+        ease: "ksaKamera",
+        onUpdate() {
+          const e = o.p, s = Math.exp(ls0 + (ls1 - ls0) * e);
+          // pusat bergerak konsisten dengan zoom (tanpa ayunan)
+          const f = Math.abs(ls1 - ls0) < 1e-3 ? e : (1 / s - 1 / awal.s) / (1 / tujuan.s - 1 / awal.s);
+          cam = { x: awal.x + (tujuan.x - awal.x) * f, y: awal.y + (tujuan.y - awal.y) * f, s };
+          tata(false);
+        },
+        onComplete() { tweenKamera = null; cam = tujuan; tata(true); selesai?.(); },
+      });
+    }
+
+    function gambar(i: number) {
+      const el = [halo[i], isi[i]];
+      gsap.killTweensOf(el);
+      if (!gerak) { gsap.set(el, { clearProps: "strokeDasharray,strokeDashoffset" }); return; }
+      gsap.fromTo(el, { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.9, delay: 0.26, ease: "ksa" });
+    }
+
+    function isiKet(i: number) {
+      const b = document.createElement("b"), s = document.createElement("span");
+      b.textContent = T[i].nama;
+      s.textContent = T[i].waktu;
+      ket!.replaceChildren(b, s);
+      ukuranKetMap.clear();
+    }
+
+    function tandai(i: number) {
       tombol.forEach((b, n) => b.setAttribute("aria-pressed", String(n === i)));
       titik.forEach((t, n) => t.classList.toggle("dipilih", n === i));
-      sinar.forEach((s, n) => s.classList.toggle("dipilih", n === i));
-      akar.classList.add("ada-pilihan");
-      if (!gerak || !gambar || !sudahMasuk) return;
-      if (lama >= 0 && lama !== i) gsap.to(sinar[lama], { drawSVG: "100% 100%", duration: 0.6, ease: "ksaIO", onComplete: () => gsap.set(sinar[lama], { drawSVG: "0% 100%" }) });
-      gsap.fromTo(sinar[i], { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 1, ease: "ksaIO" });
+      [halo, isi, sambung].forEach((arr) => arr.forEach((p, n) => p?.classList.toggle("dipilih", n === i)));
     }
 
-    tombol.forEach((b, i) => {
-      b.addEventListener("click", () => setPilih(i));
-      b.addEventListener("focus", () => pilih !== i && setPilih(i));
-      if (bermouse()) b.addEventListener("pointerenter", () => pilih !== i && setPilih(i));
-    });
-    titik.forEach((t, i) => t.addEventListener("pointerenter", () => bermouse() && pilih !== i && setPilih(i)));
-
-    if (!gerak) {
+    function setPilih(i: number) {
+      if (!cam || i === pilih || i < 0 || i >= T.length) return;
+      const lama = pilih;
+      pilih = i;
       sudahMasuk = true;
-      if (pilih >= 0) setPilih(pilih, false);
-      return;
+      tundaKet?.kill();
+      tandai(i);
+      gsap.killTweensOf([halo[lama], isi[lama]]);
+      isiKet(i);
+      ket!.classList.remove("tampak");
+      const { c, atas } = pas(i);
+      setSkala(atas);
+      setKecil(perluKecil(i, c));
+      gambar(i);
+      terbang(c, () => ket!.classList.add("tampak"));
     }
-    // masuk layar: semua garis tergambar dari logo, berurutan dari yang terdekat
-    gsap.set(sinar, { drawSVG: "0% 0%" });
-    gsap.set(titik, { opacity: 0, scale: 0.6 });
-    ScrollTrigger.create({
-      trigger: akar,
-      start: "top 70%",
-      once: true,
-      onEnter() {
-        const tl = gsap.timeline({ onComplete: () => { sudahMasuk = true; if (pilih >= 0) setPilih(pilih, false); } });
-        tl.to(sinar, { drawSVG: "0% 100%", duration: 1.1, ease: "ksa", stagger: 0.07 }, 0)
-          .to(titik, { opacity: 1, scale: 1, duration: 0.6, ease: "ksa", stagger: 0.07 }, 0.45);
-        akar.querySelectorAll<HTMLElement>(".baris-batang span").forEach((b, n) =>
-          gsap.fromTo(b, { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: "ksa", delay: 0.1 + n * 0.05 }),
-        );
-      },
-    });
+
+    /* kamera langsung ke tujuan terpilih tanpa terbang (awal & saat ukuran bingkai berubah) */
+    function pasang() {
+      const { c, atas } = pas(pilih);
+      setSkala(atas);
+      setKecil(perluKecil(pilih, c));
+      cam = c;
+    }
+
+    function mulai() {
+      ukur();
+      tandai(pilih);
+      isiKet(pilih);
+      pasang();
+      if (!sudahMasuk) gsap.set([halo[pilih], isi[pilih]], { drawSVG: "0% 0%" });
+      tata(true);
+      bingkai!.classList.add("siap");
+      if (sudahMasuk) ket!.classList.add("tampak");
+      else
+        ScrollTrigger.create({
+          trigger: bingkai,
+          start: "top 75%",
+          once: true,
+          onEnter() {
+            if (sudahMasuk) return;
+            sudahMasuk = true;
+            gambar(pilih);
+            tundaKet = gsap.delayedCall(0.9, () => ket!.classList.add("tampak"));
+          },
+        });
+
+      let tundaHover = 0;
+      tombol.forEach((b, i) => {
+        b.addEventListener("click", () => setPilih(i));
+        b.addEventListener("focus", () => setPilih(i));
+        b.addEventListener("pointerenter", () => {
+          if (!bermouse()) return;
+          clearTimeout(tundaHover);
+          tundaHover = window.setTimeout(() => setPilih(i), 110);
+        });
+        b.addEventListener("pointerleave", () => clearTimeout(tundaHover));
+      });
+      // pin: diklik (sentuh) atau disorot tetikus; selama kamera terbang pin bergeser di bawah kursor, abaikan
+      titik.forEach((el, i) => {
+        el.addEventListener("click", () => setPilih(i));
+        el.addEventListener("pointerenter", () => { if (bermouse() && !tweenKamera) setPilih(i); });
+      });
+
+      new ResizeObserver(() => {
+        const w0 = cw, h0 = ch;
+        ukur();
+        if (Math.abs(w0 - cw) < 0.5 && Math.abs(h0 - ch) < 0.5) return;
+        ukuran.clear();
+        ukuranKetMap.clear();
+        tweenKamera?.kill();
+        tweenKamera = null;
+        pasang();
+        tata(true);
+        if (sudahMasuk && !tundaKet?.isActive()) ket!.classList.add("tampak");
+      }).observe(bingkai!);
+    }
+
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(mulai);
   });
 </script>
