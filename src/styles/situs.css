@@ -205,7 +205,7 @@ html.gerak .goresan.tergores { clip-path: inset(0 0 0 0); }
 .empat .panah { color: var(--alam); font-weight: 600; white-space: nowrap; }
 .empat .no { font: 400 1.6rem/1.1 var(--serif); color: var(--alam); grid-row: span 2; }
 .empat h3 { font-size: clamp(1.6rem, 2.2vw, 1.9rem); line-height: 1.1; }
-.empat p { opacity: .92; max-width: 40ch; }
+.empat p { opacity: .92; max-width: 40ch; text-wrap: balance; } /* 3-4 baris: rag rata, kata berstrip tidak menyisakan baris pendek */
 @media (min-width: 900px) {
   .empat { grid-template-columns: repeat(4, 1fr); gap: 32px; }
   .empat li { grid-template-columns: 1fr; }
@@ -562,7 +562,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 /* HP: kelapa turun ke bawah teks (utuh, rata kanan) supaya judul tidak terjepit di kolom 6 em */
 @media (max-width: 599px) {
   .cerita-kepala .goresan { position: static; justify-self: end; width: 56px; margin-top: 4px; }
-  .cerita-kepala h2 { padding-right: 0; }
+  /* kelompok terpanjang "Liburan yang menenangkan" 9,39 em: huruf mengikuti lebar kolom (kolom / 9,6)
+     supaya kelompok itu muat; kalau tidak, lajur grid melebar dan kelapa terdorong ke tepi layar */
+  .cerita-kepala h2 { padding-right: 0; font-size: min(2.3rem, calc((100vw - 2 * var(--pad)) / 9.6)); }
 }
 .babak-daftar { list-style: none; margin: 0; padding: 0; }
 .babak { --bidang: var(--krem); --tinta-babak: var(--tinta); --aksen: var(--alam); --goresan-warna: var(--alam); position: relative; background: var(--bidang); color: var(--tinta-babak); }
@@ -575,7 +577,9 @@ html.gerak [data-judul] .baris { will-change: transform; }
 .babak-waktu { display: flex; align-items: center; gap: 12px; font: 500 .75rem/1.4 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--aksen); }
 .babak-no { font-variant-numeric: tabular-nums; }
 .babak-garis { width: 32px; height: 1px; background: currentColor; opacity: .7; }
-.babak h3 { font-size: clamp(2rem, 3.4vw, 3.3rem); line-height: 1.06; max-width: 12em; text-wrap: balance; }
+/* 12,2 em: baris terpanjang naskah ("Air hangat dan sambutan yang tulus") tepat 12,0 em, jadi di 12 em
+   versi gerak (kata inline-block SplitText) patah jadi tiga baris sementara versi diam dua baris */
+.babak h3 { font-size: clamp(2rem, 3.4vw, 3.3rem); line-height: 1.06; max-width: 12.2em; text-wrap: balance; }
 /* HP 360: kolom 320px = 10em pada 32px, kurang tipis untuk "jadi pagi Anda masih panjang." */
 @media (max-width: 374px) { .babak h3 { font-size: 1.875rem; } }
 .babak-isi { max-width: 40ch; font-size: 1.05rem; line-height: 1.65; text-wrap: pretty; }

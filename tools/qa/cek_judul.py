@@ -24,7 +24,10 @@ JS = r"""() => {
     return L.sort((a, b) => a.y - b.y);
   };
   return [...document.querySelectorAll('main h1, main h2, main h3')].filter((el) => {
-    const cs = getComputedStyle(el); return el.offsetParent && cs.visibility === 'visible' && !el.closest('[inert],[aria-hidden="true"],.sr');
+    const cs = getComputedStyle(el); const r = el.getBoundingClientRect();
+    // judul khusus pembaca layar (1x1 px + clip, mis. h1 /link/) bukan tata letak yang terlihat
+    const sr = r.width <= 2 || r.height <= 2 || /rect\(0(px)?,? 0(px)?,? 0(px)?,? 0(px)?\)/.test(cs.clip);
+    return el.offsetParent && cs.visibility === 'visible' && !sr && !el.closest('[inert],[aria-hidden="true"],.sr');
   }).map((el) => { const L = baris(el); const cs = getComputedStyle(el);
     const kolom = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     // nama resort tidak boleh terbelah antarbaris (QA putaran 4: "Kampung Sumber / Alam")

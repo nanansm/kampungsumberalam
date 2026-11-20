@@ -21,7 +21,7 @@ import asyncio, json, os, sys
 from playwright.async_api import async_playwright
 
 B = os.environ.get("KSA_BASE", "http://127.0.0.1:4330")
-UKURAN = [(1440, 900), (1190, 680), (390, 844)]
+UKURAN = [(1440, 900), (1190, 680), (1512, 830), (390, 844), (360, 640)]  # 1512x830 & 360x640: aturan semua gerbang repo
 CONTOH = {1: "pendek", 7: "sedang", 11: "panjang"}  # Tegal Malaka, Sukaregang, Papandayan
 
 UKUR = r"""() => {
